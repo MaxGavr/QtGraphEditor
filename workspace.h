@@ -20,7 +20,7 @@ public:
 
     void mouseDoubleClickEvent(QMouseEvent* event);
 
-    void createNode(QPoint pos);
+    void createNode(const QPointF& pos);
 
     //Edge* getSelectedEdge();
     //Node* getSelectedNode();
@@ -32,4 +32,7 @@ private slots:
 private:
     QGraphicsScene* scene;
     QGraphicsView* view;
+
+    const int WIDTH = 640;
+    const int HEIGHT = 480;
 };

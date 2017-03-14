@@ -9,6 +9,9 @@ Edge::Edge(Node* begin, Node* end)
     startNode->addEdge(this);
     endNode->addEdge(this);
 
+    setFlags(ItemIsSelectable);
+    setPen(QPen(Qt::darkGray, 3));
+
     trackNodes();
 }
 
@@ -24,5 +27,5 @@ Node* Edge::getEndNode()
 
 void Edge::trackNodes()
 {
-    setLine(QLineF(startNode->pos(), endNode->pos()));
+    setLine(QLineF(startNode->getCenterPos(), endNode->getCenterPos()));
 }
