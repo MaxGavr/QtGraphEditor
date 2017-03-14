@@ -1,8 +1,14 @@
-#pragma once
+﻿#pragma once
 #include <QMainWindow>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QAction>
+#include <QMenuBar>
+#include <QToolBar>
+#include <QApplication>
+#include <QCloseEvent>
 
-class QAction;
-class QWidget;
+class Workspace;
 
 class MainWindow : public QMainWindow
 {
@@ -25,6 +31,7 @@ private slots:
 private:
     // initializing functions
     void createMenuActions();
+    void createEditActions();
     void createMenus();
     void createToolBars();
 
@@ -34,13 +41,11 @@ private:
     bool loadFile(const QString& fileName);
 
     void setCurrentFile(const QString& fileName);
-    //void updateRecentFilesOpenActions();
 
     /*QStringList recentFiles;
     QString currentFile;
     const int MaxRecentFiles = 5;
-    QAction* recentFilesOpenActions[MaxRecentFiles];
-    QAction* separatorAction;*/
+    QAction* recentFilesOpenActions[MaxRecentFiles];*/
 
     // menus and toolbars
     QMenu* fileMenu;
@@ -57,7 +62,9 @@ private:
     QAction* exitAction;
     QAction* aboutQtAction;
 
+    // graph editing actions
+    QAction* createEdge;
+
     // central widget, where graphs will be drawn
-    // for now, it's just blank QWidget
-    QWidget* drawingArea;
+    Workspace* workingArea;
 };

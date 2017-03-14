@@ -13,6 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    workspace.cpp \
+    node.cpp \
+    edge.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    workspace.h \
+    node.h \
+    edge.h

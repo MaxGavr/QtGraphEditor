@@ -1,20 +1,13 @@
-#include "mainwindow.h"
-#include <QtGui>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QAction>
-#include <QMenuBar>
-#include <QToolBar>
-#include <QApplication>
-
+#include "workspace.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    drawingArea = new QWidget;
-    setCentralWidget(drawingArea);
+    workingArea = new Workspace(this);
+    setCentralWidget(workingArea);
 
     createMenuActions();
+    createEditActions();
     createMenus();
     createToolBars();
 
@@ -23,10 +16,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
 
 void MainWindow::createMenuActions()
 {
@@ -60,6 +52,13 @@ void MainWindow::createMenuActions()
     connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
 
+void MainWindow::createEditActions()
+{
+    createEdge = new QAction(tr("Create new edge"), this);
+    createEdge->setStatusTip(tr("Create a connection between two selected nodes"));
+    connect(createEdge, SIGNAL(triggered(bool)), workingArea, SLOT(createEdge()));
+}
+
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -87,6 +86,7 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(saveFileAction);
 
     editToolBar = addToolBar(tr("&Edit"));
+    editToolBar->addAction(createEdge);
 }
 
 void MainWindow::newFile()
