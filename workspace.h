@@ -11,7 +11,7 @@
 class Node;
 class Edge;
 
-class Workspace : public QWidget
+class Workspace : public QGraphicsView
 {
     Q_OBJECT
 public:
@@ -19,9 +19,10 @@ public:
 
     Workspace(MainWindow* parent);
 
+    void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent* event);
 
-    void createNode(const QPointF& pos);
+    void createNode(const QPoint& pos);
 
     //Edge* getSelectedEdge();
     //Node* getSelectedNode();
@@ -29,11 +30,14 @@ public:
 
 private slots:
     void createEdge();
+    void toggleNodeCreationMode(bool isToggled);
+    void toggleEdgeCreationMode(bool isToggled);
 
 private:
-    QGraphicsScene* scene;
-    QGraphicsView* view;
-
     const int WIDTH = 640;
     const int HEIGHT = 480;
+
+    bool nodeCreationMode;
+    bool edgeCreationMode;
+    //bool firstNodeSelected;
 };

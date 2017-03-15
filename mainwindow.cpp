@@ -55,8 +55,14 @@ void MainWindow::createMenuActions()
 
 void MainWindow::createEditActions()
 {
-    createEdge = new QAction(tr("Create new edge"), this);
+    createNode = new QAction(tr("Create node"), this);
+    createNode->setStatusTip(tr("Create new graph vertex"));
+    createNode->setCheckable(true);
+    connect(createNode, SIGNAL(toggled(bool)), workingArea, SLOT(toggleNodeCreationMode(bool)));
+
+    createEdge = new QAction(tr("Create edge"), this);
     createEdge->setStatusTip(tr("Create a connection between two selected nodes"));
+    //createEdge->setCheckable(true);
     connect(createEdge, SIGNAL(triggered(bool)), workingArea, SLOT(createEdge()));
 }
 
@@ -72,6 +78,8 @@ void MainWindow::createMenus()
     fileMenu->addAction(exitAction);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(createNode);
+    editMenu->addAction(createEdge);
 
     menuBar()->addSeparator();
 
@@ -87,6 +95,7 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(saveFileAction);
 
     editToolBar = addToolBar(tr("&Edit"));
+    editToolBar->addAction(createNode);
     editToolBar->addAction(createEdge);
 }
 

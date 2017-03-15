@@ -3,30 +3,57 @@
 #include "node.h"
 
 Workspace::Workspace(MainWindow* parent)
-    : QWidget(parent)
+    : QGraphicsView(parent)
 {
-    scene = new QGraphicsScene(0, 0, WIDTH, HEIGHT);
-    view = new QGraphicsView(scene, this);
-    view->setMaximumSize(WIDTH, HEIGHT);
-    view->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-    view->setDragMode(QGraphicsView::RubberBandDrag);
+    QGraphicsScene* newScene = new QGraphicsScene(0, 0, WIDTH, HEIGHT);
+    setScene(newScene);
+    setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+    setDragMode(QGraphicsView::RubberBandDrag);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-
-    QHBoxLayout* layout = new QHBoxLayout();
-    layout->addWidget(view);
-    layout->setContentsMargins(0, 0, 0, 0);
-    setLayout(layout);
 }
 
 void Workspace::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    event->accept();
     createNode(event->pos());
 }
 
-void Workspace::createNode(const QPointF& pos)
+void Workspace::mousePressEvent(QMouseEvent *event)
 {
-    Node* newNode = new Node(pos);
-    scene->addItem(newNode);
+    if (nodeCreationMode)
+        createNode(event->pos());
+    else
+//        if (edgeCreationMode)
+//        {
+//            Node* selectedNode = qgraphicsitem_cast<Node *>(scene()->itemAt(mapToScene(event->localPos())));
+//            if (selectedNode)
+//                selectedNode->setSelected(true);
+//            if (scene()->selectedItems().count() < 2)
+//            {
+
+//                Node* firstNode =
+//            }
+//            if (getSelectedNodePair() != NodePair())
+//                createEdge();
+//        }
+//        else
+    QGraphicsView::mousePressEvent(event);
+}
+
+void Workspace::toggleNodeCreationMode(bool isToggled)
+{
+    nodeCreationMode = isToggled;
+}
+
+void Workspace::toggleEdgeCreationMode(bool isToggled)
+{
+    edgeCreationMode = isToggled;
+}
+
+void Workspace::createNode(const QPoint& pos)
+{
+    Node* newNode = new Node(mapToScene(pos));
+    scene()->addItem(newNode);
 }
 
 void Workspace::createEdge()
@@ -35,13 +62,13 @@ void Workspace::createEdge()
     if (selectedNodes != NodePair())
     {
         Edge* newEdge = new Edge(selectedNodes.first, selectedNodes.second);
-        scene->addItem(newEdge);
+        scene()->addItem(newEdge);
     }
 }
 
 Workspace::NodePair Workspace::getSelectedNodePair()
 {
-    QList<QGraphicsItem *> selected = scene->selectedItems();
+    QList<QGraphicsItem *> selected = scene()->selectedItems();
     if (selected.count() == 2)
     {
         Node* firstNode = qgraphicsitem_cast<Node *>(selected.first());

@@ -63,6 +63,7 @@ private:
     QAction* aboutQtAction;
 
     // graph editing actions
+    QAction* createNode;
     QAction* createEdge;
 
     // central widget, where graphs will be drawn
