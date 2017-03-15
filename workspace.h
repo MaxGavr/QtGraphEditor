@@ -4,6 +4,7 @@
 #include <QGraphicsView>
 #include <QWidget>
 #include <QPair>
+#include <QHBoxLayout>
 
 #include "mainwindow.h"
 

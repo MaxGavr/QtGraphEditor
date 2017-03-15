@@ -5,6 +5,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     workingArea = new Workspace(this);
     setCentralWidget(workingArea);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     createMenuActions();
     createEditActions();

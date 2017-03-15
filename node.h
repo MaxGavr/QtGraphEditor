@@ -14,7 +14,7 @@ public:
 
     enum { Type = UserType + 1 };
 
-    int type() const
+    inline int type() const
     {
         return Type;
     }
@@ -24,6 +24,8 @@ public:
 
     QPointF getCenterPos() const;
     void setCenterPos(qreal x, qreal y);
+
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
     QList<Edge*> edges;

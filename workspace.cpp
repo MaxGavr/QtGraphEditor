@@ -7,13 +7,20 @@ Workspace::Workspace(MainWindow* parent)
 {
     scene = new QGraphicsScene(0, 0, WIDTH, HEIGHT);
     view = new QGraphicsView(scene, this);
+    view->setMaximumSize(WIDTH, HEIGHT);
     view->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     view->setDragMode(QGraphicsView::RubberBandDrag);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+    QHBoxLayout* layout = new QHBoxLayout();
+    layout->addWidget(view);
+    layout->setContentsMargins(0, 0, 0, 0);
+    setLayout(layout);
 }
 
 void Workspace::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    createNode(event->localPos());
+    createNode(event->pos());
 }
 
 void Workspace::createNode(const QPointF& pos)

@@ -11,6 +11,7 @@ Edge::Edge(Node* begin, Node* end)
 
     setFlags(ItemIsSelectable);
     setPen(QPen(Qt::darkGray, 3));
+    setZValue(-1);
 
     trackNodes();
 }

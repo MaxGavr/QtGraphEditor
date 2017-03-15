@@ -5,10 +5,11 @@ Node::Node(const QPointF& position)
 {
     setRect(QRectF(0, 0, NODE_DIAMETER, NODE_DIAMETER));
     setCenterPos(position.x(), position.y());
+
     setPen(QPen(Qt::black, 3));
     setBrush(QBrush(Qt::lightGray));
 
-    setFlags(ItemIsMovable | ItemIsSelectable);
+    setFlags(ItemIsMovable | ItemIsSelectable | ItemSendsGeometryChanges);
 }
 
 void Node::addEdge(Edge *edge)
@@ -40,4 +41,12 @@ void Node::setCenterPos(qreal x, qreal y)
     leftTopY = leftTopY < 0 ? 0 : leftTopY;
 
     setPos(leftTopX, leftTopY);
+}
+
+QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemPositionChange)
+        foreach (Edge* edge, edges)
+            edge->trackNodes();
+    return QGraphicsItem::itemChange(change, value);
 }
