@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QFileDialog>

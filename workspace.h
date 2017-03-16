@@ -23,6 +23,7 @@ public:
     void mouseDoubleClickEvent(QMouseEvent* event);
 
     void createNode(const QPoint& pos);
+    void createEdge(const NodePair);
 
     //Edge* getSelectedEdge();
     //Node* getSelectedNode();
@@ -36,6 +37,8 @@ private slots:
 private:
     const int WIDTH = 640;
     const int HEIGHT = 480;
+
+    NodePair selectedNodes;
 
     bool nodeCreationMode;
     bool edgeCreationMode;

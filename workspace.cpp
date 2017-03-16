@@ -14,8 +14,10 @@ Workspace::Workspace(MainWindow* parent)
 
 void Workspace::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    event->accept();
-    createNode(event->pos());
+    if (!nodeCreationMode && !edgeCreationMode)
+        createNode(event->pos());
+    else
+        QGraphicsView::mouseDoubleClickEvent(event);
 }
 
 void Workspace::mousePressEvent(QMouseEvent *event)
@@ -23,21 +25,28 @@ void Workspace::mousePressEvent(QMouseEvent *event)
     if (nodeCreationMode)
         createNode(event->pos());
     else
-//        if (edgeCreationMode)
-//        {
-//            Node* selectedNode = qgraphicsitem_cast<Node *>(scene()->itemAt(mapToScene(event->localPos())));
-//            if (selectedNode)
-//                selectedNode->setSelected(true);
-//            if (scene()->selectedItems().count() < 2)
-//            {
-
-//                Node* firstNode =
-//            }
-//            if (getSelectedNodePair() != NodePair())
-//                createEdge();
-//        }
-//        else
-    QGraphicsView::mousePressEvent(event);
+        if (edgeCreationMode)
+        {
+            Node* selectedNode = qgraphicsitem_cast<Node *>(scene()->itemAt(mapToScene(event->pos()), QGraphicsView::transform()));
+            if (selectedNode)
+            {
+                selectedNode->setSelected(true);
+                if (!selectedNodes.first)
+                {
+                    selectedNodes.first = selectedNode;
+                }
+                else
+                {
+                    if (selectedNodes.first && !selectedNodes.second)
+                    {
+                        selectedNodes.second = selectedNode;
+                        createEdge(selectedNodes);
+                    }
+                }
+            }
+        }
+        else
+            QGraphicsView::mousePressEvent(event);
 }
 
 void Workspace::toggleNodeCreationMode(bool isToggled)
@@ -48,6 +57,8 @@ void Workspace::toggleNodeCreationMode(bool isToggled)
 void Workspace::toggleEdgeCreationMode(bool isToggled)
 {
     edgeCreationMode = isToggled;
+    if (isToggled)
+        scene()->clearSelection();
 }
 
 void Workspace::createNode(const QPoint& pos)
@@ -58,11 +69,24 @@ void Workspace::createNode(const QPoint& pos)
 
 void Workspace::createEdge()
 {
-    NodePair selectedNodes = getSelectedNodePair();
+    selectedNodes = getSelectedNodePair();
     if (selectedNodes != NodePair())
     {
         Edge* newEdge = new Edge(selectedNodes.first, selectedNodes.second);
         scene()->addItem(newEdge);
+        selectedNodes = NodePair();
+        scene()->clearSelection();
+    }
+}
+
+void Workspace::createEdge(const NodePair)
+{
+    if (selectedNodes.first && selectedNodes.second)
+    {
+        Edge* newEdge = new Edge(selectedNodes.first, selectedNodes.second);
+        scene()->addItem(newEdge);
+        selectedNodes = NodePair();
+        scene()->clearSelection();
     }
 }
 

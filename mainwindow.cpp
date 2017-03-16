@@ -62,8 +62,8 @@ void MainWindow::createEditActions()
 
     createEdge = new QAction(tr("Create edge"), this);
     createEdge->setStatusTip(tr("Create a connection between two selected nodes"));
-    //createEdge->setCheckable(true);
-    connect(createEdge, SIGNAL(triggered(bool)), workingArea, SLOT(createEdge()));
+    createEdge->setCheckable(true);
+    connect(createEdge, SIGNAL(toggled(bool)), workingArea, SLOT(toggleEdgeCreationMode(bool)));
 }
 
 void MainWindow::createMenus()
