@@ -6,27 +6,32 @@
 #include <QPair>
 #include <QHBoxLayout>
 
-#include "mainwindow.h"
+#include <algorithm>
+#include <functional>
 
-class Node;
-class Edge;
+#include "mainwindow.h"
+#include "graph.h"
+
+class GraphicsNodeItem;
+class GraphicsEdgeItem;
 
 class Workspace : public QGraphicsView
 {
     Q_OBJECT
 public:
-    typedef QPair<Node *, Node *> NodePair;
+    typedef QPair<GraphicsNodeItem *, GraphicsNodeItem *> NodePair;
 
     Workspace(MainWindow* parent);
 
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent* event);
+    void keyPressEvent(QKeyEvent *event);
 
     void createNode(const QPoint& pos);
-    void createEdge(const NodePair);
+    void deleteNode(GraphicsNodeItem* nodeItem);
 
-    //Edge* getSelectedEdge();
-    //Node* getSelectedNode();
+    void deleteEdge(GraphicsEdgeItem* edgeItem);
+
     NodePair getSelectedNodePair();
 
 private slots:
@@ -38,9 +43,10 @@ private:
     const int WIDTH = 640;
     const int HEIGHT = 480;
 
+    Graph* graph;
+
     NodePair selectedNodes;
 
     bool nodeCreationMode;
     bool edgeCreationMode;
-    //bool firstNodeSelected;
 };

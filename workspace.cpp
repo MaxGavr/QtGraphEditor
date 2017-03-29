@@ -1,6 +1,6 @@
 #include "workspace.h"
-#include "edge.h"
-#include "node.h"
+#include "graphicsedgeitem.h"
+#include "graphicsnodeitem.h"
 
 Workspace::Workspace(MainWindow* parent)
     : QGraphicsView(parent)
@@ -10,6 +10,8 @@ Workspace::Workspace(MainWindow* parent)
     setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     setDragMode(QGraphicsView::RubberBandDrag);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+    graph = new Graph();
 }
 
 void Workspace::mouseDoubleClickEvent(QMouseEvent *event)
@@ -27,7 +29,8 @@ void Workspace::mousePressEvent(QMouseEvent *event)
     else
         if (edgeCreationMode)
         {
-            Node* selectedNode = qgraphicsitem_cast<Node *>(scene()->itemAt(mapToScene(event->pos()), QGraphicsView::transform()));
+            GraphicsNodeItem* selectedNode = qgraphicsitem_cast<GraphicsNodeItem *>
+                    (scene()->itemAt(mapToScene(event->pos()), QGraphicsView::transform()));
             if (selectedNode)
             {
                 selectedNode->setSelected(true);
@@ -40,7 +43,7 @@ void Workspace::mousePressEvent(QMouseEvent *event)
                     if (selectedNodes.first && !selectedNodes.second)
                     {
                         selectedNodes.second = selectedNode;
-                        createEdge(selectedNodes);
+                        createEdge();
                     }
                 }
             }
@@ -49,9 +52,29 @@ void Workspace::mousePressEvent(QMouseEvent *event)
             QGraphicsView::mousePressEvent(event);
 }
 
+void Workspace::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key())
+    {
+        case Qt::Key_Delete:
+        {
+            QList<QGraphicsItem *> items = scene()->selectedItems();
+
+            foreach (QGraphicsItem* item, items)
+                if (qgraphicsitem_cast<GraphicsEdgeItem *>(item))
+                    items.removeOne(item);
+            qDeleteAll(items);
+
+            break;
+        }
+    }
+}
+
 void Workspace::toggleNodeCreationMode(bool isToggled)
 {
     nodeCreationMode = isToggled;
+    if (isToggled)
+        scene()->clearSelection();
 }
 
 void Workspace::toggleEdgeCreationMode(bool isToggled)
@@ -63,27 +86,27 @@ void Workspace::toggleEdgeCreationMode(bool isToggled)
 
 void Workspace::createNode(const QPoint& pos)
 {
-    Node* newNode = new Node(mapToScene(pos));
-    scene()->addItem(newNode);
+    GraphNode::const_reference newGraphNode = graph->addNode();
+    GraphicsNodeItem* newNodeItem = new GraphicsNodeItem(mapToScene(pos), newGraphNode);
+    scene()->addItem(newNodeItem);
+}
+
+void Workspace::deleteNode(GraphicsNodeItem* nodeItem)
+{
+    const GraphNode& node = nodeItem->getGraphNode();
+    delete nodeItem;
+    graph->removeNode(node);
 }
 
 void Workspace::createEdge()
 {
-    selectedNodes = getSelectedNodePair();
-    if (selectedNodes != NodePair())
-    {
-        Edge* newEdge = new Edge(selectedNodes.first, selectedNodes.second);
-        scene()->addItem(newEdge);
-        selectedNodes = NodePair();
-        scene()->clearSelection();
-    }
-}
-
-void Workspace::createEdge(const NodePair)
-{
     if (selectedNodes.first && selectedNodes.second)
     {
-        Edge* newEdge = new Edge(selectedNodes.first, selectedNodes.second);
+        GraphEdge* newGraphEdge = graph->addEdge(selectedNodes.first->getGraphNode(),
+                                                 selectedNodes.second->getGraphNode());
+        GraphicsEdgeItem* newEdge = new GraphicsEdgeItem(selectedNodes.first,
+                                                         selectedNodes.second,
+                                                         *newGraphEdge);
         scene()->addItem(newEdge);
         selectedNodes = NodePair();
         scene()->clearSelection();
@@ -95,8 +118,8 @@ Workspace::NodePair Workspace::getSelectedNodePair()
     QList<QGraphicsItem *> selected = scene()->selectedItems();
     if (selected.count() == 2)
     {
-        Node* firstNode = qgraphicsitem_cast<Node *>(selected.first());
-        Node* secondNode = qgraphicsitem_cast<Node *>(selected.last());
+        GraphicsNodeItem* firstNode = qgraphicsitem_cast<GraphicsNodeItem *>(selected.first());
+        GraphicsNodeItem* secondNode = qgraphicsitem_cast<GraphicsNodeItem *>(selected.last());
         if (firstNode && secondNode)
             return NodePair(firstNode, secondNode);
     }

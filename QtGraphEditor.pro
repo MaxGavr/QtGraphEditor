@@ -11,14 +11,21 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QtGraphEditor
 TEMPLATE = app
 
+CONFIG += c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     workspace.cpp \
-    node.cpp \
-    edge.cpp
+    graphnode.cpp \
+    graphedge.cpp \
+    graph.cpp \
+    graphicsnodeitem.cpp \
+    graphicsedgeitem.cpp
 
 HEADERS  += mainwindow.h \
     workspace.h \
-    node.h \
-    edge.h
+    graphicsedgeitem.h \
+    graphicsnodeitem.h \
+    graphnode.h \
+    graphedge.h \
+    graph.h
