@@ -14,18 +14,18 @@ TEMPLATE = app
 CONFIG += c++11
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    workspace.cpp \
-    graphnode.cpp \
-    graphedge.cpp \
-    graph.cpp \
-    graphicsnodeitem.cpp \
-    graphicsedgeitem.cpp
+    graph/graph.cpp \
+    graph/graphedge.cpp \
+    graph/graphnode.cpp \
+    graphics/graphicsedgeitem.cpp \
+    graphics/graphicsnodeitem.cpp \
+    workspace/mainwindow.cpp \
+    workspace/workspace.cpp
 
-HEADERS  += mainwindow.h \
-    workspace.h \
-    graphicsedgeitem.h \
-    graphicsnodeitem.h \
-    graphnode.h \
-    graphedge.h \
-    graph.h
+HEADERS  += graph/graph.h \
+    graph/graphedge.h \
+    graph/graphnode.h \
+    graphics/graphicsedgeitem.h \
+    graphics/graphicsnodeitem.h \
+    workspace/mainwindow.h \
+    workspace/workspace.h

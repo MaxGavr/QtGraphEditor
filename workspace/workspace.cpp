@@ -1,6 +1,5 @@
 #include "workspace.h"
-#include "graphicsedgeitem.h"
-#include "graphicsnodeitem.h"
+#include "graphics/graphicsedgeitem.h"
 
 Workspace::Workspace(MainWindow* parent)
     : QGraphicsView(parent)

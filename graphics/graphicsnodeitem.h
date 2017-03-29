@@ -4,7 +4,7 @@
 #include <QBrush>
 #include <QList>
 
-#include "graphnode.h"
+#include "graph/graphnode.h"
 
 class GraphicsEdgeItem;
 

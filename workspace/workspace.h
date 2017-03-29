@@ -9,8 +9,8 @@
 #include <algorithm>
 #include <functional>
 
-#include "mainwindow.h"
-#include "graph.h"
+#include "workspace/mainwindow.h"
+#include "graph/graph.h"
 
 class GraphicsNodeItem;
 class GraphicsEdgeItem;
