@@ -14,6 +14,8 @@ GraphNode::GraphNode(int i, const QString& str)
 
 GraphNode::~GraphNode()
 {
+    QString msg = QString("Graph node %1 deleted").arg(QString::number(getIndex()));
+    qInfo("%s", msg.toLatin1().constData());
     qDeleteAll(edges);
 }
 

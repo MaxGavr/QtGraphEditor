@@ -9,14 +9,18 @@ GraphEdge::GraphEdge(GraphNode *start, GraphNode *end)
 
 GraphEdge::~GraphEdge()
 {
-    qInfo("edge deleted");
+    GraphEdgeIndex index = getEdgeIndex();
+    QString msg = QString("Graph edge %1 - %2 deleted")
+            .arg(QString::number(index.first))
+            .arg(QString::number(index.second));
+    qInfo("%s", msg.toLatin1().constData());
     getStartNode()->removeEdge(this);
     getEndNode()->removeEdge(this);
 }
 
 GraphEdge::GraphEdgeIndex GraphEdge::getEdgeIndex() const
 {
-    return GraphEdgeIndex(startNode->getIndex(), startNode->getIndex());
+    return GraphEdgeIndex(startNode->getIndex(), endNode->getIndex());
 }
 
 GraphNode* GraphEdge::getStartNode()

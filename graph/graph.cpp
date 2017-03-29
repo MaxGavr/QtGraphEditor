@@ -19,8 +19,10 @@ GraphNode::const_reference Graph::addNode(QString nodeText)
 
 void Graph::removeNode(const GraphNode& node)
 {
+    GraphNode* node_ptr = findNodeByIndex(node.getIndex());
     removeNodeIndex(node.getIndex());
-    nodes.removeOne(findNodeByIndex(node.getIndex()));
+    nodes.removeOne(node_ptr);
+    delete node_ptr;
 }
 
 GraphEdge* Graph::addEdge(const GraphNode& firstNode, const GraphNode& secondNode)
@@ -50,7 +52,9 @@ GraphEdge* Graph::findEdgeByIndex(const GraphEdge::GraphEdgeIndex &index)
 
 void Graph::removeEdge(const GraphEdge& edge)
 {
-    edges.removeOne(findEdgeByIndex(edge.getEdgeIndex()));
+    GraphEdge* edge_ptr = findEdgeByIndex(edge.getEdgeIndex());
+    edges.removeOne(edge_ptr);
+    delete edge_ptr;
 }
 
 int Graph::setNodeIndex()

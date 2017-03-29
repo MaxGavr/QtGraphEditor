@@ -60,9 +60,16 @@ void Workspace::keyPressEvent(QKeyEvent *event)
             QList<QGraphicsItem *> items = scene()->selectedItems();
 
             foreach (QGraphicsItem* item, items)
-                if (qgraphicsitem_cast<GraphicsEdgeItem *>(item))
-                    items.removeOne(item);
-            qDeleteAll(items);
+                if (GraphicsEdgeItem* edge = qgraphicsitem_cast<GraphicsEdgeItem *>(item))
+                {
+                    items.removeOne(edge);
+                    deleteEdge(edge);
+                }
+            foreach (QGraphicsItem* item, items)
+            {
+                items.removeOne(item);
+                deleteNode(qgraphicsitem_cast<GraphicsNodeItem *>(item));
+            }
 
             break;
         }
@@ -92,9 +99,16 @@ void Workspace::createNode(const QPoint& pos)
 
 void Workspace::deleteNode(GraphicsNodeItem* nodeItem)
 {
-    const GraphNode& node = nodeItem->getGraphNode();
+    GraphNode::const_reference node = nodeItem->getGraphNode();
     delete nodeItem;
     graph->removeNode(node);
+}
+
+void Workspace::deleteEdge(GraphicsEdgeItem *edgeItem)
+{
+    GraphEdge::const_reference edge = edgeItem->getGraphEdge();
+    delete edgeItem;
+    graph->removeEdge(edge);
 }
 
 void Workspace::createEdge()
