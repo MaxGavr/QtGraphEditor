@@ -21,18 +21,23 @@ class Workspace : public QGraphicsView
 public:
     typedef QPair<GraphicsNodeItem *, GraphicsNodeItem *> NodePair;
 
+    enum { defaultMode = 0, nodeCreationMode = 1, edgeCreationMode = 2};
+
     Workspace(MainWindow* parent);
 
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent* event);
     void keyPressEvent(QKeyEvent *event);
 
+    void manageEdgeCreation(QPoint location);
+
     void createNode(const QPoint& pos);
     void deleteNode(GraphicsNodeItem* nodeItem);
-
     void deleteEdge(GraphicsEdgeItem* edgeItem);
 
     NodePair getSelectedNodePair();
+
+    void toggleMode(int mode, bool toggled);
 
 private slots:
     void createEdge();
@@ -40,13 +45,13 @@ private slots:
     void toggleEdgeCreationMode(bool isToggled);
 
 private:
-    const int WIDTH = 640;
-    const int HEIGHT = 480;
+    const int WIDTH = 1000;
+    const int HEIGHT = 1000;
 
     Graph* graph;
 
+    QGraphicsLineItem* drawingLine;
     NodePair selectedNodes;
 
-    bool nodeCreationMode;
-    bool edgeCreationMode;
+    int toggledMode;
 };

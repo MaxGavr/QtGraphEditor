@@ -8,14 +8,15 @@ Workspace::Workspace(MainWindow* parent)
     setScene(newScene);
     setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     setDragMode(QGraphicsView::RubberBandDrag);
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    setMaximumSize(QSize(WIDTH, HEIGHT));
 
     graph = new Graph();
+    drawingLine = NULL;
 }
 
 void Workspace::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if (!nodeCreationMode && !edgeCreationMode)
+    if (toggledMode == defaultMode)
         createNode(event->pos());
     else
         QGraphicsView::mouseDoubleClickEvent(event);
@@ -23,32 +24,24 @@ void Workspace::mouseDoubleClickEvent(QMouseEvent *event)
 
 void Workspace::mousePressEvent(QMouseEvent *event)
 {
-    if (nodeCreationMode)
+    switch (toggledMode)
+    {
+    case defaultMode:
+    {
+        QGraphicsView::mousePressEvent(event);
+        break;
+    }
+    case nodeCreationMode:
+    {
         createNode(event->pos());
-    else
-        if (edgeCreationMode)
-        {
-            GraphicsNodeItem* selectedNode = qgraphicsitem_cast<GraphicsNodeItem *>
-                    (scene()->itemAt(mapToScene(event->pos()), QGraphicsView::transform()));
-            if (selectedNode)
-            {
-                selectedNode->setSelected(true);
-                if (!selectedNodes.first)
-                {
-                    selectedNodes.first = selectedNode;
-                }
-                else
-                {
-                    if (selectedNodes.first && !selectedNodes.second)
-                    {
-                        selectedNodes.second = selectedNode;
-                        createEdge();
-                    }
-                }
-            }
-        }
-        else
-            QGraphicsView::mousePressEvent(event);
+        break;
+    }
+    case edgeCreationMode:
+    {
+        manageEdgeCreation(event->pos());
+        break;
+    }
+    }
 }
 
 void Workspace::keyPressEvent(QKeyEvent *event)
@@ -76,19 +69,7 @@ void Workspace::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void Workspace::toggleNodeCreationMode(bool isToggled)
-{
-    nodeCreationMode = isToggled;
-    if (isToggled)
-        scene()->clearSelection();
-}
 
-void Workspace::toggleEdgeCreationMode(bool isToggled)
-{
-    edgeCreationMode = isToggled;
-    if (isToggled)
-        scene()->clearSelection();
-}
 
 void Workspace::createNode(const QPoint& pos)
 {
@@ -111,6 +92,24 @@ void Workspace::deleteEdge(GraphicsEdgeItem *edgeItem)
     graph->removeEdge(edge);
 }
 
+void Workspace::manageEdgeCreation(QPoint location)
+{
+    GraphicsNodeItem* selectedNode = qgraphicsitem_cast<GraphicsNodeItem *>
+            (scene()->itemAt(mapToScene(location), QGraphicsView::transform()));
+    if (selectedNode)
+    {
+        selectedNode->setSelected(true);
+        if (!selectedNodes.first)
+            selectedNodes.first = selectedNode;
+        else
+            if (selectedNodes.first && !selectedNodes.second)
+            {
+                selectedNodes.second = selectedNode;
+                createEdge();
+            }
+    }
+}
+
 void Workspace::createEdge()
 {
     if (selectedNodes.first && selectedNodes.second)
@@ -124,6 +123,27 @@ void Workspace::createEdge()
         selectedNodes = NodePair();
         scene()->clearSelection();
     }
+}
+
+void Workspace::toggleMode(int mode, bool toggled)
+{
+    if (toggled)
+    {
+        toggledMode = mode;
+        scene()->clearSelection();
+    }
+    else
+        toggledMode = defaultMode;
+}
+
+void Workspace::toggleNodeCreationMode(bool isToggled)
+{
+    toggleMode(nodeCreationMode, isToggled);
+}
+
+void Workspace::toggleEdgeCreationMode(bool isToggled)
+{
+    toggleMode(edgeCreationMode, isToggled);
 }
 
 Workspace::NodePair Workspace::getSelectedNodePair()
