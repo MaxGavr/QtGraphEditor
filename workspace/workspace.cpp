@@ -9,9 +9,18 @@ Workspace::Workspace(MainWindow* parent)
     setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     setDragMode(QGraphicsView::RubberBandDrag);
     setMaximumSize(QSize(WIDTH, HEIGHT));
+    setMouseTracking(true);
 
     graph = new Graph();
     drawingLine = NULL;
+}
+
+void Workspace::mouseMoveEvent(QMouseEvent *event)
+{
+    if (drawingLine && (toggledMode == edgeCreationMode))
+        drawingLine->setLine(QLineF(selectedNodes.first->getCenterPos(), mapToScene(event->pos())));
+    else
+        QGraphicsView::mouseMoveEvent(event);
 }
 
 void Workspace::mouseDoubleClickEvent(QMouseEvent *event)
@@ -69,8 +78,6 @@ void Workspace::keyPressEvent(QKeyEvent *event)
     }
 }
 
-
-
 void Workspace::createNode(const QPoint& pos)
 {
     GraphNode::const_reference newGraphNode = graph->addNode();
@@ -94,17 +101,21 @@ void Workspace::deleteEdge(GraphicsEdgeItem *edgeItem)
 
 void Workspace::manageEdgeCreation(QPoint location)
 {
-    GraphicsNodeItem* selectedNode = qgraphicsitem_cast<GraphicsNodeItem *>
-            (scene()->itemAt(mapToScene(location), QGraphicsView::transform()));
-    if (selectedNode)
+    GraphicsNodeItem* topmostNode = getTopmostNodeItem(scene()->items(QPointF(mapToScene(location))));
+    if (topmostNode)
     {
-        selectedNode->setSelected(true);
+        topmostNode->setSelected(true);
         if (!selectedNodes.first)
-            selectedNodes.first = selectedNode;
+        {
+            selectedNodes.first = topmostNode;
+            drawingLine = scene()->addLine(QLine(location, location));
+        }
         else
             if (selectedNodes.first && !selectedNodes.second)
             {
-                selectedNodes.second = selectedNode;
+                selectedNodes.second = topmostNode;
+                delete drawingLine;
+                drawingLine = NULL;
                 createEdge();
             }
     }
@@ -120,8 +131,7 @@ void Workspace::createEdge()
                                                          selectedNodes.second,
                                                          *newGraphEdge);
         scene()->addItem(newEdge);
-        selectedNodes = NodePair();
-        scene()->clearSelection();
+        clearSelection();
     }
 }
 
@@ -146,6 +156,33 @@ void Workspace::toggleEdgeCreationMode(bool isToggled)
     toggleMode(edgeCreationMode, isToggled);
 }
 
+void Workspace::deselectNodeItem(GraphicsNodeItem *nodeItem)
+{
+    nodeItem->setSelected(false);
+    if (selectedNodes.first == nodeItem)
+        selectedNodes.first = NULL;
+    if (selectedNodes.second == nodeItem)
+        selectedNodes.second = NULL;
+}
+
+GraphicsNodeItem *Workspace::getTopmostNodeItem(QList<QGraphicsItem *> items)
+{
+    if (!items.empty())
+    {
+        auto isEdge = [](QGraphicsItem* item) -> bool
+                        { return qgraphicsitem_cast<GraphicsEdgeItem*>(item); };
+        items.erase(std::remove_if(items.begin(), items.end(), isEdge), items.end());
+        auto sortByZ = [](QGraphicsItem* firstItem, QGraphicsItem* secondItem)
+                        { return firstItem->zValue() < secondItem->zValue(); };
+        std::sort(items.begin(), items.end(), sortByZ);
+
+        return qgraphicsitem_cast<GraphicsNodeItem*>(items.last());
+    }
+    else
+        return NULL;
+
+}
+
 Workspace::NodePair Workspace::getSelectedNodePair()
 {
     QList<QGraphicsItem *> selected = scene()->selectedItems();
@@ -157,4 +194,10 @@ Workspace::NodePair Workspace::getSelectedNodePair()
             return NodePair(firstNode, secondNode);
     }
     return NodePair();
+}
+
+void Workspace::clearSelection()
+{
+    scene()->clearSelection();
+    selectedNodes = NodePair();
 }

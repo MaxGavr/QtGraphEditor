@@ -25,6 +25,7 @@ public:
 
     Workspace(MainWindow* parent);
 
+    void mouseMoveEvent(QMouseEvent* event);
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent* event);
     void keyPressEvent(QKeyEvent *event);
@@ -36,6 +37,7 @@ public:
     void deleteEdge(GraphicsEdgeItem* edgeItem);
 
     NodePair getSelectedNodePair();
+    void clearSelection();
 
     void toggleMode(int mode, bool toggled);
 
@@ -45,6 +47,9 @@ private slots:
     void toggleEdgeCreationMode(bool isToggled);
 
 private:
+    void deselectNodeItem(GraphicsNodeItem* nodeItem);
+    GraphicsNodeItem* getTopmostNodeItem(QList<QGraphicsItem*> items);
+
     const int WIDTH = 1000;
     const int HEIGHT = 1000;
 
