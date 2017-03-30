@@ -5,14 +5,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     workingArea = new Workspace(this);
     setCentralWidget(workingArea);
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    //setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     createMenuActions();
     createEditActions();
     createMenus();
     createToolBars();
-
-    //setCurrentFile("");
 }
 
 MainWindow::~MainWindow()
@@ -64,6 +62,11 @@ void MainWindow::createEditActions()
     createEdge->setStatusTip(tr("Create a connection between two selected nodes"));
     createEdge->setCheckable(true);
     connect(createEdge, SIGNAL(toggled(bool)), workingArea, SLOT(toggleEdgeCreationMode(bool)));
+
+    deleteElement = new QAction(tr("Delete element"), this);
+    deleteElement->setStatusTip(tr("Delete graph node or edge"));
+    deleteElement->setCheckable(true);
+    connect(deleteElement, SIGNAL(toggled(bool)), workingArea, SLOT(toggleDeletionMode(bool)));
 }
 
 void MainWindow::createMenus()
@@ -80,6 +83,7 @@ void MainWindow::createMenus()
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(createNode);
     editMenu->addAction(createEdge);
+    editMenu->addAction(deleteElement);
 
     menuBar()->addSeparator();
 
@@ -97,6 +101,7 @@ void MainWindow::createToolBars()
     editToolBar = addToolBar(tr("&Edit"));
     editToolBar->addAction(createNode);
     editToolBar->addAction(createEdge);
+    editToolBar->addAction(deleteElement);
 }
 
 void MainWindow::newFile()
@@ -169,10 +174,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
     if (saveConfirmation())
     {
         // TO DO: saving settings
-        event->accept();
     }
     else
     {
         event->ignore();
     }
 }
+
+//void MainWindow::toggleUnusedActions()
+//{
+
+//}

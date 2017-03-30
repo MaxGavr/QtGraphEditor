@@ -21,7 +21,7 @@ class Workspace : public QGraphicsView
 public:
     typedef QPair<GraphicsNodeItem *, GraphicsNodeItem *> NodePair;
 
-    enum { defaultMode = 0, nodeCreationMode = 1, edgeCreationMode = 2};
+    enum { defaultMode = 0, nodeCreationMode = 1, edgeCreationMode = 2, deletionMode = 3 };
 
     Workspace(MainWindow* parent);
 
@@ -33,6 +33,7 @@ public:
     void manageEdgeCreation(QPoint location);
 
     void createNode(const QPoint& pos);
+    void deleteElementAtPosition(QPoint pos);
     void deleteNode(GraphicsNodeItem* nodeItem);
     void deleteEdge(GraphicsEdgeItem* edgeItem);
 
@@ -45,6 +46,7 @@ private slots:
     void createEdge();
     void toggleNodeCreationMode(bool isToggled);
     void toggleEdgeCreationMode(bool isToggled);
+    void toggleDeletionMode(bool isToggled);
 
 private:
     void deselectNodeItem(GraphicsNodeItem* nodeItem);

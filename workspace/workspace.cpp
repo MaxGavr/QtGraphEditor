@@ -50,6 +50,11 @@ void Workspace::mousePressEvent(QMouseEvent *event)
         manageEdgeCreation(event->pos());
         break;
     }
+    case deletionMode:
+    {
+        deleteElementAtPosition(event->pos());
+        break;
+    }
     }
 }
 
@@ -85,8 +90,20 @@ void Workspace::createNode(const QPoint& pos)
     scene()->addItem(newNodeItem);
 }
 
+void Workspace::deleteElementAtPosition(QPoint pos)
+{
+    QGraphicsItem* item = scene()->itemAt(QPointF(mapToScene(pos)), QTransform());
+    if (GraphicsNodeItem* node = qgraphicsitem_cast<GraphicsNodeItem*>(item))
+        deleteNode(node);
+    else
+        if (GraphicsEdgeItem* edge = qgraphicsitem_cast<GraphicsEdgeItem*>(item))
+            deleteEdge(edge);
+}
+
 void Workspace::deleteNode(GraphicsNodeItem* nodeItem)
 {
+    foreach (GraphicsEdgeItem* edge, nodeItem->getEdgeItems())
+        deleteEdge(edge);
     GraphNode::const_reference node = nodeItem->getGraphNode();
     delete nodeItem;
     graph->removeNode(node);
@@ -154,6 +171,11 @@ void Workspace::toggleNodeCreationMode(bool isToggled)
 void Workspace::toggleEdgeCreationMode(bool isToggled)
 {
     toggleMode(edgeCreationMode, isToggled);
+}
+
+void Workspace::toggleDeletionMode(bool isToggled)
+{
+    toggleMode(deletionMode, isToggled);
 }
 
 void Workspace::deselectNodeItem(GraphicsNodeItem *nodeItem)

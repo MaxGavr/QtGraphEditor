@@ -24,20 +24,21 @@ const GraphNode& GraphicsNodeItem::getGraphNode() const
     return graphNode;
 }
 
+QList<GraphicsEdgeItem *> GraphicsNodeItem::getEdgeItems()
+{
+    return edges;
+}
+
 void GraphicsNodeItem::addEdgeItem(GraphicsEdgeItem *edgeItem)
 {
     if (edgeItem && !edges.contains(edgeItem))
-    {
         edges.append(edgeItem);
-    }
 }
 
 void GraphicsNodeItem::removeEdgeItem(GraphicsEdgeItem *edgeItem)
 {
     if (edgeItem)
-    {
         edges.removeOne(edgeItem);
-    }
 }
 
 QPointF GraphicsNodeItem::getCenterPos() const

@@ -27,7 +27,8 @@ private slots:
     void open();
     bool save();
     bool saveAs();
-    //void openRecentFile();
+
+    //void toggleUnusedActions();
 
 private:
     // initializing functions
@@ -40,13 +41,6 @@ private:
 
     bool saveFile(const QString& fileName);
     bool loadFile(const QString& fileName);
-
-    void setCurrentFile(const QString& fileName);
-
-    /*QStringList recentFiles;
-    QString currentFile;
-    const int MaxRecentFiles = 5;
-    QAction* recentFilesOpenActions[MaxRecentFiles];*/
 
     // menus and toolbars
     QMenu* fileMenu;
@@ -66,6 +60,7 @@ private:
     // graph editing actions
     QAction* createNode;
     QAction* createEdge;
+    QAction* deleteElement;
 
     // central widget, where graphs will be drawn
     Workspace* workingArea;

@@ -22,6 +22,7 @@ public:
     }
 
     const GraphNode& getGraphNode() const;
+    QList<GraphicsEdgeItem*> getEdgeItems();
 
     void addEdgeItem(GraphicsEdgeItem* edgeItem);
     void removeEdgeItem(GraphicsEdgeItem* edgeItem);
