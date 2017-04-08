@@ -13,6 +13,9 @@ Workspace::Workspace(MainWindow* parent)
 
     graph = new Graph();
     drawingLine = NULL;
+
+    toNode = [](QGraphicsItem *item){ return qgraphicsitem_cast<GraphicsNodeItem *>(item); };
+    toEdge = [](QGraphicsItem *item){ return qgraphicsitem_cast<GraphicsEdgeItem *>(item); };
 }
 
 void Workspace::mouseMoveEvent(QMouseEvent *event)
@@ -84,13 +87,13 @@ void Workspace::createNode(const QPoint& pos)
     scene()->addItem(newNodeItem);
 }
 
-void Workspace::deleteElementAtPosition(QPoint pos)
+void Workspace::deleteElementAtPosition(const QPoint &pos)
 {
     QGraphicsItem* item = scene()->itemAt(QPointF(mapToScene(pos)), QTransform());
-    if (GraphicsNodeItem* node = qgraphicsitem_cast<GraphicsNodeItem*>(item))
+    if (GraphicsNodeItem* node = toNode(item))
         deleteNode(node);
     else
-        if (GraphicsEdgeItem* edge = qgraphicsitem_cast<GraphicsEdgeItem*>(item))
+        if (GraphicsEdgeItem* edge = toEdge(item))
             deleteEdge(edge);
 }
 
@@ -115,7 +118,7 @@ void Workspace::deleteSelectedElements()
     QList<QGraphicsItem *> items = scene()->selectedItems();
 
     foreach (QGraphicsItem* item, items)
-        if (GraphicsEdgeItem* edge = qgraphicsitem_cast<GraphicsEdgeItem *>(item))
+        if (GraphicsEdgeItem* edge = toEdge(item))
         {
             items.removeOne(edge);
             deleteEdge(edge);
@@ -123,11 +126,11 @@ void Workspace::deleteSelectedElements()
     foreach (QGraphicsItem* item, items)
     {
         items.removeOne(item);
-        deleteNode(qgraphicsitem_cast<GraphicsNodeItem *>(item));
+        deleteNode(toNode(item));
     }
 }
 
-void Workspace::manageEdgeCreation(QPoint location)
+void Workspace::manageEdgeCreation(const QPoint &location)
 {
     GraphicsNodeItem* topmostNode = getTopmostNodeItem(scene()->items(QPointF(mapToScene(location))));
     if (topmostNode)
@@ -151,7 +154,7 @@ void Workspace::manageEdgeCreation(QPoint location)
 
 void Workspace::setElementContent(QGraphicsItem* item)
 {
-    if (GraphicsNodeItem* node = qgraphicsitem_cast<GraphicsNodeItem*>(item))
+    if (GraphicsNodeItem* node = toNode(item))
     {
         QString idtf = QInputDialog::getText(this,
                                              tr("Переименование узла"),
@@ -161,7 +164,7 @@ void Workspace::setElementContent(QGraphicsItem* item)
         graph->setNodeIdtf(node->getGraphNode(), idtf);
     }
     else
-        if (GraphicsEdgeItem* edge = qgraphicsitem_cast<GraphicsEdgeItem*>(item))
+        if (GraphicsEdgeItem* edge = toEdge(item))
         {
             int weight = QInputDialog::getInt(this,
                                               tr("Changing edge weight"),
@@ -203,6 +206,49 @@ void Workspace::toggleMode(int mode, bool toggled)
         toggledMode = defaultMode;
 }
 
+void Workspace::saveGraphToFile()
+{
+    QString saveFileName = QFileDialog::getSaveFileName(this,
+                                                        tr("Save current graph"),
+                                                        "new_graph.xml",
+                                                        tr("XML (*.xml)"));
+
+    QFile file(saveFileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QXmlStreamWriter stream(&file);
+    stream.setAutoFormatting(true);
+    stream.writeStartDocument();
+    stream.writeStartElement("graph");
+
+    foreach (GraphicsNodeItem* node, getNodes()) {
+        stream.writeStartElement("node");
+        QXmlStreamAttributes attribs;
+        attribs.append("x", QString::number(node->getCenterPos().x()));
+        attribs.append("y", QString::number(node->getCenterPos().y()));
+        attribs.append("index", QString::number(node->getGraphNode().getIndex()));
+        attribs.append("content", node->getGraphNode().getText());
+        stream.writeAttributes(attribs);
+        stream.writeEndElement();
+    }
+    foreach (GraphicsEdgeItem *edge, getEdges())
+    {
+        stream.writeStartElement("edge");
+        QXmlStreamAttributes attribs;
+        attribs.append("begin", QString::number(edge->getGraphEdge().getEdgeIndex().first));
+        attribs.append("end", QString::number(edge->getGraphEdge().getEdgeIndex().second));
+        attribs.append("weight", QString::number(edge->getGraphEdge().getWeight()));
+        stream.writeAttributes(attribs);
+        stream.writeEndElement();
+    }
+
+    stream.writeEndElement();
+    stream.writeEndDocument();
+
+    file.close();
+}
+
 void Workspace::toggleNodeCreationMode(bool isToggled)
 {
     toggleMode(nodeCreationMode, isToggled);
@@ -231,14 +277,14 @@ GraphicsNodeItem *Workspace::getTopmostNodeItem(QList<QGraphicsItem *> items)
 {
     if (!items.empty())
     {
-        auto isEdge = [](QGraphicsItem* item) -> bool
-                        { return qgraphicsitem_cast<GraphicsEdgeItem*>(item); };
-        items.erase(std::remove_if(items.begin(), items.end(), isEdge), items.end());
+        auto isNotNode = [this](QGraphicsItem* item) -> bool
+                        { return !toNode(item); };
+        items.erase(std::remove_if(items.begin(), items.end(), isNotNode), items.end());
         auto sortByZ = [](QGraphicsItem* firstItem, QGraphicsItem* secondItem)
                         { return firstItem->zValue() < secondItem->zValue(); };
         std::sort(items.begin(), items.end(), sortByZ);
 
-        return qgraphicsitem_cast<GraphicsNodeItem*>(items.last());
+        return toNode(items.first());
     }
     else
         return NULL;
@@ -254,13 +300,38 @@ QGraphicsItem* Workspace::getSelectedItem()
         return NULL;
 }
 
+QList<GraphicsNodeItem *> Workspace::getNodes()
+{
+    QList<QGraphicsItem *> items = scene()->items();
+    QList<GraphicsNodeItem *> nodes;
+    foreach (QGraphicsItem *item, items)
+    {
+        if (GraphicsNodeItem *node = toNode(item))
+            nodes.append(node);
+    }
+
+    return nodes;
+}
+
+QList<GraphicsEdgeItem *> Workspace::getEdges()
+{
+    QList<QGraphicsItem *> items = scene()->items();
+    QList<GraphicsEdgeItem *> edges;
+    foreach (QGraphicsItem *item, items)
+    {
+        if (GraphicsEdgeItem *edge = toEdge(item))
+            edges.append(edge);
+    }
+    return edges;
+}
+
 Workspace::NodePair Workspace::getSelectedNodePair()
 {
     QList<QGraphicsItem *> selected = scene()->selectedItems();
     if (selected.count() == 2)
     {
-        GraphicsNodeItem* firstNode = qgraphicsitem_cast<GraphicsNodeItem *>(selected.first());
-        GraphicsNodeItem* secondNode = qgraphicsitem_cast<GraphicsNodeItem *>(selected.last());
+        GraphicsNodeItem* firstNode = toNode(selected.first());
+        GraphicsNodeItem* secondNode = toNode(selected.last());
         if (firstNode && secondNode)
             return NodePair(firstNode, secondNode);
     }

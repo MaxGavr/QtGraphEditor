@@ -162,6 +162,7 @@ bool MainWindow::loadFile(const QString &fileName)
 
 bool MainWindow::save()
 {
+    workingArea->saveGraphToFile();
     return true;
 }
 
