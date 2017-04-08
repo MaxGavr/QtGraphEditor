@@ -48,6 +48,10 @@ void GraphicsEdgeItem::trackNodes()
 void GraphicsEdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     label->setText(QString::number(getGraphEdge().getWeight()));
+    if (getGraphEdge().getWeight() == 0)
+        label->hide();
+    else
+        label->show();
     label->setPos(calcLabelPosition());
     QGraphicsLineItem::paint(painter, option, widget);
 }

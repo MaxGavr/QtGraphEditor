@@ -3,7 +3,7 @@
 GraphNode::GraphNode(int i)
     : index(i)
 {
-
+    setText(QString::number(getIndex()));
 }
 
 GraphNode::GraphNode(int i, const QString& str)

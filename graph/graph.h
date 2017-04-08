@@ -14,9 +14,15 @@ public:
     void removeNode(GraphNode::const_reference node);
     void setNodeIdtf(GraphNode::const_reference node, QString idtf);
 
-    GraphEdge* addEdge(GraphNode::const_reference firstNode, GraphNode::const_reference secondNode);
+    GraphEdge* addEdge(GraphNode::const_reference firstNode,
+                       GraphNode::const_reference secondNode,
+                       int weight = 0);
     void removeEdge(GraphEdge::const_reference edge);
     void setEdgeWeight(GraphEdge::const_reference edge, int weight);
+
+    bool containtNode(GraphNode::const_reference node) const;
+    bool containsEdge(GraphNode::const_reference firstNode,
+                      GraphNode::const_reference secondNode) const;
 
 private:
     GraphNode* findNodeByIndex(int index);

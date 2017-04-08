@@ -53,3 +53,10 @@ void GraphEdge::setWeight(int w)
 {
     weight = w;
 }
+
+bool operator==(const GraphEdge::GraphEdgeIndex &i, const GraphEdge::GraphEdgeIndex &j)
+{
+    bool equalStraight = (i.first == j.first) && (i.second == j.second);
+    bool equalReverse = (i.first == j.second) && (i.second == j.first);
+    return (equalStraight || equalReverse);
+}

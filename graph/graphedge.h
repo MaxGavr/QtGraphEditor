@@ -33,3 +33,5 @@ private:
 
     int weight;
 };
+
+bool operator== (const GraphEdge::GraphEdgeIndex& first, const GraphEdge::GraphEdgeIndex& second);

@@ -176,10 +176,13 @@ void Workspace::createEdge()
     {
         GraphEdge* newGraphEdge = graph->addEdge(selectedNodes.first->getGraphNode(),
                                                  selectedNodes.second->getGraphNode());
-        GraphicsEdgeItem* newEdge = new GraphicsEdgeItem(selectedNodes.first,
-                                                         selectedNodes.second,
-                                                         *newGraphEdge);
-        scene()->addItem(newEdge);
+        if (newGraphEdge)
+        {
+            GraphicsEdgeItem* newEdge = new GraphicsEdgeItem(selectedNodes.first,
+                                                             selectedNodes.second,
+                                                             *newGraphEdge);
+            scene()->addItem(newEdge);
+        }
         clearSelection();
     }
 }

@@ -7,7 +7,9 @@ Graph::Graph()
 
 GraphNode::const_reference Graph::addNode()
 {
-    return addNode(QString());
+    GraphNode* newNode = new GraphNode(setNodeIndex());
+    nodes.append(newNode);
+    return *newNode;
 }
 
 GraphNode::const_reference Graph::addNode(QString idtf)
@@ -32,12 +34,17 @@ void Graph::setNodeIdtf(GraphNode::const_reference node, QString idtf)
         node_ptr->setText(idtf);
 }
 
-GraphEdge* Graph::addEdge(GraphNode::const_reference firstNode, GraphNode::const_reference secondNode)
+GraphEdge* Graph::addEdge(GraphNode::const_reference firstNode, GraphNode::const_reference secondNode, int weight)
 {
-    GraphEdge* newEdge = new GraphEdge(findNodeByIndex(firstNode.getIndex()),
-                                       findNodeByIndex(secondNode.getIndex()));
-    edges.append(newEdge);
-    return newEdge;
+    if (!containsEdge(firstNode, secondNode))
+    {
+        GraphEdge* newEdge = new GraphEdge(findNodeByIndex(firstNode.getIndex()),
+                                           findNodeByIndex(secondNode.getIndex()), weight);
+        edges.append(newEdge);
+        return newEdge;
+    }
+    else
+        return NULL;
 }
 
 GraphNode* Graph::findNodeByIndex(int index)
@@ -51,8 +58,7 @@ GraphNode* Graph::findNodeByIndex(int index)
 GraphEdge* Graph::findEdgeByIndex(const GraphEdge::GraphEdgeIndex &index)
 {
     foreach (GraphEdge* edge, edges)
-        if (edge->getStartNode()->getIndex() == index.first &&
-            edge->getEndNode()->getIndex() == index.second)
+        if (edge->getEdgeIndex() == index)
             return edge;
     return NULL;
 }
@@ -69,6 +75,17 @@ void Graph::setEdgeWeight(GraphEdge::const_reference edge, int weight)
     GraphEdge* edge_ptr = findEdgeByIndex(edge.getEdgeIndex());
     if (edge_ptr)
         edge_ptr->setWeight(weight);
+}
+
+bool Graph::containsEdge(GraphNode::const_reference firstNode, GraphNode::const_reference secondNode) const
+{
+    GraphEdge::GraphEdgeIndex edgeIndex(firstNode.getIndex(), secondNode.getIndex());
+    foreach (GraphEdge* edge, edges)
+    {
+        if (edge->getEdgeIndex() == edgeIndex)
+            return true;
+    }
+    return NULL;
 }
 
 int Graph::setNodeIndex()
