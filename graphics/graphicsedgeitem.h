@@ -26,9 +26,15 @@ public:
 
     void trackNodes();
 
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
 private:
+    QPointF calcLabelPosition() const;
+
+    QGraphicsSimpleTextItem* label;
+
     GraphicsNodeItem* startNodeItem;
     GraphicsNodeItem* endNodeItem;
 
-    const GraphEdge& graphEdge;
+    GraphEdge::const_reference graphEdge;
 };

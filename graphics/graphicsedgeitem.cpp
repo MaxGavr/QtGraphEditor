@@ -13,6 +13,9 @@ GraphicsEdgeItem::GraphicsEdgeItem(GraphicsNodeItem* begin, GraphicsNodeItem* en
     setPen(QPen(Qt::darkGray, 3));
     setZValue(-1);
 
+    label = new QGraphicsSimpleTextItem(QString::number(getGraphEdge().getWeight()), this);
+    label->setFont(QFont("Helvetica", 12));
+
     trackNodes();
 }
 
@@ -27,7 +30,6 @@ const GraphEdge& GraphicsEdgeItem::getGraphEdge() const
     return graphEdge;
 }
 
-
 GraphicsNodeItem* GraphicsEdgeItem::getStartNodeItem()
 {
     return startNodeItem;
@@ -38,8 +40,24 @@ GraphicsNodeItem* GraphicsEdgeItem::getEndNodeItem()
     return endNodeItem;
 }
 
-
 void GraphicsEdgeItem::trackNodes()
 {
     setLine(QLineF(startNodeItem->getCenterPos(), endNodeItem->getCenterPos()));
+}
+
+void GraphicsEdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    label->setText(QString::number(getGraphEdge().getWeight()));
+    label->setPos(calcLabelPosition());
+    QGraphicsLineItem::paint(painter, option, widget);
+}
+
+QPointF GraphicsEdgeItem::calcLabelPosition() const
+{
+    QString text = QString::number(getGraphEdge().getWeight());
+    QFontMetrics metrics(label->font());
+    QPointF center = boundingRect().center();
+    int x = center.x() - metrics.width(text)/2;
+    int y = center.y() - metrics.height();
+    return QPointF(x, y);
 }

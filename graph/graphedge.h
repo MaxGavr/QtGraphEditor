@@ -13,7 +13,7 @@ public:
     typedef const GraphEdge& const_reference;
     typedef QPair<int, int> GraphEdgeIndex;
 
-    GraphEdge(GraphNode* start, GraphNode* end);
+    GraphEdge(GraphNode* start, GraphNode* end, int weight = 0);
     ~GraphEdge();
 
     GraphEdgeIndex getEdgeIndex() const;

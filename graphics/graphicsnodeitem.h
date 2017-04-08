@@ -35,7 +35,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
-    QPointF calcLabelPosition();
+    QPointF calcLabelPosition() const;
 
     const GraphNode& graphNode;
 

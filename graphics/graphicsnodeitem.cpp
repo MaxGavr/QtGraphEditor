@@ -77,7 +77,7 @@ void GraphicsNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     QGraphicsEllipseItem::paint(painter, option, widget);
 }
 
-QPointF GraphicsNodeItem::calcLabelPosition()
+QPointF GraphicsNodeItem::calcLabelPosition() const
 {
     QString text = getGraphNode().getText();
     if (text.length() != 0)
