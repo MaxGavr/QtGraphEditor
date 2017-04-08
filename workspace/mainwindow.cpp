@@ -5,7 +5,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     workingArea = new Workspace(this);
     setCentralWidget(workingArea);
-    //setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+    QStatusBar* statusBar = new QStatusBar(this);
+    setStatusBar(statusBar);
 
     createMenuActions();
     createEditActions();
@@ -52,21 +54,34 @@ void MainWindow::createMenuActions()
 }
 
 void MainWindow::createEditActions()
-{
-    createNode = new QAction(tr("Create node"), this);
+{   
+    editActionGroup = new QActionGroup(this);
+
+    selectNode = new QAction(tr("Select element"), editActionGroup);
+    selectNode->setShortcut(Qt::Key_1);
+    selectNode->setCheckable(true);
+    selectNode->setStatusTip(tr("Select existing graph elements"));
+    connect(selectNode, SIGNAL(toggled(bool)), workingArea, SLOT(toggleSelectionMode(bool)));
+
+    createNode = new QAction(tr("Create node"), editActionGroup);
+    createNode->setShortcut(Qt::Key_2);
     createNode->setStatusTip(tr("Create new graph vertex"));
     createNode->setCheckable(true);
     connect(createNode, SIGNAL(toggled(bool)), workingArea, SLOT(toggleNodeCreationMode(bool)));
 
-    createEdge = new QAction(tr("Create edge"), this);
+    createEdge = new QAction(tr("Create edge"), editActionGroup);
+    createEdge->setShortcut(Qt::Key_3);
     createEdge->setStatusTip(tr("Create a connection between two selected nodes"));
     createEdge->setCheckable(true);
     connect(createEdge, SIGNAL(toggled(bool)), workingArea, SLOT(toggleEdgeCreationMode(bool)));
 
-    deleteElement = new QAction(tr("Delete element"), this);
+    deleteElement = new QAction(tr("Delete element"), editActionGroup);
+    deleteElement->setShortcut(Qt::Key_4);
     deleteElement->setStatusTip(tr("Delete graph node or edge"));
     deleteElement->setCheckable(true);
     connect(deleteElement, SIGNAL(toggled(bool)), workingArea, SLOT(toggleDeletionMode(bool)));
+
+    selectNode->trigger();
 }
 
 void MainWindow::createMenus()
@@ -81,9 +96,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(exitAction);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
-    editMenu->addAction(createNode);
-    editMenu->addAction(createEdge);
-    editMenu->addAction(deleteElement);
+    editMenu->addActions(editActionGroup->actions());
 
     menuBar()->addSeparator();
 
@@ -98,10 +111,9 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(openFileAction);
     fileToolBar->addAction(saveFileAction);
 
-    editToolBar = addToolBar(tr("&Edit"));
-    editToolBar->addAction(createNode);
-    editToolBar->addAction(createEdge);
-    editToolBar->addAction(deleteElement);
+    editToolBar = new QToolBar(tr("&Edit"));
+    addToolBar(Qt::LeftToolBarArea, editToolBar);
+    editToolBar->addActions(editActionGroup->actions());
 }
 
 void MainWindow::newFile()
@@ -180,8 +192,3 @@ void MainWindow::closeEvent(QCloseEvent *event)
         event->ignore();
     }
 }
-
-//void MainWindow::toggleUnusedActions()
-//{
-
-//}

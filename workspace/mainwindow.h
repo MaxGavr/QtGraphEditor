@@ -8,6 +8,7 @@
 #include <QToolBar>
 #include <QApplication>
 #include <QCloseEvent>
+#include <QStatusBar>
 
 class Workspace;
 
@@ -27,8 +28,6 @@ private slots:
     void open();
     bool save();
     bool saveAs();
-
-    //void toggleUnusedActions();
 
 private:
     // initializing functions
@@ -58,6 +57,8 @@ private:
     QAction* aboutQtAction;
 
     // graph editing actions
+    QActionGroup* editActionGroup;
+    QAction* selectNode;
     QAction* createNode;
     QAction* createEdge;
     QAction* deleteElement;

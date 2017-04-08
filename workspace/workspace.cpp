@@ -152,6 +152,11 @@ void Workspace::createEdge()
     }
 }
 
+void Workspace::toggleSelectionMode(bool isToggled)
+{
+    toggleMode(defaultMode, isToggled);
+}
+
 void Workspace::toggleMode(int mode, bool toggled)
 {
     if (toggled)

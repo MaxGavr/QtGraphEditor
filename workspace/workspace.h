@@ -44,6 +44,7 @@ public:
 
 private slots:
     void createEdge();
+    void toggleSelectionMode(bool isToggled);
     void toggleNodeCreationMode(bool isToggled);
     void toggleEdgeCreationMode(bool isToggled);
     void toggleDeletionMode(bool isToggled);
