@@ -4,7 +4,6 @@
 GraphicsNodeItem::GraphicsNodeItem(const QPointF& position, const GraphNode &node)
     : graphNode(node)
 {
-
     setRect(QRectF(0, 0, NODE_DIAMETER, NODE_DIAMETER));
     setCenterPos(position.x(), position.y());
 
@@ -12,6 +11,9 @@ GraphicsNodeItem::GraphicsNodeItem(const QPointF& position, const GraphNode &nod
     setBrush(QBrush(Qt::lightGray));
 
     setFlags(ItemIsMovable | ItemIsSelectable | ItemSendsGeometryChanges);
+
+    label = new QGraphicsSimpleTextItem(getGraphNode().getText(), this);
+    label->setFont(QFont("Helvetica", 12));
 }
 
 GraphicsNodeItem::~GraphicsNodeItem()
@@ -66,4 +68,23 @@ QVariant GraphicsNodeItem::itemChange(GraphicsItemChange change, const QVariant 
         foreach (GraphicsEdgeItem* edge, edges)
             edge->trackNodes();
     return QGraphicsItem::itemChange(change, value);
+}
+
+void GraphicsNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    label->setText(getGraphNode().getText());
+    label->setPos(calcLabelPosition());
+    QGraphicsEllipseItem::paint(painter, option, widget);
+}
+
+QPointF GraphicsNodeItem::calcLabelPosition()
+{
+    QString text = getGraphNode().getText();
+    if (text.length() != 0)
+    {
+        QFontMetrics metrics(label->font());
+        return QPointF(NODE_DIAMETER/2 - metrics.width(text)/2, -5 - metrics.height());
+    }
+    else
+        return QPointF();
 }

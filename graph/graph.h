@@ -10,12 +10,13 @@ public:
     Graph();
 
     GraphNode::const_reference addNode();
-    GraphNode::const_reference addNode(QString nodeText);
+    GraphNode::const_reference addNode(QString idtf);
+    void removeNode(GraphNode::const_reference node);
+    void setNodeIdtf(GraphNode::const_reference node, QString idtf);
 
-    void removeNode(const GraphNode& node);
-
-    GraphEdge* addEdge(const GraphNode& firstNode, const GraphNode& secondNode);
-    void removeEdge(const GraphEdge& edge);
+    GraphEdge* addEdge(GraphNode::const_reference firstNode, GraphNode::const_reference secondNode);
+    void removeEdge(GraphEdge::const_reference edge);
+    void setEdgeWeight(GraphEdge::const_reference edge, int weight);
 
 private:
     GraphNode* findNodeByIndex(int index);

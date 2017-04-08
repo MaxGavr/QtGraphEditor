@@ -62,24 +62,18 @@ void Workspace::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())
     {
-        case Qt::Key_Delete:
-        {
-            QList<QGraphicsItem *> items = scene()->selectedItems();
-
-            foreach (QGraphicsItem* item, items)
-                if (GraphicsEdgeItem* edge = qgraphicsitem_cast<GraphicsEdgeItem *>(item))
-                {
-                    items.removeOne(edge);
-                    deleteEdge(edge);
-                }
-            foreach (QGraphicsItem* item, items)
-            {
-                items.removeOne(item);
-                deleteNode(qgraphicsitem_cast<GraphicsNodeItem *>(item));
-            }
-
-            break;
-        }
+    case Qt::Key_Delete:
+    {
+        deleteSelectedElements();
+        break;
+    }
+    case Qt::Key_I:
+    {
+        setElementContent(getSelectedItem());
+        break;
+    }
+    default:
+        QWidget::keyPressEvent(event);
     }
 }
 
@@ -116,6 +110,23 @@ void Workspace::deleteEdge(GraphicsEdgeItem *edgeItem)
     graph->removeEdge(edge);
 }
 
+void Workspace::deleteSelectedElements()
+{
+    QList<QGraphicsItem *> items = scene()->selectedItems();
+
+    foreach (QGraphicsItem* item, items)
+        if (GraphicsEdgeItem* edge = qgraphicsitem_cast<GraphicsEdgeItem *>(item))
+        {
+            items.removeOne(edge);
+            deleteEdge(edge);
+        }
+    foreach (QGraphicsItem* item, items)
+    {
+        items.removeOne(item);
+        deleteNode(qgraphicsitem_cast<GraphicsNodeItem *>(item));
+    }
+}
+
 void Workspace::manageEdgeCreation(QPoint location)
 {
     GraphicsNodeItem* topmostNode = getTopmostNodeItem(scene()->items(QPointF(mapToScene(location))));
@@ -136,6 +147,27 @@ void Workspace::manageEdgeCreation(QPoint location)
                 createEdge();
             }
     }
+}
+
+void Workspace::setElementContent(QGraphicsItem* item)
+{
+    if (GraphicsNodeItem* node = qgraphicsitem_cast<GraphicsNodeItem*>(item))
+    {
+        QString idtf = QInputDialog::getText(this,
+                                             tr("Переименование узла"),
+                                             tr("New file identifier:"),
+                                             QLineEdit::Normal,
+                                             node->getGraphNode().getText());
+        graph->setNodeIdtf(node->getGraphNode(), idtf);
+    }
+    else
+        if (GraphicsEdgeItem* edge = qgraphicsitem_cast<GraphicsEdgeItem*>(item))
+        {
+            int weight = QInputDialog::getInt(this,
+                                              tr("Changing edge weight"),
+                                              tr("New weight:"));
+            graph->setEdgeWeight(edge->getGraphEdge(), weight);
+        }
 }
 
 void Workspace::createEdge()
@@ -208,6 +240,15 @@ GraphicsNodeItem *Workspace::getTopmostNodeItem(QList<QGraphicsItem *> items)
     else
         return NULL;
 
+}
+
+QGraphicsItem* Workspace::getSelectedItem()
+{
+    QList<QGraphicsItem*> selectedItems = scene()->selectedItems();
+    if (selectedItems.length() == 1)
+        return selectedItems.first();
+    else
+        return NULL;
 }
 
 Workspace::NodePair Workspace::getSelectedNodePair()

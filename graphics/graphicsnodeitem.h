@@ -3,6 +3,7 @@
 #include <QPen>
 #include <QBrush>
 #include <QList>
+#include <QPainter>
 
 #include "graph/graphnode.h"
 
@@ -31,11 +32,15 @@ public:
     void setCenterPos(qreal x, qreal y);
 
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
+    QPointF calcLabelPosition();
+
     const GraphNode& graphNode;
 
     QList<GraphicsEdgeItem*> edges;
+    QGraphicsSimpleTextItem* label;
 
     const int NODE_DIAMETER = 20;
 };

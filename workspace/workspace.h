@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QPair>
 #include <QHBoxLayout>
+#include <QInputDialog>
 
 #include <algorithm>
 #include <functional>
@@ -32,10 +33,13 @@ public:
 
     void manageEdgeCreation(QPoint location);
 
+    void setElementContent(QGraphicsItem *item);
+
     void createNode(const QPoint& pos);
     void deleteElementAtPosition(QPoint pos);
     void deleteNode(GraphicsNodeItem* nodeItem);
     void deleteEdge(GraphicsEdgeItem* edgeItem);
+    void deleteSelectedElements();
 
     NodePair getSelectedNodePair();
     void clearSelection();
@@ -52,6 +56,7 @@ private slots:
 private:
     void deselectNodeItem(GraphicsNodeItem* nodeItem);
     GraphicsNodeItem* getTopmostNodeItem(QList<QGraphicsItem*> items);
+    QGraphicsItem* getSelectedItem();
 
     const int WIDTH = 1000;
     const int HEIGHT = 1000;
