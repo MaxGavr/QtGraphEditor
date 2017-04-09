@@ -5,18 +5,31 @@ Graph::Graph()
 
 }
 
-GraphNode::const_reference Graph::addNode()
+GraphNode::const_reference Graph::addNode(QString idtf)
 {
-    GraphNode* newNode = new GraphNode(setNodeIndex());
+    GraphNode* newNode;
+    if (idtf.isEmpty())
+        newNode = new GraphNode(setNodeIndex());
+    else
+        newNode = new GraphNode(setNodeIndex(), idtf);
     nodes.append(newNode);
     return *newNode;
 }
 
-GraphNode::const_reference Graph::addNode(QString idtf)
+GraphNode::const_reference Graph::addNode(int index, QString idtf)
 {
-    GraphNode* newNode = new GraphNode(setNodeIndex(), idtf);
-    nodes.append(newNode);
-    return *newNode;
+    if (validateNodeIndex(index))
+    {
+        GraphNode* newNode;
+        if (idtf.isEmpty())
+            newNode = new GraphNode(index);
+        else
+            newNode = new GraphNode(index, idtf);
+        nodes.append(newNode);
+        return *newNode;
+    }
+    else
+        throw bad_graph_node();
 }
 
 void Graph::removeNode(GraphNode::const_reference node)
@@ -34,17 +47,30 @@ void Graph::setNodeIdtf(GraphNode::const_reference node, QString idtf)
         node_ptr->setText(idtf);
 }
 
-GraphEdge* Graph::addEdge(GraphNode::const_reference firstNode, GraphNode::const_reference secondNode, int weight)
+GraphEdge::const_reference Graph::addEdge(GraphNode::const_reference firstNode,
+                                          GraphNode::const_reference secondNode,
+                                          int weight)
 {
-    if (!containsEdge(firstNode, secondNode))
+    if (!containsEdge(firstNode, secondNode) && (firstNode != secondNode))
     {
         GraphEdge* newEdge = new GraphEdge(findNodeByIndex(firstNode.getIndex()),
                                            findNodeByIndex(secondNode.getIndex()), weight);
         edges.append(newEdge);
-        return newEdge;
+        return *newEdge;
     }
     else
-        return NULL;
+        throw bad_graph_edge();
+}
+
+GraphEdge::const_reference Graph::addEdge(int firstIndex, int secondIndex, int weight)
+{
+    GraphNode* firstNode = findNodeByIndex(firstIndex);
+    GraphNode* secondNode = findNodeByIndex(secondIndex);
+
+    if (firstNode && secondNode)
+        return addEdge(*firstNode, *secondNode, weight);
+    else
+        throw bad_graph_edge();
 }
 
 GraphNode* Graph::findNodeByIndex(int index)
@@ -91,7 +117,7 @@ bool Graph::containsEdge(GraphNode::const_reference firstNode, GraphNode::const_
 int Graph::setNodeIndex()
 {
     int i = 0;
-    while (nodeIndices.contains(i))
+    while (!validateNodeIndex(i))
         i++;
     nodeIndices.push_back(i);
     return i;
@@ -100,5 +126,21 @@ int Graph::setNodeIndex()
 void Graph::removeNodeIndex(int i)
 {
     nodeIndices.removeOne(i);
+}
+
+bool Graph::validateNodeIndex(int i) const
+{
+    if (i < 0 || nodeIndices.contains(i))
+        return false;
+    else
+        return true;
+}
+
+bool Graph::validateEdgeIndex(GraphEdge::GraphEdgeIndex i)
+{
+    if (!validateNodeIndex(i.first) || !validateNodeIndex(i.second))
+        return false;
+    else
+        return true;
 }
 

@@ -6,6 +6,8 @@
 
 #include "graphedge.h"
 
+
+
 class GraphNode
 {
 public:
@@ -23,8 +25,14 @@ public:
     void addEdge(GraphEdge* edge);
     void removeEdge(GraphEdge* edge);
 
+    friend bool operator== (GraphNode::const_reference first, GraphNode::const_reference second);
+    friend bool operator!= (GraphNode::const_reference first, GraphNode::const_reference second);
+
 private:
     const int index;
     QString text;
     QLinkedList<GraphEdge*> edges;
 };
+
+bool operator== (GraphNode::const_reference first, GraphNode::const_reference second);
+bool operator!= (GraphNode::const_reference first, GraphNode::const_reference second);

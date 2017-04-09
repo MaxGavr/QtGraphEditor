@@ -28,4 +28,5 @@ HEADERS  += graph/graph.h \
     graphics/graphicsedgeitem.h \
     graphics/graphicsnodeitem.h \
     workspace/mainwindow.h \
-    workspace/workspace.h
+    workspace/workspace.h \
+    graph/exceptions.h

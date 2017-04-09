@@ -3,24 +3,26 @@
 #include <QVector>
 
 #include "graphnode.h"
+#include "exceptions.h"
 
 class Graph
 {
 public:
     Graph();
 
-    GraphNode::const_reference addNode();
-    GraphNode::const_reference addNode(QString idtf);
+    GraphNode::const_reference addNode(QString idtf = "");
+    GraphNode::const_reference addNode(int index, QString idtf = "");
     void removeNode(GraphNode::const_reference node);
     void setNodeIdtf(GraphNode::const_reference node, QString idtf);
 
-    GraphEdge* addEdge(GraphNode::const_reference firstNode,
-                       GraphNode::const_reference secondNode,
-                       int weight = 0);
+    GraphEdge::const_reference addEdge(GraphNode::const_reference firstNode,
+                                       GraphNode::const_reference secondNode,
+                                       int weight = 0);
+    GraphEdge::const_reference addEdge(int firstIndex, int secondIndex, int weight = 0);
     void removeEdge(GraphEdge::const_reference edge);
     void setEdgeWeight(GraphEdge::const_reference edge, int weight);
 
-    bool containtNode(GraphNode::const_reference node) const;
+    bool containsNode(GraphNode::const_reference node) const;
     bool containsEdge(GraphNode::const_reference firstNode,
                       GraphNode::const_reference secondNode) const;
 
@@ -33,6 +35,8 @@ private:
 
     int setNodeIndex();
     void removeNodeIndex(int i);
+    bool validateNodeIndex(int i) const;
+    bool validateEdgeIndex(GraphEdge::GraphEdgeIndex i);
 
     QVector<int> nodeIndices;
 };

@@ -47,3 +47,16 @@ QString GraphNode::getText() const
 {
     return text;
 }
+
+bool operator==(GraphNode::const_reference first, GraphNode::const_reference second)
+{
+    bool equalEdges = std::is_permutation(first.edges.begin(), first.edges.end(), second.edges.begin());
+    bool equalIndices = (first.getIndex() == second.getIndex());
+    bool equalText = (first.getText() == second.getText());
+    return (equalEdges && equalIndices && equalText);
+}
+
+bool operator!=(GraphNode::const_reference first, GraphNode::const_reference second)
+{
+    return !(first == second);
+}

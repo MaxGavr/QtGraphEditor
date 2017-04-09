@@ -177,16 +177,21 @@ void Workspace::createEdge()
 {
     if (selectedNodes.first && selectedNodes.second)
     {
-        GraphEdge* newGraphEdge = graph->addEdge(selectedNodes.first->getGraphNode(),
-                                                 selectedNodes.second->getGraphNode());
-        if (newGraphEdge)
+        try
         {
+            GraphEdge::const_reference newGraphEdge = graph->addEdge(selectedNodes.first->getGraphNode(),
+                                                                     selectedNodes.second->getGraphNode());
             GraphicsEdgeItem* newEdge = new GraphicsEdgeItem(selectedNodes.first,
                                                              selectedNodes.second,
-                                                             *newGraphEdge);
+                                                             newGraphEdge);
             scene()->addItem(newEdge);
+            clearSelection();
         }
-        clearSelection();
+        catch (const bad_graph_edge& e)
+        {
+            clearSelection();
+            return;
+        }
     }
 }
 
