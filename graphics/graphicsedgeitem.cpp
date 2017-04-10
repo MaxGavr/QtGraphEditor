@@ -23,6 +23,7 @@ GraphicsEdgeItem::~GraphicsEdgeItem()
 {
     getStartNodeItem()->removeEdgeItem(this);
     getEndNodeItem()->removeEdgeItem(this);
+    delete label;
 }
 
 const GraphEdge& GraphicsEdgeItem::getGraphEdge() const

@@ -30,7 +30,6 @@ private slots:
     bool saveAs();
 
 private:
-    // initializing functions
     void createMenuActions();
     void createEditActions();
     void createMenus();
@@ -38,17 +37,14 @@ private:
 
     bool saveConfirmation();
 
-    bool saveFile(const QString& fileName);
-    bool loadFile(const QString& fileName);
+    QString currentFile;
 
-    // menus and toolbars
     QMenu* fileMenu;
     QMenu* editMenu;
     QMenu* helpMenu;
     QToolBar* fileToolBar;
     QToolBar* editToolBar;
 
-    // menu and toolbar actions
     QAction* newFileAction;
     QAction* openFileAction;
     QAction* saveFileAction;
@@ -56,13 +52,11 @@ private:
     QAction* exitAction;
     QAction* aboutQtAction;
 
-    // graph editing actions
     QActionGroup* editActionGroup;
     QAction* selectNode;
     QAction* createNode;
     QAction* createEdge;
     QAction* deleteElement;
 
-    // central widget, where graphs will be drawn
     Workspace* workingArea;
 };

@@ -9,6 +9,7 @@ class Graph
 {
 public:
     Graph();
+    ~Graph();
 
     GraphNode::const_reference addNode(QString idtf = "");
     GraphNode::const_reference addNode(int index, QString idtf = "");

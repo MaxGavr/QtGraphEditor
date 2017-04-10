@@ -5,6 +5,14 @@ Graph::Graph()
 
 }
 
+Graph::~Graph()
+{
+    qDeleteAll(edges);
+    edges.clear();
+    qDeleteAll(nodes);
+    nodes.clear();
+}
+
 GraphNode::const_reference Graph::addNode(QString idtf)
 {
     GraphNode* newNode;

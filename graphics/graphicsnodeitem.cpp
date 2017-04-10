@@ -19,6 +19,8 @@ GraphicsNodeItem::GraphicsNodeItem(const QPointF& position, const GraphNode &nod
 GraphicsNodeItem::~GraphicsNodeItem()
 {
     qDeleteAll(edges);
+    edges.clear();
+    delete label;
 }
 
 const GraphNode& GraphicsNodeItem::getGraphNode() const

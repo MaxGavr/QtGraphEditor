@@ -19,8 +19,6 @@ MainWindow::~MainWindow()
 {
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
-
 void MainWindow::createMenuActions()
 {
     newFileAction = new QAction(tr("&New file"), this);
@@ -120,13 +118,13 @@ void MainWindow::newFile()
 {
     if (saveConfirmation())
     {
-        // TO DO: creating new graph file
+        workingArea->deleteGraph();
+        currentFile.clear();
     }
 }
 
 bool MainWindow::saveConfirmation()
 {
-    // TO DO: ignore confirmation if graph has not been modified
     int respond = QMessageBox::warning(this, tr("Saving"),
                                        tr("Graph has been modified.\n"
                                           "Do you want to save changes?"),
@@ -141,55 +139,44 @@ bool MainWindow::saveConfirmation()
 
 void MainWindow::open()
 {
-    if (saveConfirmation()) // save current file before opening another one
-    {
-        QString fileName = QFileDialog::getOpenFileName(this,
-                                                        tr("Open graph"), ".",
-                                                        tr("Graph files (*.gph)"));
-        if (!fileName.isEmpty())
-            loadFile(fileName);
-    }
-}
-
-bool MainWindow::loadFile(const QString &fileName)
-{
     if (saveConfirmation())
     {
-        // TO DO: loading existing graph file
+        QString loadFileName = QFileDialog::getOpenFileName(this,
+                                                            tr("Loading existing graph"),
+                                                            "",
+                                                            tr("Graph (*.gph)"));
+        if (!loadFileName.isEmpty())
+            workingArea->loadGraphFromFile(loadFileName);
     }
-    return true;
 }
 
 bool MainWindow::save()
 {
-    workingArea->saveGraphToFile();
-    return true;
-}
-
-bool MainWindow::saveFile(const QString &fileName)
-{
-    return true;
+    if (currentFile.isEmpty())
+        return saveAs();
+    else
+        return workingArea->saveGraphToFile(currentFile);
 }
 
 bool MainWindow::saveAs()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Save graph as"), ".",
-                                                    tr("Graph files (*.gph)"));
-    if (fileName.isEmpty())
+    QString saveFileName = QFileDialog::getSaveFileName(this,
+                                                        tr("Save current graph"),
+                                                        "new_graph.gph",
+                                                        tr("Graph (*.gph)"));
+    if (!saveFileName.isEmpty())
+    {
+        currentFile = saveFileName;
+        return workingArea->saveGraphToFile(saveFileName);
+    }
+    else
         return false;
-
-    return saveFile(fileName);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (saveConfirmation())
-    {
-        // TO DO: saving settings
-    }
+        ;
     else
-    {
         event->ignore();
-    }
 }

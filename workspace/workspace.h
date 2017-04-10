@@ -36,7 +36,8 @@ public:
 
     void setElementContent(QGraphicsItem *item);
 
-    void createNode(const QPoint& pos);
+    void createNode(const QPoint& pos, const QString &idtf = "",
+                    bool isLoaded = false, int index = -1);
     void deleteElementAtPosition(const QPoint& pos);
     void deleteNode(GraphicsNodeItem* nodeItem);
     void deleteEdge(GraphicsEdgeItem* edgeItem);
@@ -47,10 +48,14 @@ public:
 
     void toggleMode(int mode, bool toggled);
 
-    void saveGraphToFile();
+    bool saveGraphToFile(const QString &saveFileName);
+    bool loadGraphFromFile(const QString &loadFileName);
+
+    void deleteGraph();
 
 private slots:
-    void createEdge();
+    void createEdge(GraphicsNodeItem *firstNode, GraphicsNodeItem *secondNode, int weight = 0);
+    void createEdge(int firstNodeIndex, int secondNodeIndex, int weight = 0);
     void toggleSelectionMode(bool isToggled);
     void toggleNodeCreationMode(bool isToggled);
     void toggleEdgeCreationMode(bool isToggled);
