@@ -1,10 +1,10 @@
 #include "graphedge.h"
 #include "graphnode.h"
 
-GraphEdge::GraphEdge(GraphNode *start, GraphNode *end, int weight)
+GraphEdge::GraphEdge(GraphNode* startNode, GraphNode* endNode, int weight)
 {
-    setStartNode(start);
-    setEndNode(end);
+    setStartNode(startNode);
+    setEndNode(endNode);
     setWeight(weight);
 }
 
@@ -37,11 +37,13 @@ GraphNode* GraphEdge::getEndNode()
 void GraphEdge::setStartNode(GraphNode *node)
 {
     startNode = node;
+    node->addEdge(this);
 }
 
 void GraphEdge::setEndNode(GraphNode *node)
 {
     endNode = node;
+    node->addEdge(this);
 }
 
 int GraphEdge::getWeight() const

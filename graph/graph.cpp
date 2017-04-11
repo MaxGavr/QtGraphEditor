@@ -28,6 +28,7 @@ GraphNode::const_reference Graph::addNode(int index, QString idtf)
 {
     if (validateNodeIndex(index))
     {
+        nodeIndices.append(index);
         GraphNode* newNode;
         if (idtf.isEmpty())
             newNode = new GraphNode(index);
@@ -120,6 +121,34 @@ bool Graph::containsEdge(GraphNode::const_reference firstNode, GraphNode::const_
             return true;
     }
     return NULL;
+}
+
+GraphNode::const_reference Graph::retrieveNode(int index) const
+{
+    foreach (GraphNode* node, nodes)
+        if (node->getIndex() == index)
+            return *node;
+    throw bad_graph_node();
+}
+
+GraphEdge::const_reference Graph::retrieveEdge(GraphEdge::GraphEdgeIndex index) const
+{
+    foreach (GraphEdge* edge, edges)
+        if (edge->getEdgeIndex() == index)
+            return *edge;
+    throw bad_graph_edge();
+}
+
+Graph::AdjacencyList Graph::getAdjacencyList() const
+{
+    AdjacencyList list;
+    foreach (int nodeIndex, nodeIndices)
+    {
+        GraphNode::const_reference node = retrieveNode(nodeIndex);
+        QList<int> adjacentNodes = node.getAdjacentNodes();
+        list.insert(node.getIndex(), adjacentNodes);
+    }
+    return list;
 }
 
 int Graph::setNodeIndex()

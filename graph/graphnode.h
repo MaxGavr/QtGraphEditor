@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QString>
+#include <QList>
 #include <QLinkedList>
 #include <QtAlgorithms>
 
@@ -24,6 +25,8 @@ public:
 
     void addEdge(GraphEdge* edge);
     void removeEdge(GraphEdge* edge);
+
+    QList<int> getAdjacentNodes() const;
 
     friend bool operator== (GraphNode::const_reference first, GraphNode::const_reference second);
     friend bool operator!= (GraphNode::const_reference first, GraphNode::const_reference second);

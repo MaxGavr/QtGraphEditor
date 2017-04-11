@@ -182,6 +182,7 @@ void Workspace::setElementContent(QGraphicsItem* item)
 
 void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* secondNode, int weight)
 {
+    graph->getAdjacencyList();
     if (firstNode && secondNode)
     {
         try

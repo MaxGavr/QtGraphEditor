@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QVector>
+#include <QMap>
 
 #include "graphnode.h"
 #include "exceptions.h"
@@ -8,6 +9,8 @@
 class Graph
 {
 public:
+    typedef QMap< int, QList<int> > AdjacencyList;
+
     Graph();
     ~Graph();
 
@@ -26,6 +29,11 @@ public:
     bool containsNode(GraphNode::const_reference node) const;
     bool containsEdge(GraphNode::const_reference firstNode,
                       GraphNode::const_reference secondNode) const;
+
+    GraphNode::const_reference retrieveNode(int index) const;
+    GraphEdge::const_reference retrieveEdge(GraphEdge::GraphEdgeIndex index) const;
+
+    AdjacencyList getAdjacencyList() const;
 
 private:
     GraphNode* findNodeByIndex(int index);

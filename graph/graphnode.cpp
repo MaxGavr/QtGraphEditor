@@ -38,6 +38,22 @@ void GraphNode::removeEdge(GraphEdge *edge)
         edges.removeOne(edge);
 }
 
+QList<int> GraphNode::getAdjacentNodes() const
+{
+    QList<int> adjacentNodes;
+    foreach (GraphEdge* edge, edges)
+    {
+        GraphEdge::GraphEdgeIndex edgeIndex = edge->getEdgeIndex();
+        int adjacent;
+        if (getIndex() == edgeIndex.first)
+            adjacent = edgeIndex.second;
+        else
+            adjacent = edgeIndex.first;
+        adjacentNodes.append(adjacent);
+    }
+    return adjacentNodes;
+}
+
 void GraphNode::setText(const QString &str)
 {
     text = str;
