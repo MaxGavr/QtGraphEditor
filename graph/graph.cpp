@@ -28,7 +28,7 @@ GraphNode::const_reference Graph::addNode(int index, QString idtf)
 {
     if (validateNodeIndex(index))
     {
-        nodeIndices.append(index);
+        nodeIndices.insert(index);
         GraphNode* newNode;
         if (idtf.isEmpty())
             newNode = new GraphNode(index);
@@ -39,6 +39,11 @@ GraphNode::const_reference Graph::addNode(int index, QString idtf)
     }
     else
         throw bad_graph_node();
+}
+
+GraphNode::const_reference Graph::addNode(GraphNode::const_reference node)
+{
+    addNode(node.getText());
 }
 
 void Graph::removeNode(GraphNode::const_reference node)
@@ -139,13 +144,23 @@ GraphEdge::const_reference Graph::retrieveEdge(GraphEdge::GraphEdgeIndex index) 
     throw bad_graph_edge();
 }
 
+int Graph::countNodes() const
+{
+    return nodes.size();
+}
+
+int Graph::countEdges() const
+{
+    return edges.size();
+}
+
 Graph::AdjacencyList Graph::getAdjacencyList() const
 {
     AdjacencyList list;
     foreach (int nodeIndex, nodeIndices)
     {
         GraphNode::const_reference node = retrieveNode(nodeIndex);
-        QList<int> adjacentNodes = node.getAdjacentNodes();
+        QList< QPair<int ,int> > adjacentNodes = node.getAdjacentNodes();
         list.insert(node.getIndex(), adjacentNodes);
     }
     return list;
@@ -156,18 +171,28 @@ int Graph::setNodeIndex()
     int i = 0;
     while (!validateNodeIndex(i))
         i++;
-    nodeIndices.push_back(i);
+    nodeIndices.insert(i);
     return i;
 }
 
 void Graph::removeNodeIndex(int i)
 {
-    nodeIndices.removeOne(i);
+    std::set<int>::iterator erased = nodeIndices.erase(nodeIndices.find(i));
+
+    std::set<int> shiftedIndices;
+    for (std::set<int>::iterator it = erased; it != nodeIndices.end(); it++)
+    {
+        int index = *it;
+        findNodeByIndex(index)->setIndex(index - 1);
+        shiftedIndices.insert(index - 1);
+    }
+    nodeIndices.erase(erased, nodeIndices.end());
+    nodeIndices.insert(shiftedIndices.begin(), shiftedIndices.end());
 }
 
 bool Graph::validateNodeIndex(int i) const
 {
-    if (i < 0 || nodeIndices.contains(i))
+    if ((i < 0) || (nodeIndices.find(i) != nodeIndices.end()))
         return false;
     else
         return true;

@@ -57,6 +57,7 @@ private:
     QAction* createNode;
     QAction* createEdge;
     QAction* deleteElement;
+    QAction* runAlgorithm;
 
     Workspace* workingArea;
 };

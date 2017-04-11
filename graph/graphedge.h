@@ -9,6 +9,9 @@ class GraphNode;
 
 class GraphEdge
 {
+    friend class Graph;
+    friend class GraphNode;
+
 public:
     typedef const GraphEdge& const_reference;
     typedef QPair<int, int> GraphEdgeIndex;
@@ -18,16 +21,13 @@ public:
 
     GraphEdgeIndex getEdgeIndex() const;
 
-    GraphNode* getStartNode();
-    GraphNode* getEndNode();
-
-    void setStartNode(GraphNode* node);
-    void setEndNode(GraphNode* node);
-
     int getWeight() const;
     void setWeight(int w);
 
 private:
+    void setStartNode(GraphNode* node);
+    void setEndNode(GraphNode* node);
+
     GraphNode* startNode;
     GraphNode* endNode;
 

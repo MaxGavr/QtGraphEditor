@@ -1,14 +1,14 @@
 #include "graphnode.h"
 
 GraphNode::GraphNode(int i)
-    : index(i)
 {
+    setIndex(i);
     setText(QString::number(getIndex()));
 }
 
 GraphNode::GraphNode(int i, const QString& str)
-    : index(i)
 {
+    setIndex(i);
     setText(str);
 }
 
@@ -38,20 +38,26 @@ void GraphNode::removeEdge(GraphEdge *edge)
         edges.removeOne(edge);
 }
 
-QList<int> GraphNode::getAdjacentNodes() const
+QList< QPair<int, int> > GraphNode::getAdjacentNodes() const
 {
-    QList<int> adjacentNodes;
+    QList< QPair<int,int> > adjacentNodes;
     foreach (GraphEdge* edge, edges)
     {
         GraphEdge::GraphEdgeIndex edgeIndex = edge->getEdgeIndex();
-        int adjacent;
+        QPair<int, int> adjacent;
         if (getIndex() == edgeIndex.first)
-            adjacent = edgeIndex.second;
+            adjacent.second = edgeIndex.second;
         else
-            adjacent = edgeIndex.first;
+            adjacent.second = edgeIndex.first;
+        adjacent.first = edge->getWeight();
         adjacentNodes.append(adjacent);
     }
     return adjacentNodes;
+}
+
+void GraphNode::setIndex(int i)
+{
+    index = i;
 }
 
 void GraphNode::setText(const QString &str)

@@ -1,10 +1,10 @@
 #include "graphedge.h"
 #include "graphnode.h"
 
-GraphEdge::GraphEdge(GraphNode* startNode, GraphNode* endNode, int weight)
+GraphEdge::GraphEdge(GraphNode* start, GraphNode* end, int weight)
 {
-    setStartNode(startNode);
-    setEndNode(endNode);
+    setStartNode(start);
+    setEndNode(end);
     setWeight(weight);
 }
 
@@ -15,23 +15,13 @@ GraphEdge::~GraphEdge()
             .arg(QString::number(index.first))
             .arg(QString::number(index.second));
     qInfo("%s", msg.toLatin1().constData());
-    getStartNode()->removeEdge(this);
-    getEndNode()->removeEdge(this);
+    startNode->removeEdge(this);
+    endNode->removeEdge(this);
 }
 
 GraphEdge::GraphEdgeIndex GraphEdge::getEdgeIndex() const
 {
     return GraphEdgeIndex(startNode->getIndex(), endNode->getIndex());
-}
-
-GraphNode* GraphEdge::getStartNode()
-{
-    return startNode;
-}
-
-GraphNode* GraphEdge::getEndNode()
-{
-    return endNode;
 }
 
 void GraphEdge::setStartNode(GraphNode *node)

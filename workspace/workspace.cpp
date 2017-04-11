@@ -339,6 +339,12 @@ void Workspace::toggleDeletionMode(bool isToggled)
     toggleMode(deletionMode, isToggled);
 }
 
+void Workspace::runAlgorithm()
+{
+    PrimAlgorithm algo;
+    algo(*graph);
+}
+
 void Workspace::deselectNodeItem(GraphicsNodeItem *nodeItem)
 {
     nodeItem->setSelected(false);

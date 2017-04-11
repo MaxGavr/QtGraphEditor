@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     graphics/graphicsedgeitem.cpp \
     graphics/graphicsnodeitem.cpp \
     workspace/mainwindow.cpp \
-    workspace/workspace.cpp
+    workspace/workspace.cpp \
+    algorithm/graphalgorithm.cpp \
 
 HEADERS  += graph/graph.h \
     graph/graphedge.h \
@@ -29,4 +30,5 @@ HEADERS  += graph/graph.h \
     graphics/graphicsnodeitem.h \
     workspace/mainwindow.h \
     workspace/workspace.h \
-    graph/exceptions.h
+    graph/exceptions.h \
+    algorithm/graphalgorithm.h

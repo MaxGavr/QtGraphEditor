@@ -80,6 +80,11 @@ void MainWindow::createEditActions()
     connect(deleteElement, SIGNAL(toggled(bool)), workingArea, SLOT(toggleDeletionMode(bool)));
 
     selectNode->trigger();
+
+    runAlgorithm = new QAction(tr("Run Prim's algorithm"), this);
+    runAlgorithm->setShortcut(QKeySequence("Ctrl+R"));
+    runAlgorithm->setStatusTip(tr("Find minimum spanning tree for presented graph"));
+    connect(runAlgorithm, SIGNAL(triggered(bool)), workingArea, SLOT(runAlgorithm()));
 }
 
 void MainWindow::createMenus()
@@ -112,6 +117,7 @@ void MainWindow::createToolBars()
     editToolBar = new QToolBar(tr("&Edit"));
     addToolBar(Qt::LeftToolBarArea, editToolBar);
     editToolBar->addActions(editActionGroup->actions());
+    editToolBar->addAction(runAlgorithm);
 }
 
 void MainWindow::newFile()

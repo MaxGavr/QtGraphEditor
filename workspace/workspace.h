@@ -13,6 +13,7 @@
 
 #include "workspace/mainwindow.h"
 #include "graph/graph.h"
+#include "algorithm/graphalgorithm.h"
 
 class GraphicsNodeItem;
 class GraphicsEdgeItem;
@@ -56,10 +57,13 @@ public:
 private slots:
     void createEdge(GraphicsNodeItem *firstNode, GraphicsNodeItem *secondNode, int weight = 0);
     void createEdge(int firstNodeIndex, int secondNodeIndex, int weight = 0);
+
     void toggleSelectionMode(bool isToggled);
     void toggleNodeCreationMode(bool isToggled);
     void toggleEdgeCreationMode(bool isToggled);
     void toggleDeletionMode(bool isToggled);
+
+    void runAlgorithm();
 
 private:
     void deselectNodeItem(GraphicsNodeItem* nodeItem);
