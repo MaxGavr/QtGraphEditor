@@ -12,6 +12,7 @@ Workspace::Workspace(MainWindow* parent)
     setMouseTracking(true);
 
     graph = new Graph();
+    algo = NULL;
     drawingLine = NULL;
 
     toNode = [](QGraphicsItem *item){ return qgraphicsitem_cast<GraphicsNodeItem *>(item); };
@@ -131,6 +132,26 @@ void Workspace::deleteSelectedElements()
     }
 }
 
+GraphicsNodeItem *Workspace::findNodeItem(GraphNode::const_reference graphNode)
+{
+    QList<GraphicsNodeItem *> nodes = getNodes();
+    foreach (GraphicsNodeItem *item, nodes) {
+        if (item->getGraphNode() == graphNode)
+            return item;
+    }
+    return NULL;
+}
+
+GraphicsEdgeItem *Workspace::findEdgeItem(GraphEdge::const_reference graphEdge)
+{
+    QList<GraphicsEdgeItem *> edges = getEdges();
+    foreach (GraphicsEdgeItem *edge, edges) {
+        if (edge->getGraphEdge() == graphEdge)
+            return edge;
+    }
+    return NULL;
+}
+
 void Workspace::manageEdgeCreation(const QPoint &location)
 {
     GraphicsNodeItem* topmostNode = getTopmostNodeItem(scene()->items(QPointF(mapToScene(location))));
@@ -182,7 +203,6 @@ void Workspace::setElementContent(QGraphicsItem* item)
 
 void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* secondNode, int weight)
 {
-    graph->getAdjacencyList();
     if (firstNode && secondNode)
     {
         try
@@ -324,6 +344,25 @@ void Workspace::deleteGraph()
     graph = new Graph();
 }
 
+void Workspace::displayAlgorithm()
+{
+    QTimer* timer = new QTimer();
+    connect(timer, SIGNAL(timeout()), this, SLOT(highlightElement()));
+    timer->start(1000);
+}
+
+void Workspace::highlightElement()
+{
+    if (!algo->emptySequence())
+    {
+        GraphAlgorithm::GraphElement element = algo->getNextElement();
+        if (element.first != -1)
+            findNodeItem(graph->retrieveNode(element.first))->setSelected(true);
+        else
+            findEdgeItem(graph->retrieveEdge(element.second))->setSelected(true);
+    }
+}
+
 void Workspace::toggleNodeCreationMode(bool isToggled)
 {
     toggleMode(nodeCreationMode, isToggled);
@@ -341,8 +380,9 @@ void Workspace::toggleDeletionMode(bool isToggled)
 
 void Workspace::runAlgorithm()
 {
-    PrimAlgorithm algo;
-    algo(*graph);
+    algo = new PrimAlgorithm();
+    (*algo)(*graph);
+    displayAlgorithm();
 }
 
 void Workspace::deselectNodeItem(GraphicsNodeItem *nodeItem)

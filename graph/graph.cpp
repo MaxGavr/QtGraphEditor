@@ -43,7 +43,7 @@ GraphNode::const_reference Graph::addNode(int index, QString idtf)
 
 GraphNode::const_reference Graph::addNode(GraphNode::const_reference node)
 {
-    addNode(node.getText());
+    return addNode(node.getText());
 }
 
 void Graph::removeNode(GraphNode::const_reference node)

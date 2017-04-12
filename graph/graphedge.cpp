@@ -46,6 +46,16 @@ void GraphEdge::setWeight(int w)
     weight = w;
 }
 
+bool operator== (GraphEdge::const_reference firstEdge, GraphEdge::const_reference secondEdge)
+{
+    bool equalNodesStraight = (firstEdge.startNode == secondEdge.startNode) &&
+                              (firstEdge.endNode == secondEdge.endNode);
+    bool equalNodesMix = (firstEdge.endNode == secondEdge.startNode) &&
+                         (firstEdge.startNode == secondEdge.endNode);
+    bool equalWeight = firstEdge.getWeight() == secondEdge.getWeight();
+    return (equalNodesStraight || equalNodesMix) && equalWeight;
+}
+
 bool operator==(const GraphEdge::GraphEdgeIndex &i, const GraphEdge::GraphEdgeIndex &j)
 {
     bool equalStraight = (i.first == j.first) && (i.second == j.second);

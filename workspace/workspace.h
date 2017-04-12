@@ -7,12 +7,12 @@
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QXmlStreamWriter>
+#include <QTimer>
 
 #include <algorithm>
 #include <functional>
 
 #include "workspace/mainwindow.h"
-#include "graph/graph.h"
 #include "algorithm/graphalgorithm.h"
 
 class GraphicsNodeItem;
@@ -44,6 +44,9 @@ public:
     void deleteEdge(GraphicsEdgeItem* edgeItem);
     void deleteSelectedElements();
 
+    GraphicsNodeItem* findNodeItem(GraphNode::const_reference graphNode);
+    GraphicsEdgeItem* findEdgeItem(GraphEdge::const_reference graphEdge);
+
     NodePair getSelectedNodePair();
     void clearSelection();
 
@@ -53,6 +56,8 @@ public:
     bool loadGraphFromFile(const QString &loadFileName);
 
     void deleteGraph();
+
+    void displayAlgorithm();
 
 private slots:
     void createEdge(GraphicsNodeItem *firstNode, GraphicsNodeItem *secondNode, int weight = 0);
@@ -64,6 +69,7 @@ private slots:
     void toggleDeletionMode(bool isToggled);
 
     void runAlgorithm();
+    void highlightElement();
 
 private:
     void deselectNodeItem(GraphicsNodeItem* nodeItem);
@@ -80,6 +86,7 @@ private:
     const int HEIGHT = 1000;
 
     Graph* graph;
+    PrimAlgorithm* algo;
 
     QGraphicsLineItem* drawingLine;
     NodePair selectedNodes;

@@ -3,6 +3,7 @@
 #include <QVector>
 #include <QMap>
 #include <set>
+#include <queue>
 
 #include "graphnode.h"
 #include "exceptions.h"
