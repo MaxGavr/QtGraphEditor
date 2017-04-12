@@ -82,7 +82,7 @@ void Workspace::keyPressEvent(QKeyEvent *event)
 
 void Workspace::createNode(const QPoint& pos, const QString& idtf)
 {
-    GraphNode::const_reference newGraphNode = graph->addNode(idtf);
+    GraphNode::const_ref newGraphNode = graph->addNode(idtf);
     GraphicsNodeItem* newNodeItem = new GraphicsNodeItem(mapToScene(pos), newGraphNode);
     scene()->addItem(newNodeItem);
 }
@@ -99,14 +99,14 @@ void Workspace::deleteElement(QGraphicsItem *item)
     {
         foreach (GraphicsEdgeItem* edge, node->getEdgeItems())
             deleteElement(edge);
-        GraphNode::const_reference graphNode = node->getGraphNode();
+        GraphNode::const_ref graphNode = node->getGraphNode();
         delete node;
         graph->removeNode(graphNode);
     }
     else
         if (GraphicsEdgeItem* edge = toEdge(item))
         {
-            GraphEdge::const_reference graphEdge = edge->getGraphEdge();
+            GraphEdge::const_ref graphEdge = edge->getGraphEdge();
             delete edge;
             graph->removeEdge(graphEdge);
         }
@@ -120,7 +120,7 @@ void Workspace::deleteSelectedElements()
         deleteElement(item);
 }
 
-GraphicsNodeItem *Workspace::findNodeItem(GraphNode::const_reference graphNode)
+GraphicsNodeItem *Workspace::findNodeItem(GraphNode::const_ref graphNode)
 {
     QList<GraphicsNodeItem *> nodes = getNodes();
     foreach (GraphicsNodeItem *item, nodes) {
@@ -130,7 +130,7 @@ GraphicsNodeItem *Workspace::findNodeItem(GraphNode::const_reference graphNode)
     return NULL;
 }
 
-GraphicsEdgeItem *Workspace::findEdgeItem(GraphEdge::const_reference graphEdge)
+GraphicsEdgeItem *Workspace::findEdgeItem(GraphEdge::const_ref graphEdge)
 {
     QList<GraphicsEdgeItem *> edges = getEdges();
     foreach (GraphicsEdgeItem *edge, edges) {
@@ -190,7 +190,7 @@ void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* second
     {
         try
         {
-            GraphEdge::const_reference newGraphEdge = graph->addEdge(firstNode->getGraphNode(),
+            GraphEdge::const_ref newGraphEdge = graph->addEdge(firstNode->getGraphNode(),
                                                                      secondNode->getGraphNode(),
                                                                      weight);
             GraphicsEdgeItem* newEdge = new GraphicsEdgeItem(firstNode,

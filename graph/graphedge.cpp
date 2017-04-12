@@ -10,7 +10,7 @@ GraphEdge::GraphEdge(GraphNode* start, GraphNode* end, int weight)
 
 GraphEdge::~GraphEdge()
 {
-    GraphEdgeIndex index = getEdgeIndex();
+    EdgeIndex index = getEdgeIndex();
     QString msg = QString("Graph edge %1 - %2 deleted")
             .arg(QString::number(index.first))
             .arg(QString::number(index.second));
@@ -19,9 +19,9 @@ GraphEdge::~GraphEdge()
     endNode->removeEdge(this);
 }
 
-GraphEdge::GraphEdgeIndex GraphEdge::getEdgeIndex() const
+GraphEdge::EdgeIndex GraphEdge::getEdgeIndex() const
 {
-    return GraphEdgeIndex(startNode->getIndex(), endNode->getIndex());
+    return EdgeIndex(startNode->getIndex(), endNode->getIndex());
 }
 
 void GraphEdge::setStartNode(GraphNode *node)
@@ -46,7 +46,7 @@ void GraphEdge::setWeight(int w)
     weight = w;
 }
 
-bool operator== (GraphEdge::const_reference firstEdge, GraphEdge::const_reference secondEdge)
+bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge)
 {
     bool equalNodesStraight = (firstEdge.startNode == secondEdge.startNode) &&
                               (firstEdge.endNode == secondEdge.endNode);
@@ -56,7 +56,7 @@ bool operator== (GraphEdge::const_reference firstEdge, GraphEdge::const_referenc
     return (equalNodesStraight || equalNodesMix) && equalWeight;
 }
 
-bool operator==(const GraphEdge::GraphEdgeIndex &i, const GraphEdge::GraphEdgeIndex &j)
+bool operator==(const GraphEdge::EdgeIndex &i, const GraphEdge::EdgeIndex &j)
 {
     bool equalStraight = (i.first == j.first) && (i.second == j.second);
     bool equalReverse = (i.first == j.second) && (i.second == j.first);

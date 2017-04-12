@@ -10,17 +10,17 @@ class GraphNode;
 class GraphEdge
 {
 public:
-    typedef const GraphEdge& const_reference;
-    typedef QPair<int, int> GraphEdgeIndex;
+    using const_ref = const GraphEdge&;
+    using EdgeIndex = QPair<int, int>;
 
     friend class Graph;
     friend class GraphNode;
-    friend bool operator== (GraphEdge::const_reference firstEdge, GraphEdge::const_reference secondEdge);
+    friend bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge);
 
     GraphEdge(GraphNode* start, GraphNode* end, int weight = 0);
     ~GraphEdge();
 
-    GraphEdgeIndex getEdgeIndex() const;
+    EdgeIndex getEdgeIndex() const;
 
     int getWeight() const;
     void setWeight(int w);
@@ -35,5 +35,5 @@ private:
     int weight;
 };
 
-bool operator== (GraphEdge::const_reference firstEdge, GraphEdge::const_reference secondEdge);
-bool operator== (const GraphEdge::GraphEdgeIndex& first, const GraphEdge::GraphEdgeIndex& second);
+bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge);
+bool operator== (const GraphEdge::EdgeIndex& first, const GraphEdge::EdgeIndex& second);

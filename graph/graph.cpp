@@ -13,7 +13,7 @@ Graph::~Graph()
     nodes.clear();
 }
 
-GraphNode::const_reference Graph::addNode(QString idtf)
+GraphNode::const_ref Graph::addNode(QString idtf)
 {
     GraphNode* newNode;
     if (idtf.isEmpty())
@@ -24,7 +24,7 @@ GraphNode::const_reference Graph::addNode(QString idtf)
     return *newNode;
 }
 
-GraphNode::const_reference Graph::addNode(int index, QString idtf)
+GraphNode::const_ref Graph::addNode(int index, QString idtf)
 {
     if (validateNodeIndex(index))
     {
@@ -41,12 +41,12 @@ GraphNode::const_reference Graph::addNode(int index, QString idtf)
         throw bad_graph_node();
 }
 
-GraphNode::const_reference Graph::addNode(GraphNode::const_reference node)
+GraphNode::const_ref Graph::addNode(GraphNode::const_ref node)
 {
     return addNode(node.getText());
 }
 
-void Graph::removeNode(GraphNode::const_reference node)
+void Graph::removeNode(GraphNode::const_ref node)
 {
     GraphNode* node_ptr = findNodeByIndex(node.getIndex());
     removeNodeIndex(node.getIndex());
@@ -54,15 +54,15 @@ void Graph::removeNode(GraphNode::const_reference node)
     delete node_ptr;
 }
 
-void Graph::setNodeIdtf(GraphNode::const_reference node, QString idtf)
+void Graph::setNodeIdtf(GraphNode::const_ref node, QString idtf)
 {
     GraphNode* node_ptr = findNodeByIndex(node.getIndex());
     if (node_ptr)
         node_ptr->setText(idtf);
 }
 
-GraphEdge::const_reference Graph::addEdge(GraphNode::const_reference firstNode,
-                                          GraphNode::const_reference secondNode,
+GraphEdge::const_ref Graph::addEdge(GraphNode::const_ref firstNode,
+                                          GraphNode::const_ref secondNode,
                                           int weight)
 {
     if (!containsEdge(firstNode, secondNode) && (firstNode != secondNode))
@@ -76,7 +76,7 @@ GraphEdge::const_reference Graph::addEdge(GraphNode::const_reference firstNode,
         throw bad_graph_edge();
 }
 
-GraphEdge::const_reference Graph::addEdge(int firstIndex, int secondIndex, int weight)
+GraphEdge::const_ref Graph::addEdge(int firstIndex, int secondIndex, int weight)
 {
     GraphNode* firstNode = findNodeByIndex(firstIndex);
     GraphNode* secondNode = findNodeByIndex(secondIndex);
@@ -95,7 +95,7 @@ GraphNode* Graph::findNodeByIndex(int index)
     return NULL;
 }
 
-GraphEdge* Graph::findEdgeByIndex(const GraphEdge::GraphEdgeIndex &index)
+GraphEdge* Graph::findEdgeByIndex(const GraphEdge::EdgeIndex &index)
 {
     foreach (GraphEdge* edge, edges)
         if (edge->getEdgeIndex() == index)
@@ -103,23 +103,23 @@ GraphEdge* Graph::findEdgeByIndex(const GraphEdge::GraphEdgeIndex &index)
     return NULL;
 }
 
-void Graph::removeEdge(GraphEdge::const_reference edge)
+void Graph::removeEdge(GraphEdge::const_ref edge)
 {
     GraphEdge* edge_ptr = findEdgeByIndex(edge.getEdgeIndex());
     edges.removeOne(edge_ptr);
     delete edge_ptr;
 }
 
-void Graph::setEdgeWeight(GraphEdge::const_reference edge, int weight)
+void Graph::setEdgeWeight(GraphEdge::const_ref edge, int weight)
 {
     GraphEdge* edge_ptr = findEdgeByIndex(edge.getEdgeIndex());
     if (edge_ptr)
         edge_ptr->setWeight(weight);
 }
 
-bool Graph::containsEdge(GraphNode::const_reference firstNode, GraphNode::const_reference secondNode) const
+bool Graph::containsEdge(GraphNode::const_ref firstNode, GraphNode::const_ref secondNode) const
 {
-    GraphEdge::GraphEdgeIndex edgeIndex(firstNode.getIndex(), secondNode.getIndex());
+    GraphEdge::EdgeIndex edgeIndex(firstNode.getIndex(), secondNode.getIndex());
     foreach (GraphEdge* edge, edges)
     {
         if (edge->getEdgeIndex() == edgeIndex)
@@ -128,7 +128,7 @@ bool Graph::containsEdge(GraphNode::const_reference firstNode, GraphNode::const_
     return NULL;
 }
 
-GraphNode::const_reference Graph::retrieveNode(int index) const
+GraphNode::const_ref Graph::retrieveNode(int index) const
 {
     foreach (GraphNode* node, nodes)
         if (node->getIndex() == index)
@@ -136,7 +136,7 @@ GraphNode::const_reference Graph::retrieveNode(int index) const
     throw bad_graph_node();
 }
 
-GraphEdge::const_reference Graph::retrieveEdge(GraphEdge::GraphEdgeIndex index) const
+GraphEdge::const_ref Graph::retrieveEdge(GraphEdge::EdgeIndex index) const
 {
     foreach (GraphEdge* edge, edges)
         if (edge->getEdgeIndex() == index)
@@ -164,7 +164,7 @@ Graph::AdjacencyList Graph::getAdjacencyList() const
     AdjacencyList list;
     foreach (int nodeIndex, nodeIndices)
     {
-        GraphNode::const_reference node = retrieveNode(nodeIndex);
+        GraphNode::const_ref node = retrieveNode(nodeIndex);
         QList< QPair<int ,int> > adjacentNodes = node.getAdjacentNodes();
         list.insert(node.getIndex(), adjacentNodes);
     }
@@ -203,7 +203,7 @@ bool Graph::validateNodeIndex(int i) const
         return true;
 }
 
-bool Graph::validateEdgeIndex(GraphEdge::GraphEdgeIndex i)
+bool Graph::validateEdgeIndex(GraphEdge::EdgeIndex i)
 {
     if (!validateNodeIndex(i.first) || !validateNodeIndex(i.second))
         return false;

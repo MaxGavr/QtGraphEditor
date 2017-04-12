@@ -26,7 +26,7 @@ GraphAlgorithm::GraphElement GraphAlgorithm::getNextElement()
         return next;
     }
     else
-        return GraphAlgorithm::GraphElement(std::make_pair(-1, GraphEdge::GraphEdgeIndex(-1, -1)));
+        return GraphAlgorithm::GraphElement(std::make_pair(-1, GraphEdge::EdgeIndex(-1, -1)));
 }
 
 GraphAlgorithm::GraphElement GraphAlgorithm::getLastElement() const
@@ -36,11 +36,11 @@ GraphAlgorithm::GraphElement GraphAlgorithm::getLastElement() const
 
 void GraphAlgorithm::pushNode(int nodeIndex)
 {
-    GraphElement node(std::make_pair(nodeIndex, GraphEdge::GraphEdgeIndex(-1, -1)));
+    GraphElement node(std::make_pair(nodeIndex, GraphEdge::EdgeIndex(-1, -1)));
     sequence.push(node);
 }
 
-void GraphAlgorithm::pushEdge(GraphEdge::GraphEdgeIndex edgeIndex)
+void GraphAlgorithm::pushEdge(GraphEdge::EdgeIndex edgeIndex)
 {
     GraphElement edge(std::make_pair(-1, edgeIndex));
     sequence.push(edge);
@@ -111,12 +111,12 @@ void PrimAlgorithm::execute(const Graph &graph)
 
 void PrimAlgorithm::addElementToMST(const Graph& graph, int node, int& lastNode, int parent)
 {
-    GraphNode::const_reference newNode = MST->addNode(graph.retrieveNode(node));
+    GraphNode::const_ref newNode = MST->addNode(graph.retrieveNode(node));
     if (parent != -1)
     {
-        GraphNode::const_reference parentNode = MST->retrieveNode(lastNode);
+        GraphNode::const_ref parentNode = MST->retrieveNode(lastNode);
         MST->addEdge(newNode, parentNode);
-        pushEdge(GraphEdge::GraphEdgeIndex(node, parent));
+        pushEdge(GraphEdge::EdgeIndex(node, parent));
     }
     lastNode = newNode.getIndex();
     pushNode(graph.retrieveNode(node).getIndex());

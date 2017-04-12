@@ -15,7 +15,7 @@ class GraphNode
     friend class GraphEdge;
 
 public:
-    typedef const GraphNode& const_reference;
+    using const_ref = const GraphNode&;
 
     GraphNode(int i);
     GraphNode(int i, const QString& str);
@@ -28,8 +28,8 @@ public:
 
     QList<QPair<int, int> > getAdjacentNodes() const;
 
-    friend bool operator== (GraphNode::const_reference first, GraphNode::const_reference second);
-    friend bool operator!= (GraphNode::const_reference first, GraphNode::const_reference second);
+    friend bool operator== (GraphNode::const_ref first, GraphNode::const_ref second);
+    friend bool operator!= (GraphNode::const_ref first, GraphNode::const_ref second);
 
 private:
     void setIndex(int i);
@@ -41,5 +41,5 @@ private:
     QLinkedList<GraphEdge*> edges;
 };
 
-bool operator== (GraphNode::const_reference first, GraphNode::const_reference second);
-bool operator!= (GraphNode::const_reference first, GraphNode::const_reference second);
+bool operator== (GraphNode::const_ref first, GraphNode::const_ref second);
+bool operator!= (GraphNode::const_ref first, GraphNode::const_ref second);

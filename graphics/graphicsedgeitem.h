@@ -36,5 +36,5 @@ private:
     GraphicsNodeItem* startNodeItem;
     GraphicsNodeItem* endNodeItem;
 
-    GraphEdge::const_reference graphEdge;
+    GraphEdge::const_ref graphEdge;
 };

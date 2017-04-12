@@ -47,7 +47,7 @@ QList< QPair<int, int> > GraphNode::getAdjacentNodes() const
     QList< QPair<int,int> > adjacentNodes;
     foreach (GraphEdge* edge, edges)
     {
-        GraphEdge::GraphEdgeIndex edgeIndex = edge->getEdgeIndex();
+        GraphEdge::EdgeIndex edgeIndex = edge->getEdgeIndex();
         QPair<int, int> adjacent;
         if (getIndex() == edgeIndex.first)
             adjacent.second = edgeIndex.second;
@@ -74,7 +74,7 @@ QString GraphNode::getText() const
     return text;
 }
 
-bool operator==(GraphNode::const_reference first, GraphNode::const_reference second)
+bool operator==(GraphNode::const_ref first, GraphNode::const_ref second)
 {
     bool equalEdges = std::is_permutation(first.edges.begin(), first.edges.end(), second.edges.begin());
     bool equalIndices = (first.getIndex() == second.getIndex());
@@ -82,7 +82,7 @@ bool operator==(GraphNode::const_reference first, GraphNode::const_reference sec
     return (equalEdges && equalIndices && equalText);
 }
 
-bool operator!=(GraphNode::const_reference first, GraphNode::const_reference second)
+bool operator!=(GraphNode::const_ref first, GraphNode::const_ref second)
 {
     return !(first == second);
 }

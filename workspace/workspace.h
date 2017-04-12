@@ -22,7 +22,7 @@ class Workspace : public QGraphicsView
 public:
     friend class AlgorithmHandler;
 
-    typedef QPair<GraphicsNodeItem *, GraphicsNodeItem *> NodePair;
+    using NodePair = QPair<GraphicsNodeItem *, GraphicsNodeItem *>;
 
     enum { defaultMode = 0, nodeCreationMode = 1, edgeCreationMode = 2, deletionMode = 3 };
 
@@ -42,8 +42,8 @@ public:
     void deleteElement(QGraphicsItem* item);
     void deleteSelectedElements();
 
-    GraphicsNodeItem* findNodeItem(GraphNode::const_reference graphNode);
-    GraphicsEdgeItem* findEdgeItem(GraphEdge::const_reference graphEdge);
+    GraphicsNodeItem* findNodeItem(GraphNode::const_ref graphNode);
+    GraphicsEdgeItem* findEdgeItem(GraphEdge::const_ref graphEdge);
 
     void clearSelection();
 
@@ -76,8 +76,8 @@ private:
     std::function<GraphicsNodeItem *(QGraphicsItem *)> toNode;
     std::function<GraphicsEdgeItem *(QGraphicsItem *)> toEdge;
 
-    const int WIDTH = 1000;
-    const int HEIGHT = 1000;
+    const int WIDTH = 1024;
+    const int HEIGHT = 768;
 
     Graph* graph;
     AlgorithmHandler* algoHandler;
