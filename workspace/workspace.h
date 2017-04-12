@@ -13,15 +13,15 @@
 #include <functional>
 
 #include "workspace/mainwindow.h"
-#include "algorithm/graphalgorithm.h"
-
-class GraphicsNodeItem;
-class GraphicsEdgeItem;
+#include "algorithm/algorithmhandler.h"
+#include "graphics/graphicsedgeitem.h"
 
 class Workspace : public QGraphicsView
 {
     Q_OBJECT
 public:
+    friend class AlgorithmHandler;
+
     typedef QPair<GraphicsNodeItem *, GraphicsNodeItem *> NodePair;
 
     enum { defaultMode = 0, nodeCreationMode = 1, edgeCreationMode = 2, deletionMode = 3 };
@@ -57,8 +57,6 @@ public:
 
     void deleteGraph();
 
-    void displayAlgorithm();
-
 private slots:
     void createEdge(GraphicsNodeItem *firstNode, GraphicsNodeItem *secondNode, int weight = 0);
     void createEdge(int firstNodeIndex, int secondNodeIndex, int weight = 0);
@@ -69,7 +67,6 @@ private slots:
     void toggleDeletionMode(bool isToggled);
 
     void runAlgorithm();
-    void highlightElement();
 
 private:
     void deselectNodeItem(GraphicsNodeItem* nodeItem);
@@ -86,7 +83,7 @@ private:
     const int HEIGHT = 1000;
 
     Graph* graph;
-    PrimAlgorithm* algo;
+    AlgorithmHandler* algoHandler;
 
     QGraphicsLineItem* drawingLine;
     NodePair selectedNodes;

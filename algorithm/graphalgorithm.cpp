@@ -7,27 +7,17 @@ GraphAlgorithm::GraphAlgorithm()
 
 }
 
-PrimAlgorithm::PrimAlgorithm()
-{
-    MST = new Graph();
-}
-
-PrimAlgorithm::~PrimAlgorithm()
-{
-    delete MST;
-}
-
-GraphAlgorithm::ElementQueue PrimAlgorithm::getSequence() const
+GraphAlgorithm::ElementQueue GraphAlgorithm::getSequence() const
 {
     return sequence;
 }
 
-bool PrimAlgorithm::emptySequence() const
+bool GraphAlgorithm::emptySequence() const
 {
     return sequence.empty();
 }
 
-GraphAlgorithm::GraphElement PrimAlgorithm::getNextElement()
+GraphAlgorithm::GraphElement GraphAlgorithm::getNextElement()
 {
     if (!emptySequence())
     {
@@ -39,9 +29,35 @@ GraphAlgorithm::GraphElement PrimAlgorithm::getNextElement()
         return GraphAlgorithm::GraphElement(std::make_pair(-1, GraphEdge::GraphEdgeIndex(-1, -1)));
 }
 
+GraphAlgorithm::GraphElement GraphAlgorithm::getLastElement() const
+{
+    return sequence.back();
+}
+
+void GraphAlgorithm::pushNode(int nodeIndex)
+{
+    GraphElement node(std::make_pair(nodeIndex, GraphEdge::GraphEdgeIndex(-1, -1)));
+    sequence.push(node);
+}
+
+void GraphAlgorithm::pushEdge(GraphEdge::GraphEdgeIndex edgeIndex)
+{
+    GraphElement edge(std::make_pair(-1, edgeIndex));
+    sequence.push(edge);
+}
+
+PrimAlgorithm::PrimAlgorithm()
+{
+    MST = new Graph();
+}
+
+PrimAlgorithm::~PrimAlgorithm()
+{
+    delete MST;
+}
+
 void PrimAlgorithm::operator()(const Graph &graph)
 {
-
     using IPair = std::pair<unsigned int, int>;
     const int INF = std::numeric_limits<int>::max();
 
@@ -57,20 +73,19 @@ void PrimAlgorithm::operator()(const Graph &graph)
     queue.push(std::make_pair(0, startNode));
     keys[startNode] = 0;
 
+    int lastNodeInMST = -1;
+
     while (!queue.empty())
     {
         int minKeyNode = queue.top().second;
         queue.pop();
 
-        included[minKeyNode] = true;
-        GraphNode::const_reference newNode = MST->addNode(graph.retrieveNode(minKeyNode));
-        GraphElement element(std::make_pair(newNode.getIndex(), GraphEdge::GraphEdgeIndex(-1, -1)));
-        if (parent[minKeyNode] != -1)
+        if (!included[minKeyNode])
         {
-            GraphNode::const_reference parentNode = graph.retrieveNode(parent[minKeyNode]);
-            element.second = MST->addEdge(newNode, parentNode).getEdgeIndex();
+            addElementToMST(graph, minKeyNode, lastNodeInMST, parent[minKeyNode]);
         }
-        sequence.push(element);
+
+        included[minKeyNode] = true;
 
         QPair<int, int> adjacent;
         foreach (adjacent, adjList[minKeyNode])
@@ -89,4 +104,17 @@ void PrimAlgorithm::operator()(const Graph &graph)
 
     for (int i = 1; i < nodesNumber; ++i)
         qInfo("%d - %d", parent[i], i);
+}
+
+void PrimAlgorithm::addElementToMST(const Graph& graph, int node, int& lastNode, int parent)
+{
+    GraphNode::const_reference newNode = MST->addNode(graph.retrieveNode(node));
+    if (parent != -1)
+    {
+        GraphNode::const_reference parentNode = MST->retrieveNode(lastNode);
+        MST->addEdge(newNode, parentNode);
+        pushEdge(GraphEdge::GraphEdgeIndex(node, parent));
+    }
+    lastNode = newNode.getIndex();
+    pushNode(graph.retrieveNode(node).getIndex());
 }

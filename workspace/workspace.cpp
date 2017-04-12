@@ -1,5 +1,4 @@
 #include "workspace.h"
-#include "graphics/graphicsedgeitem.h"
 
 Workspace::Workspace(MainWindow* parent)
     : QGraphicsView(parent)
@@ -12,7 +11,7 @@ Workspace::Workspace(MainWindow* parent)
     setMouseTracking(true);
 
     graph = new Graph();
-    algo = NULL;
+    algoHandler = new AlgorithmHandler(this);
     drawingLine = NULL;
 
     toNode = [](QGraphicsItem *item){ return qgraphicsitem_cast<GraphicsNodeItem *>(item); };
@@ -83,8 +82,9 @@ void Workspace::keyPressEvent(QKeyEvent *event)
 
 void Workspace::createNode(const QPoint& pos, const QString& idtf,bool isLoaded, int index)
 {
-    GraphNode::const_reference newGraphNode = isLoaded ? graph->addNode(index, idtf) :
-                                                         graph->addNode(idtf);
+//    GraphNode::const_reference newGraphNode = isLoaded ? graph->addNode(index, idtf) :
+//                                                         graph->addNode(idtf);
+    GraphNode::const_reference newGraphNode = graph->addNode(idtf);
     GraphicsNodeItem* newNodeItem = new GraphicsNodeItem(mapToScene(pos), newGraphNode);
     scene()->addItem(newNodeItem);
 }
@@ -344,25 +344,6 @@ void Workspace::deleteGraph()
     graph = new Graph();
 }
 
-void Workspace::displayAlgorithm()
-{
-    QTimer* timer = new QTimer();
-    connect(timer, SIGNAL(timeout()), this, SLOT(highlightElement()));
-    timer->start(1000);
-}
-
-void Workspace::highlightElement()
-{
-    if (!algo->emptySequence())
-    {
-        GraphAlgorithm::GraphElement element = algo->getNextElement();
-        if (element.first != -1)
-            findNodeItem(graph->retrieveNode(element.first))->setSelected(true);
-        else
-            findEdgeItem(graph->retrieveEdge(element.second))->setSelected(true);
-    }
-}
-
 void Workspace::toggleNodeCreationMode(bool isToggled)
 {
     toggleMode(nodeCreationMode, isToggled);
@@ -380,9 +361,8 @@ void Workspace::toggleDeletionMode(bool isToggled)
 
 void Workspace::runAlgorithm()
 {
-    algo = new PrimAlgorithm();
-    (*algo)(*graph);
-    displayAlgorithm();
+    PrimAlgorithm* algo = new PrimAlgorithm();
+    algoHandler->handleAlgorithm(algo);
 }
 
 void Workspace::deselectNodeItem(GraphicsNodeItem *nodeItem)
@@ -431,6 +411,12 @@ QList<GraphicsNodeItem *> Workspace::getNodes()
         if (GraphicsNodeItem *node = toNode(item))
             nodes.append(node);
     }
+    auto indexComp = [](GraphicsNodeItem* first, GraphicsNodeItem* second)
+    {
+        return first->getGraphNode().getIndex() < second->getGraphNode().getIndex();
+    };
+
+    std::sort(nodes.begin(), nodes.end(), indexComp);
     return nodes;
 }
 
