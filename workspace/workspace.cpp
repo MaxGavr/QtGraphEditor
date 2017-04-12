@@ -91,44 +91,34 @@ void Workspace::createNode(const QPoint& pos, const QString& idtf,bool isLoaded,
 void Workspace::deleteElementAtPosition(const QPoint &pos)
 {
     QGraphicsItem* item = scene()->itemAt(QPointF(mapToScene(pos)), QTransform());
+    deleteElement(item);
+}
+
+void Workspace::deleteElement(QGraphicsItem *item)
+{
     if (GraphicsNodeItem* node = toNode(item))
-        deleteNode(node);
+    {
+        foreach (GraphicsEdgeItem* edge, node->getEdgeItems())
+            deleteElement(edge);
+        GraphNode::const_reference graphNode = node->getGraphNode();
+        delete node;
+        graph->removeNode(graphNode);
+    }
     else
         if (GraphicsEdgeItem* edge = toEdge(item))
-            deleteEdge(edge);
-}
-
-void Workspace::deleteNode(GraphicsNodeItem* nodeItem)
-{
-    foreach (GraphicsEdgeItem* edge, nodeItem->getEdgeItems())
-        deleteEdge(edge);
-    GraphNode::const_reference node = nodeItem->getGraphNode();
-    delete nodeItem;
-    graph->removeNode(node);
-}
-
-void Workspace::deleteEdge(GraphicsEdgeItem *edgeItem)
-{
-    GraphEdge::const_reference edge = edgeItem->getGraphEdge();
-    delete edgeItem;
-    graph->removeEdge(edge);
+        {
+            GraphEdge::const_reference graphEdge = edge->getGraphEdge();
+            delete edge;
+            graph->removeEdge(graphEdge);
+        }
 }
 
 void Workspace::deleteSelectedElements()
 {
     QList<QGraphicsItem *> items = scene()->selectedItems();
-
+    std::partition(items.begin(), items.end(), toEdge);
     foreach (QGraphicsItem* item, items)
-        if (GraphicsEdgeItem* edge = toEdge(item))
-        {
-            items.removeOne(edge);
-            deleteEdge(edge);
-        }
-    foreach (QGraphicsItem* item, items)
-    {
-        items.removeOne(item);
-        deleteNode(toNode(item));
-    }
+        deleteElement(item);
 }
 
 void Workspace::manageEdgeCreation(const QPoint &location)
@@ -339,15 +329,6 @@ void Workspace::toggleDeletionMode(bool isToggled)
     toggleMode(deletionMode, isToggled);
 }
 
-void Workspace::deselectNodeItem(GraphicsNodeItem *nodeItem)
-{
-    nodeItem->setSelected(false);
-    if (selectedNodes.first == nodeItem)
-        selectedNodes.first = NULL;
-    if (selectedNodes.second == nodeItem)
-        selectedNodes.second = NULL;
-}
-
 GraphicsNodeItem *Workspace::getTopmostNodeItem(QList<QGraphicsItem *> items)
 {
     if (!items.isEmpty())
@@ -398,19 +379,6 @@ QList<GraphicsEdgeItem *> Workspace::getEdges()
             edges.append(edge);
     }
     return edges;
-}
-
-Workspace::NodePair Workspace::getSelectedNodePair()
-{
-    QList<QGraphicsItem *> selected = scene()->selectedItems();
-    if (selected.count() == 2)
-    {
-        GraphicsNodeItem* firstNode = toNode(selected.first());
-        GraphicsNodeItem* secondNode = toNode(selected.last());
-        if (firstNode && secondNode)
-            return NodePair(firstNode, secondNode);
-    }
-    return NodePair();
 }
 
 void Workspace::clearSelection()

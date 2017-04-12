@@ -39,11 +39,9 @@ public:
     void createNode(const QPoint& pos, const QString &idtf = "",
                     bool isLoaded = false, int index = -1);
     void deleteElementAtPosition(const QPoint& pos);
-    void deleteNode(GraphicsNodeItem* nodeItem);
-    void deleteEdge(GraphicsEdgeItem* edgeItem);
+    void deleteElement(QGraphicsItem* item);
     void deleteSelectedElements();
 
-    NodePair getSelectedNodePair();
     void clearSelection();
 
     void toggleMode(int mode, bool toggled);
@@ -62,7 +60,6 @@ private slots:
     void toggleDeletionMode(bool isToggled);
 
 private:
-    void deselectNodeItem(GraphicsNodeItem* nodeItem);
     GraphicsNodeItem* getTopmostNodeItem(QList<QGraphicsItem*> items);
     QGraphicsItem* getSelectedItem();
 
