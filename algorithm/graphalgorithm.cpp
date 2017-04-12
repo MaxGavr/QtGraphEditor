@@ -56,8 +56,11 @@ PrimAlgorithm::~PrimAlgorithm()
     delete MST;
 }
 
-void PrimAlgorithm::operator()(const Graph &graph)
+void PrimAlgorithm::execute(const Graph &graph)
 {
+    if (graph.isEmpty())
+        return;
+
     using IPair = std::pair<unsigned int, int>;
     const int INF = std::numeric_limits<int>::max();
 

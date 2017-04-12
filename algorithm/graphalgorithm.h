@@ -18,7 +18,7 @@ public:
     void pushNode(int nodeIndex);
     void pushEdge(GraphEdge::GraphEdgeIndex edgeIndex);
 
-    virtual void operator() (const Graph& graph) = 0;
+    virtual void execute(const Graph& graph) = 0;
 
 private:
     GraphAlgorithm::ElementQueue sequence;
@@ -30,7 +30,7 @@ public:
     PrimAlgorithm();
     ~PrimAlgorithm();
 
-    void operator() (const Graph& graph);
+    void execute(const Graph& graph);
 
 private:
     void addElementToMST(const Graph& graph, int node, int &lastNode, int parent = -1);

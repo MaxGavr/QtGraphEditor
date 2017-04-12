@@ -144,6 +144,11 @@ GraphEdge::const_reference Graph::retrieveEdge(GraphEdge::GraphEdgeIndex index) 
     throw bad_graph_edge();
 }
 
+bool Graph::isEmpty() const
+{
+    return countNodes() == 0;
+}
+
 int Graph::countNodes() const
 {
     return nodes.size();

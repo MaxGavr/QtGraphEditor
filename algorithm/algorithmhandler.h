@@ -22,4 +22,7 @@ private:
     GraphAlgorithm* algorithm;
 
     QTimer* timer;
+
+    QString highlightPenColor = "cornflowerblue";
+    QString highlightBrushColor = "light blue";
 };

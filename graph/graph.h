@@ -36,6 +36,8 @@ public:
     GraphNode::const_reference retrieveNode(int index) const;
     GraphEdge::const_reference retrieveEdge(GraphEdge::GraphEdgeIndex index) const;
 
+    bool isEmpty() const;
+
     int countNodes() const;
     int countEdges() const;
 

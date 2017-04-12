@@ -37,8 +37,7 @@ public:
 
     void setElementContent(QGraphicsItem *item);
 
-    void createNode(const QPoint& pos, const QString &idtf = "",
-                    bool isLoaded = false, int index = -1);
+    void createNode(const QPoint& pos, const QString &idtf = "");
     void deleteElementAtPosition(const QPoint& pos);
     void deleteElement(QGraphicsItem* item);
     void deleteSelectedElements();
@@ -69,9 +68,10 @@ private slots:
 private:
     GraphicsNodeItem* getTopmostNodeItem(QList<QGraphicsItem*> items);
     QGraphicsItem* getSelectedItem();
-
     QList<GraphicsNodeItem *> getNodes();
     QList<GraphicsEdgeItem *> getEdges();
+
+    void clearDrawingLine();
 
     std::function<GraphicsNodeItem *(QGraphicsItem *)> toNode;
     std::function<GraphicsEdgeItem *(QGraphicsItem *)> toEdge;

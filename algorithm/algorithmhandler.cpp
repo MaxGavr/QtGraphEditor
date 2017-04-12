@@ -12,7 +12,7 @@ void AlgorithmHandler::handleAlgorithm(GraphAlgorithm* algo)
 {
     algorithm = algo;
 
-    (*algorithm)(*workspace->graph);
+    algorithm->execute(*workspace->graph);
 
     timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(highlightElement()));
@@ -29,7 +29,8 @@ void AlgorithmHandler::highlightElement()
             GraphicsNodeItem* nodeItem;
             nodeItem = workspace->findNodeItem(workspace->graph->retrieveNode(element.first));
             QPen pen = nodeItem->pen();
-            pen.setColor(QColor("light blue"));
+            pen.setColor(highlightPenColor);
+            nodeItem->setBrush(QBrush(QColor(highlightBrushColor)));
             nodeItem->setPen(pen);
         }
         else
@@ -37,7 +38,7 @@ void AlgorithmHandler::highlightElement()
             GraphicsEdgeItem* edgeItem;
             edgeItem = workspace->findEdgeItem(workspace->graph->retrieveEdge(element.second));
             QPen pen = edgeItem->pen();
-            pen.setColor(QColor("pink"));
+            pen.setColor(highlightPenColor);
             edgeItem->setPen(pen);
         }
     }

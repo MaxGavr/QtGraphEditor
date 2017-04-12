@@ -81,9 +81,9 @@ void MainWindow::createEditActions()
 
     selectNode->trigger();
 
-    runAlgorithm = new QAction(tr("Run Prim's algorithm"), this);
+    runAlgorithm = new QAction(QIcon(":/icons/icon_algo.png"), tr("Run Prim's algorithm"), this);
     runAlgorithm->setShortcut(QKeySequence("Ctrl+R"));
-    runAlgorithm->setStatusTip(tr("Find minimum spanning tree for presented graph"));
+    runAlgorithm->setStatusTip(tr("Find minimum spanning tree for current graph"));
     connect(runAlgorithm, SIGNAL(triggered(bool)), workingArea, SLOT(runAlgorithm()));
 }
 
@@ -155,7 +155,10 @@ void MainWindow::open()
                                                             "",
                                                             tr("Graph (*.gph)"));
         if (!loadFileName.isEmpty())
+        {
             workingArea->loadGraphFromFile(loadFileName);
+            currentFile = loadFileName;
+        }
     }
 }
 

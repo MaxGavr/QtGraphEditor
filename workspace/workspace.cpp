@@ -80,10 +80,8 @@ void Workspace::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void Workspace::createNode(const QPoint& pos, const QString& idtf,bool isLoaded, int index)
+void Workspace::createNode(const QPoint& pos, const QString& idtf)
 {
-//    GraphNode::const_reference newGraphNode = isLoaded ? graph->addNode(index, idtf) :
-//                                                         graph->addNode(idtf);
     GraphNode::const_reference newGraphNode = graph->addNode(idtf);
     GraphicsNodeItem* newNodeItem = new GraphicsNodeItem(mapToScene(pos), newGraphNode);
     scene()->addItem(newNodeItem);
@@ -157,17 +155,12 @@ void Workspace::manageEdgeCreation(const QPoint &location)
             if (selectedNodes.first && !selectedNodes.second)
             {
                 selectedNodes.second = topmostNode;
-                delete drawingLine;
-                drawingLine = NULL;
                 createEdge(selectedNodes.first, selectedNodes.second);
+                clearDrawingLine();
             }
     }
     else
-    {
-        delete drawingLine;
-        drawingLine = NULL;
-        clearSelection();
-    }
+        clearDrawingLine();
 }
 
 void Workspace::setElementContent(QGraphicsItem* item)
@@ -216,14 +209,15 @@ void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* second
 
 void Workspace::createEdge(int firstNodeIndex, int secondNodeIndex, int weight)
 {
-    typedef std::function<bool(GraphicsNodeItem *, int)> NodeUnary;
-    NodeUnary equalIndex = [](GraphicsNodeItem* node, int index)
-                                { return node->getGraphNode().getIndex() == index; };
-    QList<GraphicsNodeItem *> nodes = getNodes();
-    GraphicsNodeItem* firstNode = *std::find_if(nodes.begin(), nodes.end(),
-                                               std::bind2nd<NodeUnary>(equalIndex, firstNodeIndex));
-    GraphicsNodeItem* secondNode = *std::find_if(nodes.begin(), nodes.end(),
-                                                 std::bind2nd<NodeUnary>(equalIndex, secondNodeIndex));
+    GraphicsNodeItem* firstNode = NULL;
+    GraphicsNodeItem* secondNode = NULL;
+    foreach (GraphicsNodeItem* node, getNodes())
+    {
+        if (node->getGraphNode().getIndex() == firstNodeIndex)
+            firstNode = node;
+        if (node->getGraphNode().getIndex() == secondNodeIndex)
+            secondNode = node;
+    }
     createEdge(firstNode, secondNode, weight);
 }
 
@@ -277,7 +271,6 @@ bool Workspace::saveGraphToFile(const QString& saveFileName)
 
     stream.writeEndElement();
     stream.writeEndDocument();
-
     file.close();
     return true;
 }
@@ -305,9 +298,8 @@ bool Workspace::loadGraphFromFile(const QString& loadFileName)
 
                 QPoint pos(attribs.value("x").toInt(), attribs.value("y").toInt());
                 QString text = attribs.value("content").toString();
-                int index = attribs.value("index").toInt();
 
-                createNode(pos, text, true, index);
+                createNode(pos, text);
             }
             if (stream.name() == "edge")
             {
@@ -346,6 +338,7 @@ void Workspace::toggleEdgeCreationMode(bool isToggled)
 
 void Workspace::toggleDeletionMode(bool isToggled)
 {
+    deleteSelectedElements();
     toggleMode(deletionMode, isToggled);
 }
 
@@ -411,6 +404,13 @@ QList<GraphicsEdgeItem *> Workspace::getEdges()
             edges.append(edge);
     }
     return edges;
+}
+
+void Workspace::clearDrawingLine()
+{
+    delete drawingLine;
+    drawingLine = NULL;
+    clearSelection();
 }
 
 void Workspace::clearSelection()
