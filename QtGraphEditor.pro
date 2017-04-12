@@ -30,3 +30,6 @@ HEADERS  += graph/graph.h \
     workspace/mainwindow.h \
     workspace/workspace.h \
     graph/exceptions.h
+
+RESOURCES += \
+    icons.qrc

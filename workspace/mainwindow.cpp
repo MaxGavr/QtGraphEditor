@@ -55,25 +55,25 @@ void MainWindow::createEditActions()
 {   
     editActionGroup = new QActionGroup(this);
 
-    selectNode = new QAction(tr("Select element"), editActionGroup);
+    selectNode = new QAction(QIcon(":/icons/icon_selection.png"), tr("Select element"), editActionGroup);
     selectNode->setShortcut(Qt::Key_1);
     selectNode->setCheckable(true);
     selectNode->setStatusTip(tr("Select existing graph elements"));
     connect(selectNode, SIGNAL(toggled(bool)), workingArea, SLOT(toggleSelectionMode(bool)));
 
-    createNode = new QAction(tr("Create node"), editActionGroup);
+    createNode = new QAction(QIcon(":/icons/icon_node.png"), tr("Create node"), editActionGroup);
     createNode->setShortcut(Qt::Key_2);
     createNode->setStatusTip(tr("Create new graph vertex"));
     createNode->setCheckable(true);
     connect(createNode, SIGNAL(toggled(bool)), workingArea, SLOT(toggleNodeCreationMode(bool)));
 
-    createEdge = new QAction(tr("Create edge"), editActionGroup);
+    createEdge = new QAction(QIcon(":/icons/icon_edge.png"), tr("Create edge"), editActionGroup);
     createEdge->setShortcut(Qt::Key_3);
     createEdge->setStatusTip(tr("Create a connection between two selected nodes"));
     createEdge->setCheckable(true);
     connect(createEdge, SIGNAL(toggled(bool)), workingArea, SLOT(toggleEdgeCreationMode(bool)));
 
-    deleteElement = new QAction(tr("Delete element"), editActionGroup);
+    deleteElement = new QAction(QIcon(":/icons/icon_trash.png"), tr("Delete element"), editActionGroup);
     deleteElement->setShortcut(Qt::Key_4);
     deleteElement->setStatusTip(tr("Delete graph node or edge"));
     deleteElement->setCheckable(true);
@@ -110,6 +110,7 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(saveFileAction);
 
     editToolBar = new QToolBar(tr("&Edit"));
+    editToolBar->setIconSize(QSize(30, 30));
     addToolBar(Qt::LeftToolBarArea, editToolBar);
     editToolBar->addActions(editActionGroup->actions());
 }
