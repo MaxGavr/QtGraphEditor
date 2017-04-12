@@ -21,22 +21,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::createMenuActions()
 {
-    newFileAction = new QAction(tr("&New file"), this);
+    newFileAction = new QAction(QIcon(":/icons/icon_new_file.png"), tr("&New file"), this);
     newFileAction->setShortcut(QKeySequence::New);
     newFileAction->setStatusTip(tr("Create new file"));
     connect(newFileAction, SIGNAL(triggered()), this, SLOT(newFile()));
 
-    openFileAction = new QAction(tr("&Open file"), this);
+    openFileAction = new QAction(QIcon(":/icons/icon_open_file.png"), tr("&Open file"), this);
     openFileAction->setShortcut(QKeySequence::Open);
     openFileAction->setStatusTip(tr("Open existing file"));
     connect(openFileAction, SIGNAL(triggered()), this, SLOT(open()));
 
-    saveFileAction = new QAction(tr("&Save file"), this);
+    saveFileAction = new QAction(QIcon(":/icons/icon_save_file.png"), tr("&Save file"), this);
     saveFileAction->setShortcut(QKeySequence::Save);
     saveFileAction->setStatusTip(tr("Save current file"));
     connect(saveFileAction, SIGNAL(triggered()), this, SLOT(save()));
 
-    saveAsFileAction = new QAction(tr("&Save file as"), this);
+    saveAsFileAction = new QAction(QIcon(":/icons/icon_save_as.png"), tr("&Save file as"), this);
     saveAsFileAction->setShortcut(QKeySequence::SaveAs);
     saveAsFileAction->setStatusTip(tr("Save current file in a certain way"));
     connect(saveAsFileAction, SIGNAL(triggered()), this, SLOT(saveAs()));
@@ -105,9 +105,11 @@ void MainWindow::createMenus()
 void MainWindow::createToolBars()
 {
     fileToolBar = addToolBar(tr("&File"));
+    fileToolBar->setIconSize(QSize(30, 30));
     fileToolBar->addAction(newFileAction);
     fileToolBar->addAction(openFileAction);
     fileToolBar->addAction(saveFileAction);
+    fileToolBar->addAction(saveAsFileAction);
 
     editToolBar = new QToolBar(tr("&Edit"));
     editToolBar->setIconSize(QSize(30, 30));

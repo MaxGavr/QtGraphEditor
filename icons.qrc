@@ -4,5 +4,9 @@
         <file>icons/icon_selection.png</file>
         <file>icons/icon_node.png</file>
         <file>icons/icon_edge.png</file>
+        <file>icons/icon_save_file.png</file>
+        <file>icons/icon_save_as.png</file>
+        <file>icons/icon_open_file.png</file>
+        <file>icons/icon_new_file.png</file>
     </qresource>
 </RCC>
