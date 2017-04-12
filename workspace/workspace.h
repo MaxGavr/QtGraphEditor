@@ -7,20 +7,21 @@
 #include <QHBoxLayout>
 #include <QInputDialog>
 #include <QXmlStreamWriter>
+#include <QTimer>
 
 #include <algorithm>
 #include <functional>
 
 #include "workspace/mainwindow.h"
-#include "graph/graph.h"
-
-class GraphicsNodeItem;
-class GraphicsEdgeItem;
+#include "algorithm/algorithmhandler.h"
+#include "graphics/graphicsedgeitem.h"
 
 class Workspace : public QGraphicsView
 {
     Q_OBJECT
 public:
+    friend class AlgorithmHandler;
+
     typedef QPair<GraphicsNodeItem *, GraphicsNodeItem *> NodePair;
 
     enum { defaultMode = 0, nodeCreationMode = 1, edgeCreationMode = 2, deletionMode = 3 };
@@ -42,6 +43,9 @@ public:
     void deleteElement(QGraphicsItem* item);
     void deleteSelectedElements();
 
+    GraphicsNodeItem* findNodeItem(GraphNode::const_reference graphNode);
+    GraphicsEdgeItem* findEdgeItem(GraphEdge::const_reference graphEdge);
+
     void clearSelection();
 
     void toggleMode(int mode, bool toggled);
@@ -54,10 +58,13 @@ public:
 private slots:
     void createEdge(GraphicsNodeItem *firstNode, GraphicsNodeItem *secondNode, int weight = 0);
     void createEdge(int firstNodeIndex, int secondNodeIndex, int weight = 0);
+
     void toggleSelectionMode(bool isToggled);
     void toggleNodeCreationMode(bool isToggled);
     void toggleEdgeCreationMode(bool isToggled);
     void toggleDeletionMode(bool isToggled);
+
+    void runAlgorithm();
 
 private:
     GraphicsNodeItem* getTopmostNodeItem(QList<QGraphicsItem*> items);
@@ -73,6 +80,7 @@ private:
     const int HEIGHT = 1000;
 
     Graph* graph;
+    AlgorithmHandler* algoHandler;
 
     QGraphicsLineItem* drawingLine;
     NodePair selectedNodes;

@@ -1,5 +1,4 @@
 #include "workspace.h"
-#include "graphics/graphicsedgeitem.h"
 
 Workspace::Workspace(MainWindow* parent)
     : QGraphicsView(parent)
@@ -12,6 +11,7 @@ Workspace::Workspace(MainWindow* parent)
     setMouseTracking(true);
 
     graph = new Graph();
+    algoHandler = new AlgorithmHandler(this);
     drawingLine = NULL;
 
     toNode = [](QGraphicsItem *item){ return qgraphicsitem_cast<GraphicsNodeItem *>(item); };
@@ -82,8 +82,9 @@ void Workspace::keyPressEvent(QKeyEvent *event)
 
 void Workspace::createNode(const QPoint& pos, const QString& idtf,bool isLoaded, int index)
 {
-    GraphNode::const_reference newGraphNode = isLoaded ? graph->addNode(index, idtf) :
-                                                         graph->addNode(idtf);
+//    GraphNode::const_reference newGraphNode = isLoaded ? graph->addNode(index, idtf) :
+//                                                         graph->addNode(idtf);
+    GraphNode::const_reference newGraphNode = graph->addNode(idtf);
     GraphicsNodeItem* newNodeItem = new GraphicsNodeItem(mapToScene(pos), newGraphNode);
     scene()->addItem(newNodeItem);
 }
@@ -119,6 +120,26 @@ void Workspace::deleteSelectedElements()
     std::partition(items.begin(), items.end(), toEdge);
     foreach (QGraphicsItem* item, items)
         deleteElement(item);
+}
+
+GraphicsNodeItem *Workspace::findNodeItem(GraphNode::const_reference graphNode)
+{
+    QList<GraphicsNodeItem *> nodes = getNodes();
+    foreach (GraphicsNodeItem *item, nodes) {
+        if (item->getGraphNode() == graphNode)
+            return item;
+    }
+    return NULL;
+}
+
+GraphicsEdgeItem *Workspace::findEdgeItem(GraphEdge::const_reference graphEdge)
+{
+    QList<GraphicsEdgeItem *> edges = getEdges();
+    foreach (GraphicsEdgeItem *edge, edges) {
+        if (edge->getGraphEdge() == graphEdge)
+            return edge;
+    }
+    return NULL;
 }
 
 void Workspace::manageEdgeCreation(const QPoint &location)
@@ -172,7 +193,6 @@ void Workspace::setElementContent(QGraphicsItem* item)
 
 void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* secondNode, int weight)
 {
-    graph->getAdjacencyList();
     if (firstNode && secondNode)
     {
         try
@@ -329,6 +349,12 @@ void Workspace::toggleDeletionMode(bool isToggled)
     toggleMode(deletionMode, isToggled);
 }
 
+void Workspace::runAlgorithm()
+{
+    PrimAlgorithm* algo = new PrimAlgorithm();
+    algoHandler->handleAlgorithm(algo);
+}
+
 GraphicsNodeItem *Workspace::getTopmostNodeItem(QList<QGraphicsItem *> items)
 {
     if (!items.isEmpty())
@@ -366,6 +392,12 @@ QList<GraphicsNodeItem *> Workspace::getNodes()
         if (GraphicsNodeItem *node = toNode(item))
             nodes.append(node);
     }
+    auto indexComp = [](GraphicsNodeItem* first, GraphicsNodeItem* second)
+    {
+        return first->getGraphNode().getIndex() < second->getGraphNode().getIndex();
+    };
+
+    std::sort(nodes.begin(), nodes.end(), indexComp);
     return nodes;
 }
 

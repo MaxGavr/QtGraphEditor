@@ -11,6 +11,9 @@
 
 class GraphNode
 {
+    friend class Graph;
+    friend class GraphEdge;
+
 public:
     typedef const GraphNode& const_reference;
 
@@ -23,16 +26,17 @@ public:
     QString getText() const;
     void setText(const QString& str);
 
-    void addEdge(GraphEdge* edge);
-    void removeEdge(GraphEdge* edge);
-
-    QList<int> getAdjacentNodes() const;
+    QList<QPair<int, int> > getAdjacentNodes() const;
 
     friend bool operator== (GraphNode::const_reference first, GraphNode::const_reference second);
     friend bool operator!= (GraphNode::const_reference first, GraphNode::const_reference second);
 
 private:
-    const int index;
+    void setIndex(int i);
+    void addEdge(GraphEdge* edge);
+    void removeEdge(GraphEdge* edge);
+
+    int index;
     QString text;
     QLinkedList<GraphEdge*> edges;
 };

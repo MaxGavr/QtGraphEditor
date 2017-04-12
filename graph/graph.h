@@ -2,6 +2,8 @@
 
 #include <QVector>
 #include <QMap>
+#include <set>
+#include <queue>
 
 #include "graphnode.h"
 #include "exceptions.h"
@@ -9,13 +11,14 @@
 class Graph
 {
 public:
-    typedef QMap< int, QList<int> > AdjacencyList;
+    typedef QMap< int, QList< QPair<int, int> > > AdjacencyList;
 
     Graph();
     ~Graph();
 
     GraphNode::const_reference addNode(QString idtf = "");
     GraphNode::const_reference addNode(int index, QString idtf = "");
+    GraphNode::const_reference addNode(GraphNode::const_reference node);
     void removeNode(GraphNode::const_reference node);
     void setNodeIdtf(GraphNode::const_reference node, QString idtf);
 
@@ -33,6 +36,9 @@ public:
     GraphNode::const_reference retrieveNode(int index) const;
     GraphEdge::const_reference retrieveEdge(GraphEdge::GraphEdgeIndex index) const;
 
+    int countNodes() const;
+    int countEdges() const;
+
     AdjacencyList getAdjacencyList() const;
 
 private:
@@ -47,5 +53,5 @@ private:
     bool validateNodeIndex(int i) const;
     bool validateEdgeIndex(GraphEdge::GraphEdgeIndex i);
 
-    QVector<int> nodeIndices;
+    std::set<int> nodeIndices;
 };
