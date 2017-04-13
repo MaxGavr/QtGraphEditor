@@ -10,11 +10,6 @@ GraphEdge::GraphEdge(GraphNode* start, GraphNode* end, int weight)
 
 GraphEdge::~GraphEdge()
 {
-    EdgeIndex index = getEdgeIndex();
-    QString msg = QString("Graph edge %1 - %2 deleted")
-            .arg(QString::number(index.first))
-            .arg(QString::number(index.second));
-    qInfo("%s", msg.toLatin1().constData());
     startNode->removeEdge(this);
     endNode->removeEdge(this);
 }

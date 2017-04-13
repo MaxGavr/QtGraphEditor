@@ -104,9 +104,6 @@ void PrimAlgorithm::execute(const Graph &graph)
             }
         }
     }
-
-    for (int i = 1; i < nodesNumber; ++i)
-        qInfo("%d - %d", parent[i], i);
 }
 
 void PrimAlgorithm::addElementToMST(const Graph& graph, int node, int& lastNode, int parent)

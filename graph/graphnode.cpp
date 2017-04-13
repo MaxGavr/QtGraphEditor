@@ -4,22 +4,16 @@ GraphNode::GraphNode(int i)
 {
     setIndex(i);
     setText(QString::number(getIndex()));
-    QString msg = QString("Graph node %1 created").arg(QString::number(getIndex()));
-    qInfo("%s", msg.toLatin1().constData());
 }
 
 GraphNode::GraphNode(int i, const QString& str)
 {
     setIndex(i);
     setText(str);
-    QString msg = QString("Graph node %1 created").arg(QString::number(getIndex()));
-    qInfo("%s", msg.toLatin1().constData());
 }
 
 GraphNode::~GraphNode()
 {
-    QString msg = QString("Graph node %1 deleted").arg(QString::number(getIndex()));
-    qInfo("%s", msg.toLatin1().constData());
     qDeleteAll(edges);
 }
 

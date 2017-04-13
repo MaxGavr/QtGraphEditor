@@ -23,6 +23,6 @@ private:
 
     QTimer* timer;
 
-    QString highlightPenColor = "cornflowerblue";
-    QString highlightBrushColor = "light blue";
+    QString highlightPenColor = "green";
+    QString highlightBrushColor = "light green";
 };
