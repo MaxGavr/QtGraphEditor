@@ -26,7 +26,7 @@ public:
 
     enum { defaultMode = 0, nodeCreationMode = 1, edgeCreationMode = 2, deletionMode = 3 };
 
-    Workspace(MainWindow* parent);
+    Workspace(QWidget* parent = 0);
 
     void mouseMoveEvent(QMouseEvent* event);
     void mousePressEvent(QMouseEvent *event);

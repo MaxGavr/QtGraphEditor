@@ -3,7 +3,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    workingArea = new Workspace(this);
+    workingArea = new QTabWidget(this);
+    workingArea->addTab(new Workspace(), tr("Graph"));
     setCentralWidget(workingArea);
 
     QStatusBar* statusBar = new QStatusBar(this);
@@ -52,44 +53,45 @@ void MainWindow::createMenuActions()
 }
 
 void MainWindow::createEditActions()
-{   
+{
+    Workspace *workspace = getCurrentWorkspace();
     editActionGroup = new QActionGroup(this);
 
     selectNode = new QAction(QIcon(":/icons/icon_selection.png"), tr("Select element"), editActionGroup);
     selectNode->setShortcut(Qt::Key_1);
     selectNode->setCheckable(true);
     selectNode->setStatusTip(tr("Select existing graph elements"));
-    connect(selectNode, SIGNAL(toggled(bool)), workingArea, SLOT(toggleSelectionMode(bool)));
+    connect(selectNode, SIGNAL(toggled(bool)), workspace, SLOT(toggleSelectionMode(bool)));
 
     createNode = new QAction(QIcon(":/icons/icon_node.png"), tr("Create node"), editActionGroup);
     createNode->setShortcut(Qt::Key_2);
     createNode->setStatusTip(tr("Create new graph vertex"));
     createNode->setCheckable(true);
-    connect(createNode, SIGNAL(toggled(bool)), workingArea, SLOT(toggleNodeCreationMode(bool)));
+    connect(createNode, SIGNAL(toggled(bool)), workspace, SLOT(toggleNodeCreationMode(bool)));
 
     createEdge = new QAction(QIcon(":/icons/icon_edge.png"), tr("Create edge"), editActionGroup);
     createEdge->setShortcut(Qt::Key_3);
     createEdge->setStatusTip(tr("Create a connection between two selected nodes"));
     createEdge->setCheckable(true);
-    connect(createEdge, SIGNAL(toggled(bool)), workingArea, SLOT(toggleEdgeCreationMode(bool)));
+    connect(createEdge, SIGNAL(toggled(bool)), workspace, SLOT(toggleEdgeCreationMode(bool)));
 
     deleteElement = new QAction(QIcon(":/icons/icon_trash.png"), tr("Delete element"), editActionGroup);
     deleteElement->setShortcut(Qt::Key_4);
     deleteElement->setStatusTip(tr("Delete graph node or edge"));
     deleteElement->setCheckable(true);
-    connect(deleteElement, SIGNAL(toggled(bool)), workingArea, SLOT(toggleDeletionMode(bool)));
+    connect(deleteElement, SIGNAL(toggled(bool)), workspace, SLOT(toggleDeletionMode(bool)));
 
     selectNode->trigger();
 
     runAlgorithm = new QAction(QIcon(":/icons/icon_algo.png"), tr("Run Prim's algorithm"), this);
     runAlgorithm->setShortcut(QKeySequence("Ctrl+R"));
     runAlgorithm->setStatusTip(tr("Find minimum spanning tree for current graph"));
-    connect(runAlgorithm, SIGNAL(triggered(bool)), workingArea, SLOT(runAlgorithm()));
+    connect(runAlgorithm, SIGNAL(triggered(bool)), workspace, SLOT(runAlgorithm()));
 
     resetElements = new QAction(QIcon(":/icons/icon_refresh.png"), tr("Reset appearance"), this);
     resetElements->setShortcut(QKeySequence("Ctrl+A"));
     resetElements->setStatusTip(tr("Reset every element appearance"));
-    connect(resetElements, SIGNAL(triggered(bool)), workingArea, SLOT(resetElementsView()));
+    connect(resetElements, SIGNAL(triggered(bool)), workspace, SLOT(resetElementsView()));
 }
 
 void MainWindow::createMenus()
@@ -133,8 +135,8 @@ void MainWindow::newFile()
 {
     if (saveConfirmation())
     {
-        workingArea->deleteGraph();
-        currentFile.clear();
+        int index = workingArea->addTab(new Workspace(), tr("graph"));
+        workingArea->setCurrentIndex(index);
     }
 }
 
@@ -162,7 +164,7 @@ void MainWindow::open()
                                                             tr("Graph (*.gph)"));
         if (!loadFileName.isEmpty())
         {
-            workingArea->loadGraphFromFile(loadFileName);
+            getCurrentWorkspace()->loadGraphFromFile(loadFileName);
             currentFile = loadFileName;
         }
     }
@@ -173,7 +175,7 @@ bool MainWindow::save()
     if (currentFile.isEmpty())
         return saveAs();
     else
-        return workingArea->saveGraphToFile(currentFile);
+        return getCurrentWorkspace()->saveGraphToFile(currentFile);
 }
 
 bool MainWindow::saveAs()
@@ -185,10 +187,16 @@ bool MainWindow::saveAs()
     if (!saveFileName.isEmpty())
     {
         currentFile = saveFileName;
-        return workingArea->saveGraphToFile(saveFileName);
+        return getCurrentWorkspace()->saveGraphToFile(saveFileName);
     }
     else
         return false;
+}
+
+Workspace *MainWindow::getCurrentWorkspace()
+{
+    QWidget *currentWidget = workingArea->currentWidget();
+    return static_cast<Workspace *>(currentWidget);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

@@ -1,6 +1,6 @@
 #include "workspace.h"
 
-Workspace::Workspace(MainWindow* parent)
+Workspace::Workspace(QWidget* parent)
     : QGraphicsView(parent)
 {
     QGraphicsScene* newScene = new QGraphicsScene(0, 0, WIDTH, HEIGHT);

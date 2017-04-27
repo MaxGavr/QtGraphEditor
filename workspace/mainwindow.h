@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 #include <QMainWindow>
+#include <QTabWidget>
+#include <QMdiSubWindow>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QAction>
@@ -30,6 +32,8 @@ private slots:
     bool saveAs();
 
 private:
+    Workspace *getCurrentWorkspace();
+
     void createMenuActions();
     void createEditActions();
     void createMenus();
@@ -60,5 +64,5 @@ private:
     QAction* runAlgorithm;
     QAction* resetElements;
 
-    Workspace* workingArea;
+    QTabWidget* workingArea;
 };
