@@ -91,7 +91,10 @@ void Workspace::keyPressEvent(QKeyEvent *event)
         break;
     }
     default:
+    {
+        clearDrawingLine();
         QWidget::keyPressEvent(event);
+    }
     }
 }
 
@@ -178,10 +181,14 @@ void Workspace::manageEdgeCreation(const QPoint &location)
                 selectedNodes.second = topmostNode;
                 createEdge(selectedNodes.first, selectedNodes.second);
                 clearDrawingLine();
+                clearSelection();
             }
     }
     else
+    {
         clearDrawingLine();
+        clearSelection();
+    }
 }
 
 void Workspace::setElementContent(QGraphicsItem* item)
@@ -439,7 +446,6 @@ void Workspace::clearDrawingLine()
 {
     delete drawingLine;
     drawingLine = NULL;
-    clearSelection();
 }
 
 void Workspace::clearSelection()
