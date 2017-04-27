@@ -8,7 +8,6 @@ Workspace::Workspace(MainWindow* parent)
     setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     setDragMode(QGraphicsView::RubberBandDrag);
     setMaximumSize(QSize(WIDTH, HEIGHT));
-    setMouseTracking(true);
 
     graph = new Graph();
     algoHandler = new AlgorithmHandler(this);
@@ -20,10 +19,25 @@ Workspace::Workspace(MainWindow* parent)
 
 void Workspace::mouseMoveEvent(QMouseEvent *event)
 {
-    if (drawingLine && (toggledMode == edgeCreationMode))
-        drawingLine->setLine(QLineF(selectedNodes.first->getCenterPos(), mapToScene(event->pos())));
-    else
-        QGraphicsView::mouseMoveEvent(event);
+    switch (toggledMode)
+    {
+    case defaultMode:
+    {
+        if (GraphicsNodeItem* node = toNode(scene()->itemAt(mapToScene(event->pos()), QTransform())))
+            ensureVisible(node, 40, 40);
+        break;
+    }
+    case edgeCreationMode:
+    {
+        if (drawingLine)
+        {
+            drawingLine->setLine(QLineF(selectedNodes.first->getCenterPos(), mapToScene(event->pos())));
+            ensureVisible(drawingLine);
+        }
+        break;
+    }
+    }
+    QGraphicsView::mouseMoveEvent(event);
 }
 
 void Workspace::mouseDoubleClickEvent(QMouseEvent *event)
@@ -63,6 +77,7 @@ void Workspace::mousePressEvent(QMouseEvent *event)
 
 void Workspace::keyPressEvent(QKeyEvent *event)
 {
+    clearDrawingLine();
     switch (event->key())
     {
     case Qt::Key_Delete:
@@ -78,6 +93,12 @@ void Workspace::keyPressEvent(QKeyEvent *event)
     default:
         QWidget::keyPressEvent(event);
     }
+}
+
+void Workspace::focusOutEvent(QFocusEvent *event)
+{
+    clearDrawingLine();
+    QGraphicsView::focusOutEvent(event);
 }
 
 void Workspace::createNode(const QPoint& pos, const QString& idtf)
@@ -223,6 +244,7 @@ void Workspace::createEdge(int firstNodeIndex, int secondNodeIndex, int weight)
 
 void Workspace::toggleSelectionMode(bool isToggled)
 {
+    setMouseTracking(false);
     toggleMode(defaultMode, isToggled);
 }
 
@@ -334,6 +356,7 @@ void Workspace::toggleNodeCreationMode(bool isToggled)
 
 void Workspace::toggleEdgeCreationMode(bool isToggled)
 {
+    setMouseTracking(true);
     toggleMode(edgeCreationMode, isToggled);
 }
 
@@ -382,7 +405,7 @@ QGraphicsItem* Workspace::getSelectedItem()
         return NULL;
 }
 
-QList<GraphicsNodeItem *> Workspace::getNodes()
+QList<GraphicsNodeItem *> Workspace::getNodes() const
 {
     QList<QGraphicsItem *> items = scene()->items();
     QList<GraphicsNodeItem *> nodes;
@@ -400,7 +423,7 @@ QList<GraphicsNodeItem *> Workspace::getNodes()
     return nodes;
 }
 
-QList<GraphicsEdgeItem *> Workspace::getEdges()
+QList<GraphicsEdgeItem *> Workspace::getEdges() const
 {
     QList<QGraphicsItem *> items = scene()->items();
     QList<GraphicsEdgeItem *> edges;

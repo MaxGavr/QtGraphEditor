@@ -197,17 +197,12 @@ void Graph::removeNodeIndex(int i)
 
 bool Graph::validateNodeIndex(int i) const
 {
-    if ((i < 0) || (nodeIndices.find(i) != nodeIndices.end()))
-        return false;
-    else
-        return true;
+     return !((i < 0) || (nodeIndices.find(i) != nodeIndices.end()));
+
 }
 
 bool Graph::validateEdgeIndex(GraphEdge::EdgeIndex i)
 {
-    if (!validateNodeIndex(i.first) || !validateNodeIndex(i.second))
-        return false;
-    else
-        return true;
+    return !validateNodeIndex(i.first) || !validateNodeIndex(i.second);
 }
 

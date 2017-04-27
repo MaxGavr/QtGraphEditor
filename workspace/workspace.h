@@ -32,6 +32,7 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent* event);
     void keyPressEvent(QKeyEvent *event);
+    void focusOutEvent(QFocusEvent* event);
 
     void manageEdgeCreation(const QPoint& location);
 
@@ -69,8 +70,8 @@ private slots:
 private:
     GraphicsNodeItem* getTopmostNodeItem(QList<QGraphicsItem*> items);
     QGraphicsItem* getSelectedItem();
-    QList<GraphicsNodeItem *> getNodes();
-    QList<GraphicsEdgeItem *> getEdges();
+    QList<GraphicsNodeItem *> getNodes() const;
+    QList<GraphicsEdgeItem *> getEdges() const;
 
     void clearDrawingLine();
 
