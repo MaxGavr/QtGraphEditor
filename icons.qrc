@@ -9,5 +9,6 @@
         <file>icons/icon_open_file.png</file>
         <file>icons/icon_new_file.png</file>
         <file>icons/icon_algo.png</file>
+        <file>icons/icon_refresh.png</file>
     </qresource>
 </RCC>

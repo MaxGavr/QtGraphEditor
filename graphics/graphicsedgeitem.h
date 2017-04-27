@@ -27,10 +27,12 @@ public:
     void trackNodes();
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QPen getDefaultPen();
 
 private:
     QPointF calcLabelPosition() const;
 
+    QPen defaultPen;
     QGraphicsSimpleTextItem* label;
 
     GraphicsNodeItem* startNodeItem;

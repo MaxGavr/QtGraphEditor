@@ -9,7 +9,8 @@ GraphicsNodeItem::GraphicsNodeItem(const QPointF& position, const GraphNode &nod
 
     setPen(QPen(Qt::black, 3));
     setBrush(QBrush(Qt::lightGray));
-
+    defaultPen = pen();
+    defaultBrush = brush();
     setFlags(ItemIsMovable | ItemIsSelectable | ItemSendsGeometryChanges);
 
     label = new QGraphicsSimpleTextItem(getGraphNode().getText(), this);
@@ -77,6 +78,16 @@ void GraphicsNodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     label->setText(getGraphNode().getText());
     label->setPos(calcLabelPosition());
     QGraphicsEllipseItem::paint(painter, option, widget);
+}
+
+QPen GraphicsNodeItem::getDefaultPen() const
+{
+    return defaultPen;
+}
+
+QBrush GraphicsNodeItem::getDefaultBrush() const
+{
+    return defaultBrush;
 }
 
 QPointF GraphicsNodeItem::calcLabelPosition() const

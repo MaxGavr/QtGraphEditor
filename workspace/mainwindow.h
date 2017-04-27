@@ -58,6 +58,7 @@ private:
     QAction* createEdge;
     QAction* deleteElement;
     QAction* runAlgorithm;
+    QAction* resetElements;
 
     Workspace* workingArea;
 };

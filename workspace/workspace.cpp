@@ -319,6 +319,7 @@ bool Workspace::loadGraphFromFile(const QString& loadFileName)
 
 void Workspace::deleteGraph()
 {
+    algoHandler->stopAlgorithm();
     scene()->clear();
     delete drawingLine;
     delete graph;
@@ -346,6 +347,11 @@ void Workspace::runAlgorithm()
 {
     PrimAlgorithm* algo = new PrimAlgorithm();
     algoHandler->handleAlgorithm(algo);
+}
+
+void Workspace::resetElementsView()
+{
+    algoHandler->removeHighlight();
 }
 
 GraphicsNodeItem *Workspace::getTopmostNodeItem(QList<QGraphicsItem *> items)

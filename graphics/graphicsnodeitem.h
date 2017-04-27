@@ -34,6 +34,9 @@ public:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+    QPen getDefaultPen() const;
+    QBrush getDefaultBrush() const;
+
 private:
     QPointF calcLabelPosition() const;
 
@@ -41,6 +44,9 @@ private:
 
     QList<GraphicsEdgeItem*> edges;
     QGraphicsSimpleTextItem* label;
+
+    QPen defaultPen;
+    QBrush defaultBrush;
 
     const int NODE_DIAMETER = 20;
 };

@@ -11,6 +11,7 @@ GraphicsEdgeItem::GraphicsEdgeItem(GraphicsNodeItem* begin, GraphicsNodeItem* en
 
     setFlags(ItemIsSelectable);
     setPen(QPen(Qt::darkGray, 3));
+    defaultPen = pen();
     setZValue(-1);
 
     label = new QGraphicsSimpleTextItem(QString::number(getGraphEdge().getWeight()), this);
@@ -55,6 +56,11 @@ void GraphicsEdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
         label->show();
     label->setPos(calcLabelPosition());
     QGraphicsLineItem::paint(painter, option, widget);
+}
+
+QPen GraphicsEdgeItem::getDefaultPen()
+{
+    return defaultPen;
 }
 
 QPointF GraphicsEdgeItem::calcLabelPosition() const

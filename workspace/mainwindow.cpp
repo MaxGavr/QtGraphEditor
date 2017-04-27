@@ -85,6 +85,11 @@ void MainWindow::createEditActions()
     runAlgorithm->setShortcut(QKeySequence("Ctrl+R"));
     runAlgorithm->setStatusTip(tr("Find minimum spanning tree for current graph"));
     connect(runAlgorithm, SIGNAL(triggered(bool)), workingArea, SLOT(runAlgorithm()));
+
+    resetElements = new QAction(QIcon(":/icons/icon_refresh.png"), tr("Reset appearance"), this);
+    resetElements->setShortcut(QKeySequence("Ctrl+A"));
+    resetElements->setStatusTip(tr("Reset every element appearance"));
+    connect(resetElements, SIGNAL(triggered(bool)), workingArea, SLOT(resetElementsView()));
 }
 
 void MainWindow::createMenus()
@@ -121,6 +126,7 @@ void MainWindow::createToolBars()
     addToolBar(Qt::LeftToolBarArea, editToolBar);
     editToolBar->addActions(editActionGroup->actions());
     editToolBar->addAction(runAlgorithm);
+    editToolBar->addAction(resetElements);
 }
 
 void MainWindow::newFile()

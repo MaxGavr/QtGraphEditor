@@ -64,6 +64,7 @@ private slots:
     void toggleDeletionMode(bool isToggled);
 
     void runAlgorithm();
+    void resetElementsView();
 
 private:
     GraphicsNodeItem* getTopmostNodeItem(QList<QGraphicsItem*> items);

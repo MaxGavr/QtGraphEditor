@@ -13,9 +13,13 @@ public:
     AlgorithmHandler(Workspace* w);
 
     void handleAlgorithm(GraphAlgorithm *algo);
+    void stopAlgorithm();
+
+public slots:
+    void removeHighlight();
 
 private slots:
-    void highlightElement();
+    void highlightElement();    
 
 private:
     Workspace* workspace;

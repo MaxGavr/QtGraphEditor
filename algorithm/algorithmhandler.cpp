@@ -4,7 +4,7 @@
 AlgorithmHandler::AlgorithmHandler(Workspace *w)
 {
     workspace = w;
-    timer = NULL;
+    timer = new QTimer();
     algorithm = NULL;
 }
 
@@ -17,6 +17,12 @@ void AlgorithmHandler::handleAlgorithm(GraphAlgorithm* algo)
     timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(highlightElement()));
     timer->start(1000);
+}
+
+void AlgorithmHandler::stopAlgorithm()
+{
+    if (timer->isActive())
+        timer->stop();
 }
 
 void AlgorithmHandler::highlightElement()
@@ -44,6 +50,19 @@ void AlgorithmHandler::highlightElement()
     }
     else
         timer->stop();
+}
+
+void AlgorithmHandler::removeHighlight()
+{
+    foreach (GraphicsNodeItem* node, workspace->getNodes())
+    {
+        node->setPen(node->getDefaultPen());
+        node->setBrush(node->getDefaultBrush());
+    }
+    foreach (GraphicsEdgeItem* edge, workspace->getEdges())
+    {
+        edge->setPen(edge->getDefaultPen());
+    }
 }
 
 
