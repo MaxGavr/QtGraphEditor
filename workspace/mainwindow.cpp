@@ -4,7 +4,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     workingArea = new QTabWidget(this);
-    workingArea->addTab(new Workspace(), tr("Graph"));
+    newFile();
     setCentralWidget(workingArea);
     connect(workingArea, SIGNAL(currentChanged(int)), this, SLOT(connectToolsToCurrentWidget()));
 
@@ -44,6 +44,11 @@ void MainWindow::createMenuActions()
     saveAsFileAction->setShortcut(QKeySequence::SaveAs);
     saveAsFileAction->setStatusTip(tr("Save current file in a certain way"));
     connect(saveAsFileAction, SIGNAL(triggered()), this, SLOT(saveAs()));
+
+    closeTabAction = new QAction(QIcon(":/icons/icon_close_tab.png"), tr("&Close tab"), this);
+    closeTabAction->setShortcut(QKeySequence::Close);
+    closeTabAction->setStatusTip(tr("Close current tab"));
+    connect(closeTabAction, SIGNAL(triggered()), this, SLOT(closeTab()));
 
     exitAction = new QAction(tr("E&xit"), this);
     exitAction->setShortcut(tr("Ctrl+Q"));
@@ -97,6 +102,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAsFileAction);
 
     fileMenu->addSeparator();
+    fileMenu->addAction(closeTabAction);
     fileMenu->addAction(exitAction);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
@@ -116,6 +122,7 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(openFileAction);
     fileToolBar->addAction(saveFileAction);
     fileToolBar->addAction(saveAsFileAction);
+    fileToolBar->addAction(closeTabAction);
 
     editToolBar = new QToolBar(tr("&Edit"));
     editToolBar->setIconSize(QSize(30, 30));
@@ -127,18 +134,17 @@ void MainWindow::createToolBars()
 
 void MainWindow::newFile()
 {
-    if (saveConfirmation())
-    {
-        int index = workingArea->addTab(new Workspace(), tr("graph"));
-        workingArea->setCurrentIndex(index);
-    }
+    int index = workingArea->addTab(new Workspace(), QString());
+    workingArea->setTabText(index, QString("Graph №%1").arg(index + 1));
+    workingArea->setCurrentIndex(index);
 }
 
 bool MainWindow::saveConfirmation()
 {
-    int respond = QMessageBox::warning(this, tr("Saving"),
-                                       tr("Graph has been modified.\n"
-                                          "Do you want to save changes?"),
+    QString currentTabTitle = workingArea->tabText(workingArea->indexOf(getCurrentWorkspace()));
+    QString warning = QString("%1 has been modified.\n Do you want to save changes?")
+                              .arg(currentTabTitle);
+    int respond = QMessageBox::warning(this, tr("Saving"), warning,
                                        QMessageBox::Yes | QMessageBox::No |
                                        QMessageBox::Cancel);
     if (respond == QMessageBox::Yes)
@@ -187,6 +193,16 @@ bool MainWindow::saveAs()
         return false;
 }
 
+void MainWindow::closeTab()
+{
+    if (saveConfirmation())
+    {
+        Workspace *workspace = getCurrentWorkspace();
+        workingArea->removeTab(workingArea->indexOf(workspace));
+        workspace->close();
+    }
+}
+
 void MainWindow::connectToolsToCurrentWidget()
 {
     Workspace *workspace = getCurrentWorkspace();
@@ -195,7 +211,7 @@ void MainWindow::connectToolsToCurrentWidget()
     connect(createNode, SIGNAL(toggled(bool)), workspace, SLOT(toggleNodeCreationMode(bool)));
     connect(createEdge, SIGNAL(toggled(bool)), workspace, SLOT(toggleEdgeCreationMode(bool)));
     connect(deleteElement, SIGNAL(toggled(bool)), workspace, SLOT(toggleDeletionMode(bool)));
-    selectNode->trigger();
+    selectNode->toggle();
 
     connect(runAlgorithm, SIGNAL(triggered(bool)), workspace, SLOT(runAlgorithm()));
     connect(resetElements, SIGNAL(triggered(bool)), workspace, SLOT(resetElementsView()));
@@ -209,8 +225,10 @@ Workspace *MainWindow::getCurrentWorkspace()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (saveConfirmation())
-        ;
-    else
-        event->ignore();
+    for (int i = 0; i < workingArea->count(); i++)
+    {
+        workingArea->setCurrentIndex(i);
+        if (!saveConfirmation())
+            break;
+    }
 }

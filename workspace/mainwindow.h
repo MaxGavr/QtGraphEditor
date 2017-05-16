@@ -30,6 +30,7 @@ private slots:
     void open();
     bool save();
     bool saveAs();
+    void closeTab();
 
     void connectToolsToCurrentWidget();
 
@@ -55,6 +56,7 @@ private:
     QAction* openFileAction;
     QAction* saveFileAction;
     QAction* saveAsFileAction;
+    QAction* closeTabAction;
     QAction* exitAction;
     QAction* aboutQtAction;
 
