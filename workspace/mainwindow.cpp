@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     workingArea = new QTabWidget(this);
     workingArea->addTab(new Workspace(), tr("Graph"));
     setCentralWidget(workingArea);
+    connect(workingArea, SIGNAL(currentChanged(int)), this, SLOT(connectToolsToCurrentWidget()));
 
     QStatusBar* statusBar = new QStatusBar(this);
     setStatusBar(statusBar);
@@ -14,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     createEditActions();
     createMenus();
     createToolBars();
+
+    connectToolsToCurrentWidget();
 }
 
 MainWindow::~MainWindow()
@@ -54,44 +57,35 @@ void MainWindow::createMenuActions()
 
 void MainWindow::createEditActions()
 {
-    Workspace *workspace = getCurrentWorkspace();
     editActionGroup = new QActionGroup(this);
 
     selectNode = new QAction(QIcon(":/icons/icon_selection.png"), tr("Select element"), editActionGroup);
     selectNode->setShortcut(Qt::Key_1);
     selectNode->setCheckable(true);
     selectNode->setStatusTip(tr("Select existing graph elements"));
-    connect(selectNode, SIGNAL(toggled(bool)), workspace, SLOT(toggleSelectionMode(bool)));
 
     createNode = new QAction(QIcon(":/icons/icon_node.png"), tr("Create node"), editActionGroup);
     createNode->setShortcut(Qt::Key_2);
     createNode->setStatusTip(tr("Create new graph vertex"));
     createNode->setCheckable(true);
-    connect(createNode, SIGNAL(toggled(bool)), workspace, SLOT(toggleNodeCreationMode(bool)));
 
     createEdge = new QAction(QIcon(":/icons/icon_edge.png"), tr("Create edge"), editActionGroup);
     createEdge->setShortcut(Qt::Key_3);
     createEdge->setStatusTip(tr("Create a connection between two selected nodes"));
     createEdge->setCheckable(true);
-    connect(createEdge, SIGNAL(toggled(bool)), workspace, SLOT(toggleEdgeCreationMode(bool)));
 
     deleteElement = new QAction(QIcon(":/icons/icon_trash.png"), tr("Delete element"), editActionGroup);
     deleteElement->setShortcut(Qt::Key_4);
     deleteElement->setStatusTip(tr("Delete graph node or edge"));
     deleteElement->setCheckable(true);
-    connect(deleteElement, SIGNAL(toggled(bool)), workspace, SLOT(toggleDeletionMode(bool)));
-
-    selectNode->trigger();
 
     runAlgorithm = new QAction(QIcon(":/icons/icon_algo.png"), tr("Run Prim's algorithm"), this);
     runAlgorithm->setShortcut(QKeySequence("Ctrl+R"));
     runAlgorithm->setStatusTip(tr("Find minimum spanning tree for current graph"));
-    connect(runAlgorithm, SIGNAL(triggered(bool)), workspace, SLOT(runAlgorithm()));
 
     resetElements = new QAction(QIcon(":/icons/icon_refresh.png"), tr("Reset appearance"), this);
     resetElements->setShortcut(QKeySequence("Ctrl+A"));
     resetElements->setStatusTip(tr("Reset every element appearance"));
-    connect(resetElements, SIGNAL(triggered(bool)), workspace, SLOT(resetElementsView()));
 }
 
 void MainWindow::createMenus()
@@ -191,6 +185,20 @@ bool MainWindow::saveAs()
     }
     else
         return false;
+}
+
+void MainWindow::connectToolsToCurrentWidget()
+{
+    Workspace *workspace = getCurrentWorkspace();
+
+    connect(selectNode, SIGNAL(toggled(bool)), workspace, SLOT(toggleSelectionMode(bool)));
+    connect(createNode, SIGNAL(toggled(bool)), workspace, SLOT(toggleNodeCreationMode(bool)));
+    connect(createEdge, SIGNAL(toggled(bool)), workspace, SLOT(toggleEdgeCreationMode(bool)));
+    connect(deleteElement, SIGNAL(toggled(bool)), workspace, SLOT(toggleDeletionMode(bool)));
+    selectNode->trigger();
+
+    connect(runAlgorithm, SIGNAL(triggered(bool)), workspace, SLOT(runAlgorithm()));
+    connect(resetElements, SIGNAL(triggered(bool)), workspace, SLOT(resetElementsView()));
 }
 
 Workspace *MainWindow::getCurrentWorkspace()

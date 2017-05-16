@@ -31,6 +31,8 @@ private slots:
     bool save();
     bool saveAs();
 
+    void connectToolsToCurrentWidget();
+
 private:
     Workspace *getCurrentWorkspace();
 
