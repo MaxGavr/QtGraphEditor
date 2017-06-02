@@ -1,5 +1,7 @@
 #include "graphicsedgeitem.h"
 
+const int GraphicsEdgeItem::ARROW_SIZE = 15;
+
 GraphicsEdgeItem::GraphicsEdgeItem(GraphicsNodeItem* begin, GraphicsNodeItem* end, const GraphEdge &edge)
     : graphEdge(edge)
 {
@@ -32,6 +34,11 @@ const GraphEdge& GraphicsEdgeItem::getGraphEdge() const
     return graphEdge;
 }
 
+bool GraphicsEdgeItem::isOriented() const
+{
+    return graphEdge.isOriented();
+}
+
 GraphicsNodeItem* GraphicsEdgeItem::getStartNodeItem()
 {
     return startNodeItem;
@@ -49,13 +56,69 @@ void GraphicsEdgeItem::trackNodes()
 
 void GraphicsEdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    if (getStartNodeItem()->collidesWithItem(getEndNodeItem()))
+        QGraphicsLineItem::paint(painter, option, widget);
+
     label->setText(QString::number(getGraphEdge().getWeight()));
     if (getGraphEdge().getWeight() == 0)
         label->hide();
     else
         label->show();
     label->setPos(calcLabelPosition());
+
+    if (isOriented())
+    {
+        painter->setPen(pen());
+        painter->setBrush(Qt::darkGray);
+
+        GraphicsNodeItem* startNode = getStartNodeItem();
+        QLineF fullLine = QLineF(startNodeItem->getCenterPos(), endNodeItem->getCenterPos());
+
+        int nodeRadius = GraphicsNodeItem::NODE_DIAMETER / 2;
+        QPointF intersectionPoint = fullLine.pointAt(1 - ((nodeRadius + 5) / fullLine.length()));
+
+        setLine(QLineF(intersectionPoint, startNode->getCenterPos()));
+
+        const qreal Pi = 3.14;
+
+        double angle = ::acos(line().dx() / line().length());
+        if (line().dy() >= 0)
+            angle = (Pi * 2) - angle;
+
+        QPointF arrowP1 = line().p1() + QPointF(sin(angle + Pi / 3) * ARROW_SIZE,
+                                        cos(angle + Pi / 3) * ARROW_SIZE);
+        QPointF arrowP2 = line().p1() + QPointF(sin(angle + Pi - Pi / 3) * ARROW_SIZE,
+                                        cos(angle + Pi - Pi / 3) * ARROW_SIZE);
+
+        arrowHead.clear();
+        arrowHead << line().p1() << arrowP1 << arrowP2;
+
+        painter->drawLine(line());
+        painter->drawPolygon(arrowHead);
+    }
+
     QGraphicsLineItem::paint(painter, option, widget);
+}
+
+QRectF GraphicsEdgeItem::boundingRect() const
+{
+    if (isOriented())
+    {
+        qreal extra = (pen().width() + ARROW_SIZE) / 2.0;
+        QSize edgeSize = QSize(line().p2().x() - line().p1().x(),
+                               line().p2().y() - line().p1().y());
+        return QRectF(line().p1(), edgeSize).normalized().adjusted(-extra, -extra, extra, extra);
+    }
+    else
+        return QGraphicsLineItem::boundingRect();
+}
+
+QPainterPath GraphicsEdgeItem::shape() const
+{
+    QPainterPath path = QGraphicsLineItem::shape();
+    if (isOriented())
+        path.addPolygon(arrowHead);
+    return path;
 }
 
 QPen GraphicsEdgeItem::getDefaultPen()

@@ -64,6 +64,7 @@ private:
     QAction* selectNode;
     QAction* createNode;
     QAction* createEdge;
+    QAction* createArc;
     QAction* deleteElement;
     QAction* runAlgorithm;
     QAction* resetElements;

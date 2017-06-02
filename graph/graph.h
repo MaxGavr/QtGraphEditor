@@ -5,7 +5,7 @@
 #include <set>
 #include <queue>
 
-#include "graphnode.h"
+#include "graphedge.h"
 #include "exceptions.h"
 
 class Graph
@@ -24,8 +24,8 @@ public:
 
     GraphEdge::const_ref addEdge(GraphNode::const_ref firstNode,
                                        GraphNode::const_ref secondNode,
-                                       int weight = 0);
-    GraphEdge::const_ref addEdge(int firstIndex, int secondIndex, int weight = 0);
+                                       int weight = 0, bool oriented = false);
+    GraphEdge::const_ref addEdge(int firstIndex, int secondIndex, int weight = 0, bool oriented = false);
     void removeEdge(GraphEdge::const_ref edge);
     void setEdgeWeight(GraphEdge::const_ref edge, int weight);
 

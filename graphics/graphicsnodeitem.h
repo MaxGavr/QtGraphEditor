@@ -22,6 +22,8 @@ public:
         return Type;
     }
 
+    static const int NODE_DIAMETER;
+
     const GraphNode& getGraphNode() const;
     QList<GraphicsEdgeItem*> getEdgeItems();
 
@@ -47,6 +49,4 @@ private:
 
     QPen defaultPen;
     QBrush defaultBrush;
-
-    const int NODE_DIAMETER = 20;
 };

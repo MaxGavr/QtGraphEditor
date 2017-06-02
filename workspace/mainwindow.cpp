@@ -76,11 +76,16 @@ void MainWindow::createEditActions()
 
     createEdge = new QAction(QIcon(":/icons/icon_edge.png"), tr("Create edge"), editActionGroup);
     createEdge->setShortcut(Qt::Key_3);
-    createEdge->setStatusTip(tr("Create a connection between two selected nodes"));
+    createEdge->setStatusTip(tr("Create an undirected connection between two selected nodes"));
     createEdge->setCheckable(true);
 
+    createArc = new QAction(QIcon(":/icons/icon_arc.png"), tr("Create arc"), editActionGroup);
+    createArc->setShortcut(Qt::Key_4);
+    createArc->setStatusTip(tr("Create a directed connection between two selected nodes"));
+    createArc->setCheckable(true);
+
     deleteElement = new QAction(QIcon(":/icons/icon_trash.png"), tr("Delete element"), editActionGroup);
-    deleteElement->setShortcut(Qt::Key_4);
+    deleteElement->setShortcut(Qt::Key_5);
     deleteElement->setStatusTip(tr("Delete graph node or edge"));
     deleteElement->setCheckable(true);
 
@@ -210,6 +215,7 @@ void MainWindow::connectToolsToCurrentWidget()
     connect(selectNode, SIGNAL(toggled(bool)), workspace, SLOT(toggleSelectionMode(bool)));
     connect(createNode, SIGNAL(toggled(bool)), workspace, SLOT(toggleNodeCreationMode(bool)));
     connect(createEdge, SIGNAL(toggled(bool)), workspace, SLOT(toggleEdgeCreationMode(bool)));
+    connect(createArc, SIGNAL(toggled(bool)), workspace, SLOT(toggleArcCreationMode(bool)));
     connect(deleteElement, SIGNAL(toggled(bool)), workspace, SLOT(toggleDeletionMode(bool)));
     selectNode->toggle();
 
