@@ -4,6 +4,7 @@
 #include <QApplication>
 
 #include "graphicsnodeitem.h"
+#include "graph/graphedge.h"
 
 class GraphicsEdgeItem : public QGraphicsLineItem
 {
@@ -20,6 +21,7 @@ public:
     }
 
     const GraphEdge& getGraphEdge() const;
+    bool isOriented() const;
 
     GraphicsNodeItem* getStartNodeItem();
     GraphicsNodeItem* getEndNodeItem();
@@ -27,6 +29,8 @@ public:
     void trackNodes();
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QRectF boundingRect() const;
+    QPainterPath shape() const;
     QPen getDefaultPen();
 
 private:
@@ -37,6 +41,9 @@ private:
 
     GraphicsNodeItem* startNodeItem;
     GraphicsNodeItem* endNodeItem;
+
+    QPolygonF arrowHead;
+    static const int ARROW_SIZE;
 
     GraphEdge::const_ref graphEdge;
 };

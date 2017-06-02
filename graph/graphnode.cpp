@@ -1,4 +1,5 @@
 #include "graphnode.h"
+#include "graphedge.h"
 
 GraphNode::GraphNode(int i)
 {
@@ -41,14 +42,17 @@ QList< QPair<int, int> > GraphNode::getAdjacentNodes() const
     QList< QPair<int,int> > adjacentNodes;
     foreach (GraphEdge* edge, edges)
     {
-        GraphEdge::EdgeIndex edgeIndex = edge->getEdgeIndex();
-        QPair<int, int> adjacent;
-        if (getIndex() == edgeIndex.first)
-            adjacent.second = edgeIndex.second;
-        else
-            adjacent.second = edgeIndex.first;
-        adjacent.first = edge->getWeight();
-        adjacentNodes.append(adjacent);
+        try
+        {
+            QPair<int, int> adjacent;
+            adjacent.first = edge->getWeight();
+            adjacent.second = edge->getAdjacentNode(*this).getIndex();
+            adjacentNodes.append(adjacent);
+        }
+        catch (const bad_graph_node& e)
+        {
+            continue;
+        }
     }
     return adjacentNodes;
 }

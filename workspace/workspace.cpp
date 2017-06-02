@@ -28,6 +28,7 @@ void Workspace::mouseMoveEvent(QMouseEvent *event)
         break;
     }
     case edgeCreationMode:
+    case arcCreationMode:
     {
         if (drawingLine)
         {
@@ -63,6 +64,7 @@ void Workspace::mousePressEvent(QMouseEvent *event)
         break;
     }
     case edgeCreationMode:
+    case arcCreationMode:
     {
         manageEdgeCreation(event->pos());
         break;
@@ -218,9 +220,11 @@ void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* second
     {
         try
         {
+            bool isOriented = toggledMode == arcCreationMode ? true : false;
             GraphEdge::const_ref newGraphEdge = graph->addEdge(firstNode->getGraphNode(),
-                                                                     secondNode->getGraphNode(),
-                                                                     weight);
+                                                               secondNode->getGraphNode(),
+                                                               weight,
+                                                               isOriented);
             GraphicsEdgeItem* newEdge = new GraphicsEdgeItem(firstNode,
                                                              secondNode,
                                                              newGraphEdge);
@@ -359,6 +363,12 @@ void Workspace::deleteGraph()
 void Workspace::toggleNodeCreationMode(bool isToggled)
 {
     toggleMode(nodeCreationMode, isToggled);
+}
+
+void Workspace::toggleArcCreationMode(bool isToggled)
+{
+    setMouseTracking(true);
+    toggleMode(arcCreationMode, isToggled);
 }
 
 void Workspace::toggleEdgeCreationMode(bool isToggled)

@@ -1,11 +1,12 @@
 #include "graphedge.h"
 #include "graphnode.h"
 
-GraphEdge::GraphEdge(GraphNode* start, GraphNode* end, int weight)
+GraphEdge::GraphEdge(GraphNode* start, GraphNode* end, int weight, bool oriented)
 {
     setStartNode(start);
     setEndNode(end);
     setWeight(weight);
+    this->oriented = oriented;
 }
 
 GraphEdge::~GraphEdge()
@@ -17,6 +18,11 @@ GraphEdge::~GraphEdge()
 GraphEdge::EdgeIndex GraphEdge::getEdgeIndex() const
 {
     return EdgeIndex(startNode->getIndex(), endNode->getIndex());
+}
+
+bool GraphEdge::isOriented() const
+{
+    return oriented;
 }
 
 void GraphEdge::setStartNode(GraphNode *node)
@@ -39,6 +45,16 @@ int GraphEdge::getWeight() const
 void GraphEdge::setWeight(int w)
 {
     weight = w;
+}
+
+GraphNode::const_ref GraphEdge::getAdjacentNode(GraphNode::const_ref node) const
+{
+    if (node == *startNode)
+        return *endNode;
+    else
+        if (node == *endNode && !isOriented())
+            return *startNode;
+    throw bad_graph_node();
 }
 
 bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge)

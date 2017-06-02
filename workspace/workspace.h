@@ -24,7 +24,7 @@ public:
 
     using NodePair = QPair<GraphicsNodeItem *, GraphicsNodeItem *>;
 
-    enum { defaultMode = 0, nodeCreationMode = 1, edgeCreationMode = 2, deletionMode = 3 };
+    enum { defaultMode = 0, nodeCreationMode, edgeCreationMode, arcCreationMode, deletionMode };
 
     Workspace(QWidget* parent = 0);
 
@@ -61,6 +61,7 @@ private slots:
 
     void toggleSelectionMode(bool isToggled);
     void toggleNodeCreationMode(bool isToggled);
+    void toggleArcCreationMode(bool isToggled);
     void toggleEdgeCreationMode(bool isToggled);
     void toggleDeletionMode(bool isToggled);
 

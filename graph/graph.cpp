@@ -63,12 +63,15 @@ void Graph::setNodeIdtf(GraphNode::const_ref node, QString idtf)
 
 GraphEdge::const_ref Graph::addEdge(GraphNode::const_ref firstNode,
                                           GraphNode::const_ref secondNode,
-                                          int weight)
+                                          int weight,
+                                          bool oriented)
 {
     if (!containsEdge(firstNode, secondNode) && (firstNode != secondNode))
     {
         GraphEdge* newEdge = new GraphEdge(findNodeByIndex(firstNode.getIndex()),
-                                           findNodeByIndex(secondNode.getIndex()), weight);
+                                           findNodeByIndex(secondNode.getIndex()),
+                                           weight,
+                                           oriented);
         edges.append(newEdge);
         return *newEdge;
     }
@@ -76,13 +79,13 @@ GraphEdge::const_ref Graph::addEdge(GraphNode::const_ref firstNode,
         throw bad_graph_edge();
 }
 
-GraphEdge::const_ref Graph::addEdge(int firstIndex, int secondIndex, int weight)
+GraphEdge::const_ref Graph::addEdge(int firstIndex, int secondIndex, int weight, bool oriented)
 {
     GraphNode* firstNode = findNodeByIndex(firstIndex);
     GraphNode* secondNode = findNodeByIndex(secondIndex);
 
     if (firstNode && secondNode)
-        return addEdge(*firstNode, *secondNode, weight);
+        return addEdge(*firstNode, *secondNode, weight, oriented);
     else
         throw bad_graph_edge();
 }

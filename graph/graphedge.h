@@ -4,8 +4,8 @@
 #include <QPair>
 
 #include <iostream>
-
-class GraphNode;
+#include "graphnode.h"
+#include "exceptions.h"
 
 class GraphEdge
 {
@@ -17,13 +17,16 @@ public:
     friend class GraphNode;
     friend bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge);
 
-    GraphEdge(GraphNode* start, GraphNode* end, int weight = 0);
+    GraphEdge(GraphNode* start, GraphNode* end, int weight = 0, bool oriented = false);
     ~GraphEdge();
 
     EdgeIndex getEdgeIndex() const;
+    bool isOriented() const;
 
     int getWeight() const;
     void setWeight(int w);
+
+    GraphNode::const_ref getAdjacentNode(GraphNode::const_ref node) const;
 
 private:
     void setStartNode(GraphNode* node);
@@ -31,6 +34,7 @@ private:
 
     GraphNode* startNode;
     GraphNode* endNode;
+    bool oriented;
 
     int weight;
 };

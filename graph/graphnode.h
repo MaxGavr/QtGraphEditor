@@ -4,10 +4,9 @@
 #include <QList>
 #include <QLinkedList>
 #include <QtAlgorithms>
+#include <QPair>
 
-#include "graphedge.h"
-
-
+class GraphEdge;
 
 class GraphNode
 {
