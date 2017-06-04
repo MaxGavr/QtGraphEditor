@@ -66,7 +66,7 @@ GraphEdge::const_ref Graph::addEdge(GraphNode::const_ref firstNode,
                                           int weight,
                                           bool oriented)
 {
-    if (!containsEdge(firstNode, secondNode) && (firstNode != secondNode))
+    if (!containsEdge(firstNode, secondNode))
     {
         GraphEdge* newEdge = new GraphEdge(findNodeByIndex(firstNode.getIndex()),
                                            findNodeByIndex(secondNode.getIndex()),

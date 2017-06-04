@@ -25,6 +25,11 @@ bool GraphEdge::isOriented() const
     return oriented;
 }
 
+bool GraphEdge::isLoop() const
+{
+    return startNode == endNode;
+}
+
 void GraphEdge::setStartNode(GraphNode *node)
 {
     startNode = node;
@@ -49,11 +54,14 @@ void GraphEdge::setWeight(int w)
 
 GraphNode::const_ref GraphEdge::getAdjacentNode(GraphNode::const_ref node) const
 {
-    if (node == *startNode)
-        return *endNode;
-    else
-        if (node == *endNode && !isOriented())
-            return *startNode;
+    if (!isLoop())
+    {
+        if (node == *startNode)
+            return *endNode;
+        else
+            if (node == *endNode && !isOriented())
+                return *startNode;
+    }
     throw bad_graph_node();
 }
 

@@ -22,6 +22,7 @@ public:
 
     EdgeIndex getEdgeIndex() const;
     bool isOriented() const;
+    bool isLoop() const;
 
     int getWeight() const;
     void setWeight(int w);

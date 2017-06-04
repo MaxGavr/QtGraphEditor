@@ -22,6 +22,7 @@ public:
 
     const GraphEdge& getGraphEdge() const;
     bool isOriented() const;
+    bool isLoop() const;
 
     GraphicsNodeItem* getStartNodeItem();
     GraphicsNodeItem* getEndNodeItem();
@@ -35,6 +36,7 @@ public:
 
 private:
     QPointF calcLabelPosition() const;
+    QPointF calcLoopPosition() const;
 
     QPen defaultPen;
     QGraphicsSimpleTextItem* label;
@@ -43,7 +45,10 @@ private:
     GraphicsNodeItem* endNodeItem;
 
     QPolygonF arrowHead;
+    QGraphicsEllipseItem* loop;
+
     static const int ARROW_SIZE;
+    static const QSizeF loopSize;
 
     GraphEdge::const_ref graphEdge;
 };

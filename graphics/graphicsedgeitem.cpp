@@ -1,6 +1,7 @@
 #include "graphicsedgeitem.h"
 
 const int GraphicsEdgeItem::ARROW_SIZE = 15;
+const QSizeF GraphicsEdgeItem::loopSize = QSizeF(50, 50);
 
 GraphicsEdgeItem::GraphicsEdgeItem(GraphicsNodeItem* begin, GraphicsNodeItem* end, const GraphEdge &edge)
     : graphEdge(edge)
@@ -19,6 +20,14 @@ GraphicsEdgeItem::GraphicsEdgeItem(GraphicsNodeItem* begin, GraphicsNodeItem* en
     label = new QGraphicsSimpleTextItem(QString::number(getGraphEdge().getWeight()), this);
     label->setFont(QFont("Helvetica", 12));
 
+    if (isLoop())
+    {
+        QRectF loopRect = QRectF(QPointF(0, 0), loopSize);
+        loop = new QGraphicsEllipseItem(loopRect, startNodeItem);
+        loop->setFlags(ItemStacksBehindParent);
+        loop->setPen(getDefaultPen());
+    }
+
     trackNodes();
 }
 
@@ -27,6 +36,8 @@ GraphicsEdgeItem::~GraphicsEdgeItem()
     getStartNodeItem()->removeEdgeItem(this);
     getEndNodeItem()->removeEdgeItem(this);
     delete label;
+    if (isLoop())
+        delete loop;
 }
 
 const GraphEdge& GraphicsEdgeItem::getGraphEdge() const
@@ -37,6 +48,11 @@ const GraphEdge& GraphicsEdgeItem::getGraphEdge() const
 bool GraphicsEdgeItem::isOriented() const
 {
     return graphEdge.isOriented();
+}
+
+bool GraphicsEdgeItem::isLoop() const
+{
+    return graphEdge.isLoop();
 }
 
 GraphicsNodeItem* GraphicsEdgeItem::getStartNodeItem()
@@ -52,6 +68,8 @@ GraphicsNodeItem* GraphicsEdgeItem::getEndNodeItem()
 void GraphicsEdgeItem::trackNodes()
 {
     setLine(QLineF(startNodeItem->getCenterPos(), endNodeItem->getCenterPos()));
+    if (isLoop())
+        loop->setPos(calcLoopPosition());
 }
 
 void GraphicsEdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -59,12 +77,17 @@ void GraphicsEdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     if (getStartNodeItem()->collidesWithItem(getEndNodeItem()))
         QGraphicsLineItem::paint(painter, option, widget);
 
-    label->setText(QString::number(getGraphEdge().getWeight()));
-    if (getGraphEdge().getWeight() == 0)
-        label->hide();
+    if (!isLoop())
+    {
+        label->setText(QString::number(getGraphEdge().getWeight()));
+        if (getGraphEdge().getWeight() == 0)
+            label->hide();
+        else
+            label->show();
+        label->setPos(calcLabelPosition());
+    }
     else
-        label->show();
-    label->setPos(calcLabelPosition());
+        label->hide();
 
     if (isOriented())
     {
@@ -110,7 +133,14 @@ QRectF GraphicsEdgeItem::boundingRect() const
         return QRectF(line().p1(), edgeSize).normalized().adjusted(-extra, -extra, extra, extra);
     }
     else
-        return QGraphicsLineItem::boundingRect();
+    {
+        if (isLoop())
+        {
+            QRectF rect = loop->boundingRect();
+            return QRectF(mapFromItem(loop, rect.topLeft()), loopSize);
+        }
+    }
+    return QGraphicsLineItem::boundingRect();
 }
 
 QPainterPath GraphicsEdgeItem::shape() const
@@ -118,6 +148,9 @@ QPainterPath GraphicsEdgeItem::shape() const
     QPainterPath path = QGraphicsLineItem::shape();
     if (isOriented())
         path.addPolygon(arrowHead);
+    else
+        if (isLoop())
+            path = mapFromItem(loop, loop->shape());
     return path;
 }
 
@@ -134,4 +167,10 @@ QPointF GraphicsEdgeItem::calcLabelPosition() const
     int x = center.x() - metrics.width(text)/2;
     int y = center.y() - metrics.height();
     return QPointF(x, y);
+}
+
+QPointF GraphicsEdgeItem::calcLoopPosition() const
+{
+    QPointF nodeCenter = startNodeItem->mapFromScene(startNodeItem->getCenterPos());
+    return QPointF(nodeCenter.x() - loopSize.width() / 2, nodeCenter.y() - loopSize.height());
 }
