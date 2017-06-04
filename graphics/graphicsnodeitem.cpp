@@ -50,10 +50,7 @@ void GraphicsNodeItem::removeEdgeItem(GraphicsEdgeItem *edgeItem)
 
 QPointF GraphicsNodeItem::getCenterPos() const
 {
-    QPointF center;
-    center.setX(scenePos().x() + NODE_DIAMETER/2);
-    center.setY(scenePos().y() + NODE_DIAMETER/2);
-    return center;
+    return mapToScene(boundingRect().center());
 }
 
 void GraphicsNodeItem::setCenterPos(qreal x, qreal y)
