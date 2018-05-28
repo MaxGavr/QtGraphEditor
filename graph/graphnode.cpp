@@ -1,5 +1,9 @@
+#include <QtAlgorithms>
+#include <QList>
+
 #include "graphnode.h"
 #include "graphedge.h"
+
 
 GraphNode::GraphNode(int i)
 {

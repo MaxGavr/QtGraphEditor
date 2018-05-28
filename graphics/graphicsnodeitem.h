@@ -2,12 +2,12 @@
 #include <QGraphicsEllipseItem>
 #include <QPen>
 #include <QBrush>
-#include <QList>
 #include <QPainter>
 
 #include "graph/graphnode.h"
 
 class GraphicsEdgeItem;
+
 
 class GraphicsNodeItem : public QGraphicsEllipseItem
 {

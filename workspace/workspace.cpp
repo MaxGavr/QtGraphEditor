@@ -1,4 +1,12 @@
+#include <QInputDialog>
+#include <QXmlStreamWriter>
+#include <QMouseEvent>
+
+#include <algorithm>
+#include <functional>
+
 #include "workspace.h"
+
 
 Workspace::Workspace(QWidget* parent)
     : QGraphicsView(parent)
@@ -13,30 +21,35 @@ Workspace::Workspace(QWidget* parent)
     algoHandler = new AlgorithmHandler(this);
     drawingLine = NULL;
 
-    toNode = [](QGraphicsItem *item){ return qgraphicsitem_cast<GraphicsNodeItem *>(item); };
-    toEdge = [](QGraphicsItem *item){ return qgraphicsitem_cast<GraphicsEdgeItem *>(item); };
+    toNode = [] (QGraphicsItem *item) {
+        return qgraphicsitem_cast<GraphicsNodeItem *>(item);
+    };
+    toEdge = [] (QGraphicsItem *item) {
+        return qgraphicsitem_cast<GraphicsEdgeItem *>(item);
+    };
 }
 
 void Workspace::mouseMoveEvent(QMouseEvent *event)
 {
     switch (toggledMode)
     {
-    case defaultMode:
-    {
-        if (GraphicsNodeItem* node = toNode(scene()->itemAt(mapToScene(event->pos()), QTransform())))
-            ensureVisible(node, 40, 40);
-        break;
-    }
-    case edgeCreationMode:
-    case arcCreationMode:
-    {
-        if (drawingLine)
+        case defaultMode:
         {
-            drawingLine->setLine(QLineF(selectedNodes.first->getCenterPos(), mapToScene(event->pos())));
-            ensureVisible(drawingLine);
+            GraphicsNodeItem* node = toNode(scene()->itemAt(mapToScene(event->pos()), QTransform()));
+            if (node)
+                ensureVisible(node, 40, 40);
+            break;
         }
-        break;
-    }
+        case edgeCreationMode:
+        case arcCreationMode:
+        {
+            if (drawingLine)
+            {
+                drawingLine->setLine(QLineF(selectedNodes.first->getCenterPos(), mapToScene(event->pos())));
+                ensureVisible(drawingLine);
+            }
+            break;
+        }
     }
     QGraphicsView::mouseMoveEvent(event);
 }
@@ -53,27 +66,27 @@ void Workspace::mousePressEvent(QMouseEvent *event)
 {
     switch (toggledMode)
     {
-    case defaultMode:
-    {
-        QGraphicsView::mousePressEvent(event);
-        break;
-    }
-    case nodeCreationMode:
-    {
-        createNode(event->pos());
-        break;
-    }
-    case edgeCreationMode:
-    case arcCreationMode:
-    {
-        manageEdgeCreation(event->pos());
-        break;
-    }
-    case deletionMode:
-    {
-        deleteElementAtPosition(event->pos());
-        break;
-    }
+        case defaultMode:
+        {
+            QGraphicsView::mousePressEvent(event);
+            break;
+        }
+        case nodeCreationMode:
+        {
+            createNode(event->pos());
+            break;
+        }
+        case edgeCreationMode:
+        case arcCreationMode:
+        {
+            manageEdgeCreation(event->pos());
+            break;
+        }
+        case deletionMode:
+        {
+            deleteElementAtPosition(event->pos());
+            break;
+        }
     }
 }
 
@@ -82,21 +95,21 @@ void Workspace::keyPressEvent(QKeyEvent *event)
     clearDrawingLine();
     switch (event->key())
     {
-    case Qt::Key_Delete:
-    {
-        deleteSelectedElements();
-        break;
-    }
-    case Qt::Key_I:
-    {
-        setElementContent(getSelectedItem());
-        break;
-    }
-    default:
-    {
-        clearDrawingLine();
-        QWidget::keyPressEvent(event);
-    }
+        case Qt::Key_Delete:
+        {
+            deleteSelectedElements();
+            break;
+        }
+        case Qt::Key_I:
+        {
+            setElementContent(getSelectedItem());
+            break;
+        }
+        default:
+        {
+            clearDrawingLine();
+            QWidget::keyPressEvent(event);
+        }
     }
 }
 
@@ -129,13 +142,12 @@ void Workspace::deleteElement(QGraphicsItem *item)
         delete node;
         graph->removeNode(graphNode);
     }
-    else
-        if (GraphicsEdgeItem* edge = toEdge(item))
-        {
-            GraphEdge::const_ref graphEdge = edge->getGraphEdge();
-            delete edge;
-            graph->removeEdge(graphEdge);
-        }
+    else if (GraphicsEdgeItem* edge = toEdge(item))
+    {
+        GraphEdge::const_ref graphEdge = edge->getGraphEdge();
+        delete edge;
+        graph->removeEdge(graphEdge);
+    }
 }
 
 void Workspace::deleteSelectedElements()
@@ -149,7 +161,8 @@ void Workspace::deleteSelectedElements()
 GraphicsNodeItem *Workspace::findNodeItem(GraphNode::const_ref graphNode)
 {
     QList<GraphicsNodeItem *> nodes = getNodes();
-    foreach (GraphicsNodeItem *item, nodes) {
+    foreach (GraphicsNodeItem *item, nodes)
+    {
         if (item->getGraphNode() == graphNode)
             return item;
     }
@@ -159,7 +172,8 @@ GraphicsNodeItem *Workspace::findNodeItem(GraphNode::const_ref graphNode)
 GraphicsEdgeItem *Workspace::findEdgeItem(GraphEdge::const_ref graphEdge)
 {
     QList<GraphicsEdgeItem *> edges = getEdges();
-    foreach (GraphicsEdgeItem *edge, edges) {
+    foreach (GraphicsEdgeItem *edge, edges)
+    {
         if (edge->getGraphEdge() == graphEdge)
             return edge;
     }
@@ -177,14 +191,13 @@ void Workspace::manageEdgeCreation(const QPoint &location)
             selectedNodes.first = topmostNode;
             drawingLine = scene()->addLine(QLine(location, location));
         }
-        else
-            if (selectedNodes.first && !selectedNodes.second)
-            {
-                selectedNodes.second = topmostNode;
-                createEdge(selectedNodes.first, selectedNodes.second);
-                clearDrawingLine();
-                clearSelection();
-            }
+        else if (selectedNodes.first && !selectedNodes.second)
+        {
+            selectedNodes.second = topmostNode;
+            createEdge(selectedNodes.first, selectedNodes.second);
+            clearDrawingLine();
+            clearSelection();
+        }
     }
     else
     {
@@ -204,14 +217,13 @@ void Workspace::setElementContent(QGraphicsItem* item)
                                              node->getGraphNode().getText());
         graph->setNodeIdtf(node->getGraphNode(), idtf);
     }
-    else
-        if (GraphicsEdgeItem* edge = toEdge(item))
-        {
-            int weight = QInputDialog::getInt(this,
-                                              tr("Changing edge weight"),
-                                              tr("New weight:"));
-            graph->setEdgeWeight(edge->getGraphEdge(), weight);
-        }
+    else if (GraphicsEdgeItem* edge = toEdge(item))
+    {
+        int weight = QInputDialog::getInt(this,
+                                          tr("Changing edge weight"),
+                                          tr("New weight:"));
+        graph->setEdgeWeight(edge->getGraphEdge(), weight);
+    }
 }
 
 void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* secondNode, int weight)
@@ -220,7 +232,7 @@ void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* second
     {
         try
         {
-            bool isOriented = toggledMode == arcCreationMode ? true : false;
+            bool isOriented = (toggledMode == arcCreationMode);
             GraphEdge::const_ref newGraphEdge = graph->addEdge(firstNode->getGraphNode(),
                                                                secondNode->getGraphNode(),
                                                                weight,

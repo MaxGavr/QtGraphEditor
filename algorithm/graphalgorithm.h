@@ -1,6 +1,9 @@
 #pragma once
 
+#include <queue>
+
 #include "graph/graph.h"
+
 
 class GraphAlgorithm
 {

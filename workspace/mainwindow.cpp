@@ -1,4 +1,12 @@
+#include <QAction>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QToolBar>
+#include <QStatusBar>
+#include <QMenuBar>
+
 #include "workspace.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

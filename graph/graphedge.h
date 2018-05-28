@@ -1,11 +1,10 @@
 #pragma once
 
-#include <QLinkedList>
 #include <QPair>
 
-#include <iostream>
 #include "graphnode.h"
 #include "exceptions.h"
+
 
 class GraphEdge
 {

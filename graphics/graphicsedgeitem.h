@@ -6,6 +6,7 @@
 #include "graphicsnodeitem.h"
 #include "graph/graphedge.h"
 
+
 class GraphicsEdgeItem : public QGraphicsLineItem
 {
     Q_DECLARE_TR_FUNCTIONS(Edge)

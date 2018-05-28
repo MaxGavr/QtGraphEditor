@@ -1,12 +1,11 @@
 #pragma once
 
 #include <QString>
-#include <QList>
 #include <QLinkedList>
-#include <QtAlgorithms>
 #include <QPair>
 
 class GraphEdge;
+
 
 class GraphNode
 {

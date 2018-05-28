@@ -1,18 +1,11 @@
 ﻿#pragma once
 
 #include <QMainWindow>
-#include <QTabWidget>
-#include <QMdiSubWindow>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QAction>
-#include <QMenuBar>
-#include <QToolBar>
-#include <QApplication>
-#include <QCloseEvent>
-#include <QStatusBar>
+
+class QActionGroup;
 
 class Workspace;
+
 
 class MainWindow : public QMainWindow
 {

@@ -1,6 +1,7 @@
 #include "algorithmhandler.h"
 #include "workspace/workspace.h"
 
+
 AlgorithmHandler::AlgorithmHandler(Workspace *w)
 {
     workspace = w;

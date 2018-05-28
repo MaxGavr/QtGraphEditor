@@ -1,20 +1,11 @@
 #pragma once
 
-#include <QGraphicsScene>
 #include <QGraphicsView>
-#include <QWidget>
-#include <QPair>
-#include <QHBoxLayout>
-#include <QInputDialog>
-#include <QXmlStreamWriter>
-#include <QTimer>
-
-#include <algorithm>
-#include <functional>
 
 #include "workspace/mainwindow.h"
 #include "algorithm/algorithmhandler.h"
 #include "graphics/graphicsedgeitem.h"
+
 
 class Workspace : public QGraphicsView
 {
@@ -24,7 +15,14 @@ public:
 
     using NodePair = QPair<GraphicsNodeItem *, GraphicsNodeItem *>;
 
-    enum { defaultMode = 0, nodeCreationMode, edgeCreationMode, arcCreationMode, deletionMode };
+    enum
+    {
+        defaultMode = 0,
+        nodeCreationMode,
+        edgeCreationMode,
+        arcCreationMode,
+        deletionMode
+    };
 
     Workspace(QWidget* parent = 0);
 

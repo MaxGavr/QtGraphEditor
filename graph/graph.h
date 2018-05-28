@@ -3,10 +3,10 @@
 #include <QVector>
 #include <QMap>
 #include <set>
-#include <queue>
 
 #include "graphedge.h"
 #include "exceptions.h"
+
 
 class Graph
 {

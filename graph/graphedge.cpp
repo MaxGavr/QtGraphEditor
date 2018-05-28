@@ -1,6 +1,7 @@
 #include "graphedge.h"
 #include "graphnode.h"
 
+
 GraphEdge::GraphEdge(GraphNode* start, GraphNode* end, int weight, bool oriented)
 {
     setStartNode(start);

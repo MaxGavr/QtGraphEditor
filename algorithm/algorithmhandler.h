@@ -6,6 +6,7 @@
 
 class Workspace;
 
+
 class AlgorithmHandler : public QObject
 {
     Q_OBJECT

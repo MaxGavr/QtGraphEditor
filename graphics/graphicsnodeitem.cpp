@@ -1,6 +1,7 @@
 #include "graphicsnodeitem.h"
 #include "graphicsedgeitem.h"
 
+
 const int GraphicsNodeItem::NODE_DIAMETER = 20;
 
 GraphicsNodeItem::GraphicsNodeItem(const QPointF& position, const GraphNode &node)

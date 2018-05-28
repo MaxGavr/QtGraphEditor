@@ -1,6 +1,6 @@
 #include "graphalgorithm.h"
-#include <queue>
 #include <vector>
+
 
 GraphAlgorithm::GraphAlgorithm()
 {
