@@ -1,8 +1,10 @@
 #include "graphedge.h"
 #include "graphnode.h"
 
+using namespace GraphModel;
 
-GraphEdge::GraphEdge(GraphNode* start, GraphNode* end, int weight, bool oriented)
+
+Edge::Edge(Node* start, Node* end, int weight, bool oriented)
 {
     setStartNode(start);
     setEndNode(end);
@@ -10,50 +12,50 @@ GraphEdge::GraphEdge(GraphNode* start, GraphNode* end, int weight, bool oriented
     this->oriented = oriented;
 }
 
-GraphEdge::~GraphEdge()
+Edge::~Edge()
 {
     startNode->removeEdge(this);
     endNode->removeEdge(this);
 }
 
-GraphEdge::Index GraphEdge::getIndex() const
+Edge::Index Edge::getIndex() const
 {
     return Index(startNode->getIndex(), endNode->getIndex());
 }
 
-bool GraphEdge::isOriented() const
+bool Edge::isOriented() const
 {
     return oriented;
 }
 
-bool GraphEdge::isLoop() const
+bool Edge::isLoop() const
 {
     return startNode == endNode;
 }
 
-void GraphEdge::setStartNode(GraphNode *node)
+void Edge::setStartNode(Node *node)
 {
     startNode = node;
     node->addEdge(this);
 }
 
-void GraphEdge::setEndNode(GraphNode *node)
+void Edge::setEndNode(Node *node)
 {
     endNode = node;
     node->addEdge(this);
 }
 
-int GraphEdge::getWeight() const
+int Edge::getWeight() const
 {
     return weight;
 }
 
-void GraphEdge::setWeight(int w)
+void Edge::setWeight(int w)
 {
     weight = w;
 }
 
-GraphNode::const_ref GraphEdge::getAdjacentNode(GraphNode::const_ref node) const
+Node::const_ref Edge::getAdjacentNode(Node::const_ref node) const
 {
     if (!isLoop())
     {
@@ -65,7 +67,7 @@ GraphNode::const_ref GraphEdge::getAdjacentNode(GraphNode::const_ref node) const
     throw bad_graph_node();
 }
 
-bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge)
+bool GraphModel::operator== (const Edge& firstEdge, const Edge& secondEdge)
 {
     bool equalNodesStraight = (firstEdge.startNode == secondEdge.startNode) &&
                               (firstEdge.endNode == secondEdge.endNode);
@@ -75,7 +77,7 @@ bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge
     return (equalNodesStraight || equalNodesMix) && equalWeight;
 }
 
-bool operator==(const GraphEdge::Index &i, const GraphEdge::Index &j)
+bool GraphModel::operator==(const Edge::Index &i, const Edge::Index &j)
 {
     bool equalStraight = (i.first == j.first) && (i.second == j.second);
     bool equalReverse = (i.first == j.second) && (i.second == j.first);

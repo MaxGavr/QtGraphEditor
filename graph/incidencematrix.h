@@ -5,6 +5,10 @@
 #include "graphnode.h"
 #include "graphedge.h"
 
+
+namespace GraphModel
+{
+
 class Graph;
 
 
@@ -24,6 +28,8 @@ public:
 private:
     int nodesCount;
 
-    QMap<GraphNode::Index, QString> nodeIdentifiers;
-    QList<GraphEdge::Index> edgeIndices;
+    QMap<Node::Index, QString> nodeIdentifiers;
+    QList<Edge::Index> edgeIndices;
 };
+
+}

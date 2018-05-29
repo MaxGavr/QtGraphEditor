@@ -2,6 +2,10 @@
 
 #include <exception>
 
+
+namespace GraphModel
+{
+
 class bad_graph_node: public std::exception
 {
     virtual const char* what() const throw()
@@ -17,3 +21,5 @@ class bad_graph_edge: public std::exception
         return "Graph edge error!";
     }
 };
+
+}

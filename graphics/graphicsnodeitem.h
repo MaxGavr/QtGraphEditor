@@ -12,7 +12,7 @@ class GraphicsEdgeItem;
 class GraphicsNodeItem : public QGraphicsEllipseItem
 {
 public:
-    GraphicsNodeItem(const QPointF& position, const GraphNode& node);
+    GraphicsNodeItem(const QPointF& position, const GraphModel::Node& node);
     ~GraphicsNodeItem();
 
     enum { Type = UserType + 2 };
@@ -24,7 +24,7 @@ public:
 
     static const int NODE_DIAMETER;
 
-    const GraphNode& getGraphNode() const;
+    const GraphModel::Node& getGraphNode() const;
     QList<GraphicsEdgeItem*> getEdgeItems();
 
     void addEdgeItem(GraphicsEdgeItem* edgeItem);
@@ -42,7 +42,7 @@ public:
 private:
     QPointF calcLabelPosition() const;
 
-    const GraphNode& graphNode;
+    const GraphModel::Node& graphNode;
 
     QList<GraphicsEdgeItem*> edges;
     QGraphicsSimpleTextItem* label;

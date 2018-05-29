@@ -8,56 +8,61 @@
 #include "exceptions.h"
 
 
+namespace GraphModel
+{
+
 class Graph
 {
 public:
-    using AdjacencyList = QMap<GraphNode::Index, GraphNode::AdjacentNodes>;
+    using AdjacencyList = QMap<Node::Index, Node::AdjacentNodes>;
 
     Graph();
     ~Graph();
 
-    GraphNode::const_ref addNode(QString idtf = "");
-    GraphNode::const_ref addNode(GraphNode::Index index, QString idtf = "");
-    GraphNode::const_ref addNode(GraphNode::const_ref node);
+    Node::const_ref addNode(QString idtf = "");
+    Node::const_ref addNode(Node::Index index, QString idtf = "");
+    Node::const_ref addNode(Node::const_ref node);
 
-    GraphEdge::const_ref addEdge(GraphNode::const_ref firstNode,
-                                 GraphNode::const_ref secondNode,
+    Edge::const_ref addEdge(Node::const_ref firstNode,
+                                 Node::const_ref secondNode,
                                  int weight = 0, bool oriented = false);
-    GraphEdge::const_ref addEdge(GraphNode::Index firstIndex, GraphNode::Index secondIndex, int weight = 0, bool oriented = false);
+    Edge::const_ref addEdge(Node::Index firstIndex, Node::Index secondIndex, int weight = 0, bool oriented = false);
 
-    void removeEdge(GraphEdge::const_ref edge);
-    void removeNode(GraphNode::const_ref node);
+    void removeEdge(Edge::const_ref edge);
+    void removeNode(Node::const_ref node);
 
-    void setNodeIdtf(GraphNode::const_ref node, QString idtf);
-    void setEdgeWeight(GraphEdge::const_ref edge, int weight);
+    void setNodeIdtf(Node::const_ref node, QString idtf);
+    void setEdgeWeight(Edge::const_ref edge, int weight);
 
-    bool containsNode(GraphNode::const_ref node) const;
-    bool containsEdge(GraphNode::const_ref firstNode,
-                      GraphNode::const_ref secondNode) const;
+    bool containsNode(Node::const_ref node) const;
+    bool containsEdge(Node::const_ref firstNode,
+                      Node::const_ref secondNode) const;
 
-    GraphNode::const_ref retrieveNode(GraphNode::Index index) const;
-    GraphEdge::const_ref retrieveEdge(GraphEdge::Index index) const;
+    Node::const_ref retrieveNode(Node::Index index) const;
+    Edge::const_ref retrieveEdge(Edge::Index index) const;
 
     bool isEmpty() const;
 
     int countNodes() const;
     int countEdges() const;
 
-    QList<GraphEdge::Index> getEdges() const;
+    QList<Edge::Index> getEdges() const;
 
     AdjacencyList getAdjacencyList() const;
 
 private:
-    GraphNode* findNodeByIndex(GraphNode::Index index);
-    GraphEdge* findEdgeByIndex(const GraphEdge::Index& index);
+    Node* findNodeByIndex(Node::Index index);
+    Edge* findEdgeByIndex(const Edge::Index& index);
 
-    QLinkedList<GraphNode *> nodes;
-    QLinkedList<GraphEdge *> edges;
+    QLinkedList<Node *> nodes;
+    QLinkedList<Edge *> edges;
 
     int setNodeIndex();
-    void removeNodeIndex(GraphNode::Index i);
-    bool validateNodeIndex(GraphNode::Index i) const;
-    bool validateEdgeIndex(GraphEdge::Index i);
+    void removeNodeIndex(Node::Index i);
+    bool validateNodeIndex(Node::Index i) const;
+    bool validateEdgeIndex(Edge::Index i);
 
-    std::set<GraphNode::Index> nodeIndices;
+    std::set<Node::Index> nodeIndices;
 };
+
+}

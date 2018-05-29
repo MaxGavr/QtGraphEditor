@@ -1,9 +1,12 @@
 #include "graphicsedgeitem.h"
 
+using namespace GraphModel;
+
+
 const int GraphicsEdgeItem::ARROW_SIZE = 15;
 const QSizeF GraphicsEdgeItem::loopSize = QSizeF(50, 50);
 
-GraphicsEdgeItem::GraphicsEdgeItem(GraphicsNodeItem* begin, GraphicsNodeItem* end, const GraphEdge &edge)
+GraphicsEdgeItem::GraphicsEdgeItem(GraphicsNodeItem* begin, GraphicsNodeItem* end, const Edge &edge)
     : graphEdge(edge)
 {
     startNodeItem = begin;
@@ -40,7 +43,7 @@ GraphicsEdgeItem::~GraphicsEdgeItem()
         delete loop;
 }
 
-const GraphEdge& GraphicsEdgeItem::getGraphEdge() const
+const Edge& GraphicsEdgeItem::getGraphEdge() const
 {
     return graphEdge;
 }

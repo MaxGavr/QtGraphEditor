@@ -4,49 +4,51 @@
 #include "graphnode.h"
 #include "graphedge.h"
 
+using namespace GraphModel;
 
-GraphNode::GraphNode(Index i)
+
+Node::Node(Index i)
 {
     setIndex(i);
     setText(QString::number(getIndex()));
 }
 
-GraphNode::GraphNode(Index i, const QString& str)
+Node::Node(Index i, const QString& str)
 {
     setIndex(i);
     setText(str);
 }
 
-GraphNode::~GraphNode()
+Node::~Node()
 {
     qDeleteAll(edges);
 }
 
-GraphNode::Index GraphNode::getIndex() const
+Node::Index Node::getIndex() const
 {
     return index;
 }
 
-void GraphNode::addEdge(GraphEdge *edge)
+void Node::addEdge(Edge *edge)
 {
     if (edge && !edges.contains(edge))
         edges.append(edge);
 }
 
-void GraphNode::removeEdge(GraphEdge *edge)
+void Node::removeEdge(Edge *edge)
 {
     if (edge)
         edges.removeOne(edge);
 }
 
-GraphNode::AdjacentNodes GraphNode::getAdjacentNodes() const
+Node::AdjacentNodes Node::getAdjacentNodes() const
 {
     AdjacentNodes adjacentNodes;
-    foreach (GraphEdge* edge, edges)
+    foreach (Edge* edge, edges)
     {
         try
         {
-            QPair<int, GraphNode::Index> adjacent;
+            QPair<int, Node::Index> adjacent;
             adjacent.first = edge->getWeight();
             adjacent.second = edge->getAdjacentNode(*this).getIndex();
             adjacentNodes.append(adjacent);
@@ -59,22 +61,22 @@ GraphNode::AdjacentNodes GraphNode::getAdjacentNodes() const
     return adjacentNodes;
 }
 
-void GraphNode::setIndex(Index i)
+void Node::setIndex(Index i)
 {
     index = i;
 }
 
-void GraphNode::setText(const QString &str)
+void Node::setText(const QString &str)
 {
     text = str;
 }
 
-QString GraphNode::getText() const
+QString Node::getText() const
 {
     return text;
 }
 
-bool operator==(GraphNode::const_ref first, GraphNode::const_ref second)
+bool GraphModel::operator==(Node::const_ref first, Node::const_ref second)
 {
     bool equalEdges = std::is_permutation(first.edges.begin(), first.edges.end(), second.edges.begin());
     bool equalIndices = (first.getIndex() == second.getIndex());
@@ -82,7 +84,7 @@ bool operator==(GraphNode::const_ref first, GraphNode::const_ref second)
     return (equalEdges && equalIndices && equalText);
 }
 
-bool operator!=(GraphNode::const_ref first, GraphNode::const_ref second)
+bool GraphModel::operator!=(Node::const_ref first, Node::const_ref second)
 {
     return !(first == second);
 }

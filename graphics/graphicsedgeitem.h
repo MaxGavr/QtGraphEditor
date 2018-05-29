@@ -11,7 +11,7 @@ class GraphicsEdgeItem : public QGraphicsLineItem
 {
     Q_DECLARE_TR_FUNCTIONS(Edge)
 public:
-    GraphicsEdgeItem(GraphicsNodeItem* begin, GraphicsNodeItem* end, const GraphEdge& edge);
+    GraphicsEdgeItem(GraphicsNodeItem* begin, GraphicsNodeItem* end, const GraphModel::Edge& edge);
     ~GraphicsEdgeItem();
 
     enum { Type = UserType + 1 };
@@ -21,7 +21,7 @@ public:
         return Type;
     }
 
-    const GraphEdge& getGraphEdge() const;
+    const GraphModel::Edge& getGraphEdge() const;
     bool isOriented() const;
     bool isLoop() const;
 
@@ -51,5 +51,5 @@ private:
     static const int ARROW_SIZE;
     static const QSizeF loopSize;
 
-    GraphEdge::const_ref graphEdge;
+    GraphModel::Edge::const_ref graphEdge;
 };

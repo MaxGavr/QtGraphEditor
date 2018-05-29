@@ -1,6 +1,8 @@
 #include "algorithmhandler.h"
 #include "workspace/workspace.h"
 
+using namespace GraphModel;
+
 
 AlgorithmHandler::AlgorithmHandler(Workspace *w)
 {

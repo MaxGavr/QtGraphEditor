@@ -1,10 +1,12 @@
 #include "graphicsnodeitem.h"
 #include "graphicsedgeitem.h"
 
+using namespace GraphModel;
+
 
 const int GraphicsNodeItem::NODE_DIAMETER = 20;
 
-GraphicsNodeItem::GraphicsNodeItem(const QPointF& position, const GraphNode &node)
+GraphicsNodeItem::GraphicsNodeItem(const QPointF& position, const Node &node)
     : graphNode(node)
 {
     setRect(QRectF(0, 0, NODE_DIAMETER, NODE_DIAMETER));
@@ -27,7 +29,7 @@ GraphicsNodeItem::~GraphicsNodeItem()
     delete label;
 }
 
-const GraphNode& GraphicsNodeItem::getGraphNode() const
+const Node& GraphicsNodeItem::getGraphNode() const
 {
     return graphNode;
 }

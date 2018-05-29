@@ -11,7 +11,7 @@ class Workspace : public QGraphicsView
 {
     Q_OBJECT
 public:
-    friend class AlgorithmHandler;
+    friend class GraphModel::AlgorithmHandler;
 
     using NodePair = QPair<GraphicsNodeItem *, GraphicsNodeItem *>;
 
@@ -41,8 +41,8 @@ public:
     void deleteElement(QGraphicsItem* item);
     void deleteSelectedElements();
 
-    GraphicsNodeItem* findNodeItem(GraphNode::const_ref graphNode);
-    GraphicsEdgeItem* findEdgeItem(GraphEdge::const_ref graphEdge);
+    GraphicsNodeItem* findNodeItem(GraphModel::Node::const_ref graphNode);
+    GraphicsEdgeItem* findEdgeItem(GraphModel::Edge::const_ref graphEdge);
 
     void clearSelection();
 
@@ -80,8 +80,8 @@ private:
     const int WIDTH = 1024;
     const int HEIGHT = 768;
 
-    Graph* graph;
-    AlgorithmHandler* algoHandler;
+    GraphModel::Graph* graph;
+    GraphModel::AlgorithmHandler* algoHandler;
 
     QGraphicsLineItem* drawingLine;
     NodePair selectedNodes;

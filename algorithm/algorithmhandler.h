@@ -7,6 +7,9 @@
 class Workspace;
 
 
+namespace GraphModel
+{
+
 class AlgorithmHandler : public QObject
 {
     Q_OBJECT
@@ -31,3 +34,5 @@ private:
     QString highlightPenColor = "green";
     QString highlightBrushColor = "light green";
 };
+
+}

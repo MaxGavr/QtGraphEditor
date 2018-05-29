@@ -4,42 +4,48 @@
 #include <QLinkedList>
 #include <QPair>
 
-class GraphEdge;
+
+namespace GraphModel
+{
+
+class Edge;
 
 
-class GraphNode
+class Node
 {
 public:
-    using const_ref = const GraphNode&;
+    using const_ref = const Node&;
     using Index = int;
-    using AdjacentNodes = QList< QPair<int, GraphNode::Index> >;
+    using AdjacentNodes = QList< QPair<int, Node::Index> >;
 
-    GraphNode(GraphNode::Index i);
-    GraphNode(GraphNode::Index i, const QString& str);
-    ~GraphNode();
+    Node(Node::Index i);
+    Node(Node::Index i, const QString& str);
+    ~Node();
 
-    GraphNode::Index getIndex() const;
+    Node::Index getIndex() const;
 
     QString getText() const;
     void setText(const QString& str);
 
     AdjacentNodes getAdjacentNodes() const;
 
-    friend bool operator== (GraphNode::const_ref first, GraphNode::const_ref second);
-    friend bool operator!= (GraphNode::const_ref first, GraphNode::const_ref second);
+    friend bool operator== (Node::const_ref first, Node::const_ref second);
+    friend bool operator!= (Node::const_ref first, Node::const_ref second);
 
 private:
-    void setIndex(GraphNode::Index i);
-    void addEdge(GraphEdge* edge);
-    void removeEdge(GraphEdge* edge);
+    void setIndex(Node::Index i);
+    void addEdge(Edge* edge);
+    void removeEdge(Edge* edge);
 
-    GraphNode::Index index;
+    Node::Index index;
     QString text;
-    QLinkedList<GraphEdge*> edges;
+    QLinkedList<Edge*> edges;
 
     friend class Graph;
-    friend class GraphEdge;
+    friend class Edge;
 };
 
-bool operator== (GraphNode::const_ref first, GraphNode::const_ref second);
-bool operator!= (GraphNode::const_ref first, GraphNode::const_ref second);
+bool operator== (Node::const_ref first, Node::const_ref second);
+bool operator!= (Node::const_ref first, Node::const_ref second);
+
+}

@@ -6,39 +6,44 @@
 #include "exceptions.h"
 
 
-class GraphEdge
+namespace GraphModel
+{
+
+class Edge
 {
 public:
-    using const_ref = const GraphEdge&;
-    using Index = QPair<GraphNode::Index, GraphNode::Index>;
+    using const_ref = const Edge&;
+    using Index = QPair<Node::Index, Node::Index>;
 
-    GraphEdge(GraphNode* start, GraphNode* end, int weight = 0, bool oriented = false);
-    ~GraphEdge();
+    Edge(Node* start, Node* end, int weight = 0, bool oriented = false);
+    ~Edge();
 
-    GraphEdge::Index getIndex() const;
+    Edge::Index getIndex() const;
     bool isOriented() const;
     bool isLoop() const;
 
     int getWeight() const;
     void setWeight(int w);
 
-    GraphNode::const_ref getAdjacentNode(GraphNode::const_ref node) const;
+    Node::const_ref getAdjacentNode(Node::const_ref node) const;
 
-    friend bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge);
+    friend bool operator== (const Edge& firstEdge, const Edge& secondEdge);
 
 private:
-    void setStartNode(GraphNode* node);
-    void setEndNode(GraphNode* node);
+    void setStartNode(Node* node);
+    void setEndNode(Node* node);
 
-    GraphNode* startNode;
-    GraphNode* endNode;
+    Node* startNode;
+    Node* endNode;
     bool oriented;
 
     int weight;
 
     friend class Graph;
-    friend class GraphNode;
+    friend class Node;
 };
 
-bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge);
-bool operator== (const GraphEdge::Index& first, const GraphEdge::Index& second);
+bool operator== (const Edge& firstEdge, const Edge& secondEdge);
+bool operator== (const Edge::Index& first, const Edge::Index& second);
+
+}

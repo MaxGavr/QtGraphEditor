@@ -4,19 +4,21 @@
 #include "graph.h"
 #include "incidencematrix.h"
 
+using namespace GraphModel;
+
 
 IncidenceMatrix::IncidenceMatrix(const Graph& graph)
 {
     nodesCount = graph.countNodes();
 
     // get nodes identifiers
-    for (GraphNode::Index i = 0; i < nodesCount; ++i)
+    for (Node::Index i = 0; i < nodesCount; ++i)
         nodeIdentifiers.insert(i, graph.retrieveNode(i).getText());
 
     edgeIndices = graph.getEdges();
 
     // sort edge indices in ascending order by the sum of indices of incident nodes
-    auto lessIndexSum = [] (GraphEdge::Index firstIndex, GraphEdge::Index secondIndex) -> bool {
+    auto lessIndexSum = [] (Edge::Index firstIndex, Edge::Index secondIndex) -> bool {
         return (firstIndex.first + firstIndex.second) < (secondIndex.first + secondIndex.second);
     };
     std::sort(edgeIndices.begin(), edgeIndices.end(), lessIndexSum);
@@ -27,8 +29,8 @@ int IncidenceMatrix::getAt(int column, int row) const
     if (column < 0 || column >= getColumnsCount() || row < 0 || row >= getRowsCount())
         throw std::out_of_range("Invalid arguments!");
 
-    GraphNode::Index nodeIndex = (GraphNode::Index)row;
-    GraphEdge::Index edgeIndex = edgeIndices.at(column);
+    Node::Index nodeIndex = (Node::Index)row;
+    Edge::Index edgeIndex = edgeIndices.at(column);
 
     if (nodeIndex == edgeIndex.first)
         return -1;
@@ -53,7 +55,7 @@ QString IncidenceMatrix::getNodeIdentifier(int row) const
     if (row < 0 || row >= getRowsCount())
         throw std::out_of_range("Invalid argument!");
 
-    return *nodeIdentifiers.find((GraphNode::Index)row);
+    return *nodeIdentifiers.find((Node::Index)row);
 }
 
 QString IncidenceMatrix::getEdgeIdentifier(int column) const
@@ -61,7 +63,7 @@ QString IncidenceMatrix::getEdgeIdentifier(int column) const
     if (column < 0 || column >= getColumnsCount())
         throw std::out_of_range("Invalid argument!");
 
-    GraphEdge::Index edgeIndex = edgeIndices.at(column);
+    Edge::Index edgeIndex = edgeIndices.at(column);
 
     return QString::number(edgeIndex.first) + "-" + QString::number(edgeIndex.second);
 }
