@@ -17,6 +17,7 @@ SOURCES += main.cpp\
     graph/graph.cpp \
     graph/graphedge.cpp \
     graph/graphnode.cpp \
+    graph/incidencematrix.cpp \
     graphics/graphicsedgeitem.cpp \
     graphics/graphicsnodeitem.cpp \
     workspace/mainwindow.cpp \
@@ -27,6 +28,7 @@ SOURCES += main.cpp\
 HEADERS  += graph/graph.h \
     graph/graphedge.h \
     graph/graphnode.h \
+    graph/incidencematrix.h \
     graphics/graphicsedgeitem.h \
     graphics/graphicsnodeitem.h \
     workspace/mainwindow.h \

@@ -8,7 +8,7 @@
 class GraphAlgorithm
 {
 public:
-    using GraphElement = std::pair <int, GraphEdge::EdgeIndex>;
+    using GraphElement = std::pair <int, GraphEdge::Index>;
     using ElementQueue = std::queue <GraphElement>;
 
     GraphAlgorithm();
@@ -19,7 +19,7 @@ public:
     GraphAlgorithm::GraphElement getLastElement() const;
 
     void pushNode(int nodeIndex);
-    void pushEdge(GraphEdge::EdgeIndex edgeIndex);
+    void pushEdge(GraphEdge::Index edgeIndex);
 
     virtual void execute(const Graph& graph) = 0;
 

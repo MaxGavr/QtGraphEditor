@@ -10,16 +10,12 @@ class GraphEdge
 {
 public:
     using const_ref = const GraphEdge&;
-    using EdgeIndex = QPair<int, int>;
-
-    friend class Graph;
-    friend class GraphNode;
-    friend bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge);
+    using Index = QPair<GraphNode::Index, GraphNode::Index>;
 
     GraphEdge(GraphNode* start, GraphNode* end, int weight = 0, bool oriented = false);
     ~GraphEdge();
 
-    EdgeIndex getEdgeIndex() const;
+    GraphEdge::Index getIndex() const;
     bool isOriented() const;
     bool isLoop() const;
 
@@ -27,6 +23,8 @@ public:
     void setWeight(int w);
 
     GraphNode::const_ref getAdjacentNode(GraphNode::const_ref node) const;
+
+    friend bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge);
 
 private:
     void setStartNode(GraphNode* node);
@@ -37,7 +35,10 @@ private:
     bool oriented;
 
     int weight;
+
+    friend class Graph;
+    friend class GraphNode;
 };
 
 bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge);
-bool operator== (const GraphEdge::EdgeIndex& first, const GraphEdge::EdgeIndex& second);
+bool operator== (const GraphEdge::Index& first, const GraphEdge::Index& second);

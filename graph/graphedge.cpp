@@ -16,9 +16,9 @@ GraphEdge::~GraphEdge()
     endNode->removeEdge(this);
 }
 
-GraphEdge::EdgeIndex GraphEdge::getEdgeIndex() const
+GraphEdge::Index GraphEdge::getIndex() const
 {
-    return EdgeIndex(startNode->getIndex(), endNode->getIndex());
+    return Index(startNode->getIndex(), endNode->getIndex());
 }
 
 bool GraphEdge::isOriented() const
@@ -59,9 +59,8 @@ GraphNode::const_ref GraphEdge::getAdjacentNode(GraphNode::const_ref node) const
     {
         if (node == *startNode)
             return *endNode;
-        else
-            if (node == *endNode && !isOriented())
-                return *startNode;
+        else if (node == *endNode && !isOriented())
+            return *startNode;
     }
     throw bad_graph_node();
 }
@@ -72,11 +71,11 @@ bool operator== (GraphEdge::const_ref firstEdge, GraphEdge::const_ref secondEdge
                               (firstEdge.endNode == secondEdge.endNode);
     bool equalNodesMix = (firstEdge.endNode == secondEdge.startNode) &&
                          (firstEdge.startNode == secondEdge.endNode);
-    bool equalWeight = firstEdge.getWeight() == secondEdge.getWeight();
+    bool equalWeight = (firstEdge.getWeight() == secondEdge.getWeight());
     return (equalNodesStraight || equalNodesMix) && equalWeight;
 }
 
-bool operator==(const GraphEdge::EdgeIndex &i, const GraphEdge::EdgeIndex &j)
+bool operator==(const GraphEdge::Index &i, const GraphEdge::Index &j)
 {
     bool equalStraight = (i.first == j.first) && (i.second == j.second);
     bool equalReverse = (i.first == j.second) && (i.second == j.first);

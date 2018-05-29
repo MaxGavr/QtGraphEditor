@@ -307,8 +307,8 @@ bool Workspace::saveGraphToFile(const QString& saveFileName)
     {
         stream.writeStartElement("edge");
         QXmlStreamAttributes attribs;
-        attribs.append("begin", QString::number(edge->getGraphEdge().getEdgeIndex().first));
-        attribs.append("end", QString::number(edge->getGraphEdge().getEdgeIndex().second));
+        attribs.append("begin", QString::number(edge->getGraphEdge().getIndex().first));
+        attribs.append("end", QString::number(edge->getGraphEdge().getIndex().second));
         attribs.append("weight", QString::number(edge->getGraphEdge().getWeight()));
         stream.writeAttributes(attribs);
         stream.writeEndElement();

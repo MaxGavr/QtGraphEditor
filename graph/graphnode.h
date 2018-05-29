@@ -9,34 +9,36 @@ class GraphEdge;
 
 class GraphNode
 {
-    friend class Graph;
-    friend class GraphEdge;
-
 public:
     using const_ref = const GraphNode&;
+    using Index = int;
+    using AdjacentNodes = QList< QPair<int, GraphNode::Index> >;
 
-    GraphNode(int i);
-    GraphNode(int i, const QString& str);
+    GraphNode(GraphNode::Index i);
+    GraphNode(GraphNode::Index i, const QString& str);
     ~GraphNode();
 
-    int getIndex() const;
+    GraphNode::Index getIndex() const;
 
     QString getText() const;
     void setText(const QString& str);
 
-    QList<QPair<int, int> > getAdjacentNodes() const;
+    AdjacentNodes getAdjacentNodes() const;
 
     friend bool operator== (GraphNode::const_ref first, GraphNode::const_ref second);
     friend bool operator!= (GraphNode::const_ref first, GraphNode::const_ref second);
 
 private:
-    void setIndex(int i);
+    void setIndex(GraphNode::Index i);
     void addEdge(GraphEdge* edge);
     void removeEdge(GraphEdge* edge);
 
-    int index;
+    GraphNode::Index index;
     QString text;
     QLinkedList<GraphEdge*> edges;
+
+    friend class Graph;
+    friend class GraphEdge;
 };
 
 bool operator== (GraphNode::const_ref first, GraphNode::const_ref second);

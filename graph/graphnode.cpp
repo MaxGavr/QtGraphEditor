@@ -5,13 +5,13 @@
 #include "graphedge.h"
 
 
-GraphNode::GraphNode(int i)
+GraphNode::GraphNode(Index i)
 {
     setIndex(i);
     setText(QString::number(getIndex()));
 }
 
-GraphNode::GraphNode(int i, const QString& str)
+GraphNode::GraphNode(Index i, const QString& str)
 {
     setIndex(i);
     setText(str);
@@ -22,7 +22,7 @@ GraphNode::~GraphNode()
     qDeleteAll(edges);
 }
 
-int GraphNode::getIndex() const
+GraphNode::Index GraphNode::getIndex() const
 {
     return index;
 }
@@ -30,9 +30,7 @@ int GraphNode::getIndex() const
 void GraphNode::addEdge(GraphEdge *edge)
 {
     if (edge && !edges.contains(edge))
-    {
         edges.append(edge);
-    }
 }
 
 void GraphNode::removeEdge(GraphEdge *edge)
@@ -41,14 +39,14 @@ void GraphNode::removeEdge(GraphEdge *edge)
         edges.removeOne(edge);
 }
 
-QList< QPair<int, int> > GraphNode::getAdjacentNodes() const
+GraphNode::AdjacentNodes GraphNode::getAdjacentNodes() const
 {
-    QList< QPair<int,int> > adjacentNodes;
+    AdjacentNodes adjacentNodes;
     foreach (GraphEdge* edge, edges)
     {
         try
         {
-            QPair<int, int> adjacent;
+            QPair<int, GraphNode::Index> adjacent;
             adjacent.first = edge->getWeight();
             adjacent.second = edge->getAdjacentNode(*this).getIndex();
             adjacentNodes.append(adjacent);
@@ -61,7 +59,7 @@ QList< QPair<int, int> > GraphNode::getAdjacentNodes() const
     return adjacentNodes;
 }
 
-void GraphNode::setIndex(int i)
+void GraphNode::setIndex(Index i)
 {
     index = i;
 }
