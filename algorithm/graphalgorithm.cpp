@@ -108,6 +108,11 @@ void PrimAlgorithm::execute(const Graph &graph)
     }
 }
 
+Graph* PrimAlgorithm::getMST() const
+{
+    return MST;
+}
+
 void PrimAlgorithm::addElementToMST(const Graph& graph, int node, int& lastNode, int parent)
 {
     Node::const_ref newNode = MST->addNode(graph.retrieveNode(node));
@@ -119,4 +124,72 @@ void PrimAlgorithm::addElementToMST(const Graph& graph, int node, int& lastNode,
     }
     lastNode = newNode.getIndex();
     pushNode(graph.retrieveNode(node).getIndex());
+}
+
+
+EulerianGraphAlgorithm::EulerianGraphAlgorithm()
+    : isEulerianGraph(false)
+{
+}
+
+EulerianGraphAlgorithm::~EulerianGraphAlgorithm()
+{
+}
+
+void EulerianGraphAlgorithm::execute(const Graph& graph)
+{
+    Graph::Type type = graph.getType();
+
+    // can not check if graph is eulerian if it is empty or contains both arcs and edges
+    if (type == Graph::Empty || type == Graph::Mixed)
+    {
+        isEulerianGraph = false;
+        return;
+    }
+
+    // unoriented graph should not contain nodes with odd degree
+    if (type == Graph::Unoriented)
+    {
+        for (int node = 0; node < graph.countNodes(); ++node)
+        {
+            int degree = graph.retrieveNode(node).getDegree();
+            if (degree % 2 == 1)
+            {
+                isEulerianGraph = false;
+                return;
+            }
+        }
+    }
+    // oriented graph should not contain nodes with unequal input and output degrees
+    else if (type == Graph::Oriented)
+    {
+        for (int node = 0; node < graph.countNodes(); ++node)
+        {
+            int inputDegree = graph.retrieveNode(node).getInputDegree();
+            int outputDegree = graph.retrieveNode(node).getOutputDegree();
+
+            if (inputDegree != outputDegree)
+            {
+                isEulerianGraph = false;
+                return;
+            }
+        }
+    }
+
+    // check graph for connectivity
+    PrimAlgorithm prim;
+    prim.execute(graph);
+
+    if (prim.getMST()->countNodes() != graph.countNodes())
+    {
+        isEulerianGraph = false;
+        return;
+    }
+
+    isEulerianGraph = true;
+}
+
+bool EulerianGraphAlgorithm::isEulerian() const
+{
+    return isEulerianGraph;
 }

@@ -38,10 +38,26 @@ public:
 
     void execute(const Graph& graph);
 
+    Graph* getMST() const;
+
 private:
     void addElementToMST(const Graph& graph, int node, int &lastNode, int parent = -1);
 
     Graph* MST;
+};
+
+class EulerianGraphAlgorithm : public GraphAlgorithm
+{
+public:
+    EulerianGraphAlgorithm();
+    ~EulerianGraphAlgorithm();
+
+    void execute(const Graph& graph) override;
+
+    bool isEulerian() const;
+
+private:
+    bool isEulerianGraph;
 };
 
 }

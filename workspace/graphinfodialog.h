@@ -17,7 +17,6 @@ public:
 
 private:
     void manageLayout();
-
     void fillIncidenceMatrixTable();
 
     const GraphModel::Graph& graph;

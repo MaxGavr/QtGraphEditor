@@ -16,6 +16,14 @@ class Graph
 public:
     using AdjacencyList = QMap<Node::Index, Node::AdjacentNodes>;
 
+    enum Type
+    {
+        Empty,
+        Unoriented,
+        Oriented,
+        Mixed
+    };
+
     Graph();
     ~Graph();
 
@@ -42,6 +50,7 @@ public:
     Edge::const_ref retrieveEdge(Edge::Index index) const;
 
     bool isEmpty() const;
+    Graph::Type getType() const;
 
     int countNodes() const;
     int countEdges() const;

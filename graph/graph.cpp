@@ -156,6 +156,28 @@ bool Graph::isEmpty() const
     return countNodes() == 0;
 }
 
+Graph::Type Graph::getType() const
+{
+    bool hasArcs = false;
+    bool hasEdges = false;
+
+    foreach (Edge* edge, edges) {
+        if (edge->isOriented())
+            hasArcs = true;
+        else
+            hasEdges = true;
+    }
+
+    if (hasArcs && hasEdges)
+        return Type::Mixed;
+    else if (hasArcs)
+        return Type::Oriented;
+    else if (hasEdges)
+        return Type::Unoriented;
+    else
+        return Type::Empty;
+}
+
 int Graph::countNodes() const
 {
     return nodes.size();

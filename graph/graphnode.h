@@ -29,6 +29,10 @@ public:
 
     AdjacentNodes getAdjacentNodes() const;
 
+    int getDegree() const;
+    int getInputDegree() const;
+    int getOutputDegree() const;
+
     friend bool operator== (Node::const_ref first, Node::const_ref second);
     friend bool operator!= (Node::const_ref first, Node::const_ref second);
 

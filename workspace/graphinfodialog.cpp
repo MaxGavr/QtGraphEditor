@@ -1,9 +1,11 @@
 #include <QTableWidget>
 #include <QGridLayout>
 #include <QLabel>
+#include <QLineEdit>
 
 #include "graphinfodialog.h"
 #include "graph/incidencematrix.h"
+#include "algorithm/graphalgorithm.h"
 #include "workspace.h"
 
 
@@ -23,9 +25,35 @@ void GraphInfoDialog::manageLayout()
 {
     QGridLayout* layout = new QGridLayout();
 
+    // nodes count
+    QLabel* nodesLabel = new QLabel(tr("Nodes:"));
+    QLineEdit* nodesCount = new QLineEdit(QString::number(graph.countNodes()));
+    nodesCount->setReadOnly(true);
+    nodesCount->setAlignment(Qt::AlignCenter);
+    layout->addWidget(nodesLabel, 0, 0);
+    layout->addWidget(nodesCount, 0, 1);
+
+    // edges count
+    QLabel* edgesLabel = new QLabel(tr("Edges:"));
+    QLineEdit* edgesCount = new QLineEdit(QString::number(graph.countEdges()));
+    edgesCount->setReadOnly(true);
+    edgesCount->setAlignment(Qt::AlignCenter);
+    layout->addWidget(edgesLabel, 1, 0);
+    layout->addWidget(edgesCount, 1, 1);
+
+    // incidence matrix
     QLabel* matrixLabel = new QLabel(tr("Incidence matrix:"));
-    layout->addWidget(matrixLabel, 0, 0);
-    layout->addWidget(incidenceMatrixTable, 1, 0);
+    layout->addWidget(matrixLabel, 2, 0, 1, 2);
+    layout->addWidget(incidenceMatrixTable, 3, 0, 1, 2);
+
+    // check for eulerian graph
+    GraphModel::EulerianGraphAlgorithm eulerianCheck;
+    eulerianCheck.execute(graph);
+
+    QLabel* eulerianLabel = new QLabel(tr("Eulerian graph:"));
+    QLabel* eulerianCheckResult = new QLabel(eulerianCheck.isEulerian() ? tr("yes") : tr("no"));
+    layout->addWidget(eulerianLabel, 4, 0);
+    layout->addWidget(eulerianCheckResult, 4, 1);
 
     setLayout(layout);
 }

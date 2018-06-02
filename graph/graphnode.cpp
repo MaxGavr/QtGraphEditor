@@ -61,6 +61,43 @@ Node::AdjacentNodes Node::getAdjacentNodes() const
     return adjacentNodes;
 }
 
+int Node::getDegree() const
+{
+    int degree = 0;
+
+    foreach (Edge* edge, edges)
+    {
+        if (edge->isLoop())
+            degree += 2;
+        else
+            degree += 1;
+    }
+
+    return degree;
+}
+
+int Node::getInputDegree() const
+{
+    int inputDegree = 0;
+
+    foreach (Edge* edge, edges)
+        if (edge->isOriented() && index == edge->getIndex().second)
+            ++inputDegree;
+
+    return inputDegree;
+}
+
+int Node::getOutputDegree() const
+{
+    int outputDegree = 0;
+
+    foreach (Edge* edge, edges)
+        if (edge->isOriented() && index == edge->getIndex().first)
+            ++outputDegree;
+
+    return outputDegree;
+}
+
 void Node::setIndex(Index i)
 {
     index = i;
