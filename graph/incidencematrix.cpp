@@ -22,6 +22,10 @@ IncidenceMatrix::IncidenceMatrix(const Graph& graph)
         return (firstIndex.first + firstIndex.second) < (secondIndex.first + secondIndex.second);
     };
     std::sort(edgeIndices.begin(), edgeIndices.end(), lessIndexSum);
+
+    // store orientation of each edge
+    foreach (Edge::Index edgeIndex, edgeIndices)
+        edgeOrientation.insert(edgeIndex, graph.retrieveEdge(edgeIndex).isOriented());
 }
 
 int IncidenceMatrix::getAt(int column, int row) const
@@ -32,12 +36,24 @@ int IncidenceMatrix::getAt(int column, int row) const
     Node::Index nodeIndex = (Node::Index)row;
     Edge::Index edgeIndex = edgeIndices.at(column);
 
-    if (nodeIndex == edgeIndex.first)
-        return -1;
-    else if (nodeIndex == edgeIndex.second)
-        return 1;
+    // oriented edge
+    if (edgeOrientation[edgeIndex])
+    {
+        if (nodeIndex == edgeIndex.first)
+            return -1;
+        else if (nodeIndex == edgeIndex.second)
+            return 1;
+        else
+            return 0;
+    }
+    // not oriented edge
     else
-        return 0;
+    {
+        if (nodeIndex == edgeIndex.first || nodeIndex == edgeIndex.second)
+            return 1;
+        else
+            return 0;
+    }
 }
 
 int IncidenceMatrix::getRowsCount() const

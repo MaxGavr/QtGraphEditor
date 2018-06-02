@@ -30,6 +30,7 @@ private:
 
     QMap<Node::Index, QString> nodeIdentifiers;
     QList<Edge::Index> edgeIndices;
+    QMap<Edge::Index, bool> edgeOrientation;
 };
 
 }

@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     workspace/mainwindow.cpp \
     workspace/workspace.cpp \
     algorithm/graphalgorithm.cpp \
-    algorithm/algorithmhandler.cpp
+    algorithm/algorithmhandler.cpp \
+    workspace/graphinfodialog.cpp
 
 HEADERS  += graph/graph.h \
     graph/graphedge.h \
@@ -35,7 +36,8 @@ HEADERS  += graph/graph.h \
     workspace/workspace.h \
     graph/exceptions.h \
     algorithm/graphalgorithm.h \
-    algorithm/algorithmhandler.h
+    algorithm/algorithmhandler.h \
+    workspace/graphinfodialog.h
 
 RESOURCES += \
     icons.qrc

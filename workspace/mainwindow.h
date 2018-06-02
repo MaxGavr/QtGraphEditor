@@ -61,6 +61,7 @@ private:
     QAction* deleteElement;
     QAction* runAlgorithm;
     QAction* resetElements;
+    QAction* showGraphInfo;
 
     QTabWidget* workingArea;
 };

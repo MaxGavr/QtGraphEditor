@@ -12,6 +12,7 @@ class Workspace : public QGraphicsView
     Q_OBJECT
 public:
     friend class GraphModel::AlgorithmHandler;
+    friend class GraphInfoDialog;
 
     using NodePair = QPair<GraphicsNodeItem *, GraphicsNodeItem *>;
 
@@ -65,6 +66,7 @@ private slots:
 
     void runAlgorithm();
     void resetElementsView();
+    void showGraphInfo();
 
 private:
     GraphicsNodeItem* getTopmostNodeItem(QList<QGraphicsItem*> items);

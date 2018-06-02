@@ -12,5 +12,6 @@
         <file>icons/icon_refresh.png</file>
         <file>icons/icon_close_tab.png</file>
         <file>icons/icon_arc.png</file>
+        <file>icons/icon_info.png</file>
     </qresource>
 </RCC>

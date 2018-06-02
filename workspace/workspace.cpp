@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "workspace.h"
+#include "graphinfodialog.h"
 
 using namespace GraphModel;
 
@@ -406,6 +407,12 @@ void Workspace::runAlgorithm()
 void Workspace::resetElementsView()
 {
     algoHandler->removeHighlight();
+}
+
+void Workspace::showGraphInfo()
+{
+    GraphInfoDialog dlg(*graph, this);
+    dlg.exec();
 }
 
 GraphicsNodeItem *Workspace::getTopmostNodeItem(QList<QGraphicsItem *> items)

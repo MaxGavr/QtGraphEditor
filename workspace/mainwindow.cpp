@@ -104,6 +104,10 @@ void MainWindow::createEditActions()
     resetElements = new QAction(QIcon(":/icons/icon_refresh.png"), tr("Reset appearance"), this);
     resetElements->setShortcut(QKeySequence("Ctrl+A"));
     resetElements->setStatusTip(tr("Reset every element appearance"));
+
+    showGraphInfo = new QAction(QIcon(":/icons/icon_info.png"), tr("Show graph info"), this);
+    showGraphInfo->setShortcut(QKeySequence("Ctrl+I"));
+    showGraphInfo->setStatusTip(tr("Show various properties of the current graph"));
 }
 
 void MainWindow::createMenus()
@@ -143,6 +147,7 @@ void MainWindow::createToolBars()
     editToolBar->addActions(editActionGroup->actions());
     editToolBar->addAction(runAlgorithm);
     editToolBar->addAction(resetElements);
+    editToolBar->addAction(showGraphInfo);
 }
 
 void MainWindow::newFile()
@@ -229,6 +234,7 @@ void MainWindow::connectToolsToCurrentWidget()
 
     connect(runAlgorithm, SIGNAL(triggered(bool)), workspace, SLOT(runAlgorithm()));
     connect(resetElements, SIGNAL(triggered(bool)), workspace, SLOT(resetElementsView()));
+    connect(showGraphInfo, SIGNAL(triggered(bool)), workspace, SLOT(showGraphInfo()));
 }
 
 Workspace *MainWindow::getCurrentWorkspace()
