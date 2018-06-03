@@ -4,6 +4,81 @@
 using namespace GraphModel;
 
 
+GraphAlgorithm::Arguments::Arguments()
+    : graph(nullptr), startNode(-1)
+{
+}
+
+GraphAlgorithm::Arguments::~Arguments()
+{
+}
+
+
+GraphAlgorithm::Result::Result()
+    : boolResult(false), hasBool(false),
+      intResult(0), hasInt(false),
+      graphResult(nullptr), hasGraph(false)
+{
+}
+
+GraphAlgorithm::Result::~Result()
+{
+    if (hasGraph)
+        delete graphResult;
+}
+
+void GraphAlgorithm::Result::setBool(bool result)
+{
+    boolResult = result;
+    hasBool = true;
+}
+
+void GraphAlgorithm::Result::setInt(int result)
+{
+    intResult = result;
+    hasInt = true;
+}
+
+void GraphAlgorithm::Result::setGraph(Graph* result)
+{
+    if (hasGraph)
+        delete graphResult;
+
+    graphResult = result;
+    hasGraph = true;
+}
+
+bool GraphAlgorithm::Result::isBool() const
+{
+    return hasBool;
+}
+
+bool GraphAlgorithm::Result::isInt() const
+{
+    return hasInt;
+}
+
+bool GraphAlgorithm::Result::isGraph() const
+{
+    return hasGraph;
+}
+
+bool GraphAlgorithm::Result::getBool() const
+{
+    return boolResult;
+}
+
+int GraphAlgorithm::Result::getInt() const
+{
+    return intResult;
+}
+
+Graph* GraphAlgorithm::Result::getGraph() const
+{
+    return graphResult;
+}
+
+
 GraphAlgorithm::GraphAlgorithm()
 {
 
@@ -55,13 +130,19 @@ PrimAlgorithm::PrimAlgorithm()
 
 PrimAlgorithm::~PrimAlgorithm()
 {
-    delete MST;
 }
 
-void PrimAlgorithm::execute(const Graph &graph)
+GraphAlgorithm::Result PrimAlgorithm::execute(Arguments args)
 {
+    Result result;
+
+    if (args.graph == nullptr)
+        return result;
+
+    const Graph& graph = *(args.graph);
+
     if (graph.isEmpty())
-        return;
+        return result;
 
     using IPair = std::pair<unsigned int, int>;
     const int INF = std::numeric_limits<int>::max();
@@ -73,6 +154,7 @@ void PrimAlgorithm::execute(const Graph &graph)
     std::vector<int> keys(nodesNumber, INF);
     std::vector<int> parent(nodesNumber, -1);
     std::vector<bool> included(nodesNumber, false);
+    std::vector<int> distance(nodesNumber, 0);
 
     int startNode = 0;
     queue.push(std::make_pair(0, startNode));
@@ -98,14 +180,19 @@ void PrimAlgorithm::execute(const Graph &graph)
             int v = adjacent.second;
             int weight = adjacent.first;
 
-            if ((!included[v]) && (keys[v] > weight))
+            if (!included[v] && keys[v] > weight)
             {
                 keys[v] = weight;
                 queue.push(std::make_pair(keys[v], v));
                 parent[v] = minKeyNode;
+                distance[v] = distance[minKeyNode] + weight;
             }
         }
     }
+
+    result.setGraph(MST);
+
+    return result;
 }
 
 Graph* PrimAlgorithm::getMST() const
@@ -128,7 +215,6 @@ void PrimAlgorithm::addElementToMST(const Graph& graph, int node, int& lastNode,
 
 
 EulerianGraphAlgorithm::EulerianGraphAlgorithm()
-    : isEulerianGraph(false)
 {
 }
 
@@ -136,15 +222,22 @@ EulerianGraphAlgorithm::~EulerianGraphAlgorithm()
 {
 }
 
-void EulerianGraphAlgorithm::execute(const Graph& graph)
+GraphAlgorithm::Result EulerianGraphAlgorithm::execute(Arguments args)
 {
+    Result result;
+
+    if (args.graph == nullptr)
+        return result;
+
+    Graph& graph = *(args.graph);
+
     Graph::Type type = graph.getType();
 
     // can not check if graph is eulerian if it is empty or contains both arcs and edges
     if (type == Graph::Empty || type == Graph::Mixed)
     {
-        isEulerianGraph = false;
-        return;
+        result.setBool(false);
+        return result;
     }
 
     // unoriented graph should not contain nodes with odd degree
@@ -155,8 +248,8 @@ void EulerianGraphAlgorithm::execute(const Graph& graph)
             int degree = graph.retrieveNode(node).getDegree();
             if (degree % 2 == 1)
             {
-                isEulerianGraph = false;
-                return;
+                result.setBool(false);
+                return result;
             }
         }
     }
@@ -170,28 +263,26 @@ void EulerianGraphAlgorithm::execute(const Graph& graph)
 
             if (inputDegree != outputDegree)
             {
-                isEulerianGraph = false;
-                return;
+                result.setBool(false);
+                return result;
             }
         }
     }
 
     // check graph for connectivity
     PrimAlgorithm prim;
-    prim.execute(graph);
+    Arguments primArgs;
+    primArgs.graph = &graph;
+    Result primResult = prim.execute(primArgs);
 
-    if (prim.getMST()->countNodes() != graph.countNodes())
+    if (primResult.getGraph()->countNodes() != graph.countNodes())
     {
-        isEulerianGraph = false;
-        return;
+        result.setBool(false);
+        return result;
     }
 
-    isEulerianGraph = true;
-}
-
-bool EulerianGraphAlgorithm::isEulerian() const
-{
-    return isEulerianGraph;
+    result.setBool(true);
+    return result;
 }
 
 
@@ -203,10 +294,17 @@ HamiltonianCycleAlgorithm::~HamiltonianCycleAlgorithm()
 {
 }
 
-void HamiltonianCycleAlgorithm::execute(const Graph& graph)
+GraphAlgorithm::Result HamiltonianCycleAlgorithm::execute(Arguments args)
 {
+    Result result;
+
+    if (args.graph == nullptr)
+        return result;
+
+    const Graph& graph = *(args.graph);
+
     if (graph.isEmpty())
-        return;
+        return result;
 
     std::vector<Node::Index> cycle;
     cycle.push_back(0);
@@ -228,6 +326,8 @@ void HamiltonianCycleAlgorithm::execute(const Graph& graph)
 
         pushEdge(Edge::Index(cycle.back(), cycle.front()));
     }
+
+    return result;
 }
 
 bool HamiltonianCycleAlgorithm::findHamiltonianCycle(const Graph& graph, std::vector<Node::Index>& cycle)

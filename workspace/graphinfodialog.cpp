@@ -9,7 +9,7 @@
 #include "workspace.h"
 
 
-GraphInfoDialog::GraphInfoDialog(const GraphModel::Graph& graph, QWidget* parent)
+GraphInfoDialog::GraphInfoDialog(GraphModel::Graph& graph, QWidget* parent)
     : QDialog(parent), graph(graph)
 {
     fillIncidenceMatrixTable();
@@ -48,10 +48,12 @@ void GraphInfoDialog::manageLayout()
 
     // check for eulerian graph
     GraphModel::EulerianGraphAlgorithm eulerianCheck;
-    eulerianCheck.execute(graph);
+    GraphModel::GraphAlgorithm::Arguments args;
+    args.graph = &graph;
+    GraphModel::GraphAlgorithm::Result result = eulerianCheck.execute(args);
 
     QLabel* eulerianLabel = new QLabel(tr("Eulerian graph:"));
-    QLabel* eulerianCheckResult = new QLabel(eulerianCheck.isEulerian() ? tr("yes") : tr("no"));
+    QLabel* eulerianCheckResult = new QLabel(result.getBool() ? tr("yes") : tr("no"));
     layout->addWidget(eulerianLabel, 4, 0);
     layout->addWidget(eulerianCheckResult, 4, 1);
 

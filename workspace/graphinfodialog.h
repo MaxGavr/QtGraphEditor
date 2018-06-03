@@ -12,14 +12,14 @@ class GraphInfoDialog : public QDialog
 {
     Q_OBJECT
 public:
-    GraphInfoDialog(const GraphModel::Graph& graph, QWidget* parent = 0);
+    GraphInfoDialog(GraphModel::Graph& graph, QWidget* parent = 0);
     ~GraphInfoDialog();
 
 private:
     void manageLayout();
     void fillIncidenceMatrixTable();
 
-    const GraphModel::Graph& graph;
+    GraphModel::Graph& graph;
 
     QTableWidget* incidenceMatrixTable;
 };

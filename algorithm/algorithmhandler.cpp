@@ -15,7 +15,9 @@ void AlgorithmHandler::handleAlgorithm(GraphAlgorithm* algo)
 {
     algorithm = algo;
 
-    algorithm->execute(*workspace->graph);
+    GraphAlgorithm::Arguments args;
+    args.graph = workspace->graph;
+    algorithm->execute(args);
 
     timer = new QTimer();
     connect(timer, SIGNAL(timeout()), this, SLOT(highlightElement()));
