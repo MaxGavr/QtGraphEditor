@@ -400,7 +400,7 @@ void Workspace::toggleDeletionMode(bool isToggled)
 
 void Workspace::runAlgorithm()
 {
-    PrimAlgorithm* algo = new PrimAlgorithm();
+    HamiltonianCycleAlgorithm* algo = new HamiltonianCycleAlgorithm();
     algoHandler->handleAlgorithm(algo);
 }
 

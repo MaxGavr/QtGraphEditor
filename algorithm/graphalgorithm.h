@@ -21,7 +21,7 @@ public:
     GraphAlgorithm::GraphElement getNextElement();
     GraphAlgorithm::GraphElement getLastElement() const;
 
-    void pushNode(int nodeIndex);
+    void pushNode(Node::Index nodeIndex);
     void pushEdge(Edge::Index edgeIndex);
 
     virtual void execute(const Graph& graph) = 0;
@@ -58,6 +58,18 @@ public:
 
 private:
     bool isEulerianGraph;
+};
+
+class HamiltonianCycleAlgorithm : public GraphAlgorithm
+{
+public:
+    HamiltonianCycleAlgorithm();
+    ~HamiltonianCycleAlgorithm();
+
+    void execute(const Graph& graph) override;
+
+private:
+    bool findHamiltonianCycle(const Graph& graph, std::vector<Node::Index>& cycle);
 };
 
 }

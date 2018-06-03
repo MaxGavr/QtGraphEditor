@@ -36,7 +36,7 @@ GraphAlgorithm::GraphElement GraphAlgorithm::getLastElement() const
     return sequence.back();
 }
 
-void GraphAlgorithm::pushNode(int nodeIndex)
+void GraphAlgorithm::pushNode(Node::Index nodeIndex)
 {
     GraphElement node(std::make_pair(nodeIndex, Edge::Index(-1, -1)));
     sequence.push(node);
@@ -192,4 +192,72 @@ void EulerianGraphAlgorithm::execute(const Graph& graph)
 bool EulerianGraphAlgorithm::isEulerian() const
 {
     return isEulerianGraph;
+}
+
+
+HamiltonianCycleAlgorithm::HamiltonianCycleAlgorithm()
+{
+}
+
+HamiltonianCycleAlgorithm::~HamiltonianCycleAlgorithm()
+{
+}
+
+void HamiltonianCycleAlgorithm::execute(const Graph& graph)
+{
+    if (graph.isEmpty())
+        return;
+
+    std::vector<Node::Index> cycle;
+    cycle.push_back(0);
+
+    if (findHamiltonianCycle(graph, cycle))
+    {
+        for (size_t i = 0; i < cycle.size(); ++i)
+        {
+            Node::Index node = cycle[i];
+
+            if (i == 0)
+                pushNode(node);
+            else
+            {
+                pushEdge(Edge::Index(cycle[i - 1], node));
+                pushNode(node);
+            }
+        }
+
+        pushEdge(Edge::Index(cycle.back(), cycle.front()));
+    }
+}
+
+bool HamiltonianCycleAlgorithm::findHamiltonianCycle(const Graph& graph, std::vector<Node::Index>& cycle)
+{
+    if (cycle.size() == graph.countNodes())
+    {
+        Node::Index lastNode = cycle.back();
+        Node::Index firstNode = cycle.front();
+
+        if (graph.containsEdge(graph.retrieveNode(lastNode), graph.retrieveNode(firstNode)))
+            return true;
+        else
+            return false;
+    }
+
+    const Node& currentNode = graph.retrieveNode(cycle.back());
+
+    QPair<int, Node::Index> adjacentNode;
+    foreach (adjacentNode, currentNode.getAdjacentNodes())
+    {
+        if (std::find(cycle.begin(), cycle.end(), adjacentNode.second) != cycle.end())
+            continue;
+
+        cycle.push_back(adjacentNode.second);
+
+        if (findHamiltonianCycle(graph, cycle))
+            return true;
+
+        cycle.pop_back();
+    }
+
+    return false;
 }

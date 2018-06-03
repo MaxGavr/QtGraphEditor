@@ -97,9 +97,9 @@ void MainWindow::createEditActions()
     deleteElement->setStatusTip(tr("Delete graph node or edge"));
     deleteElement->setCheckable(true);
 
-    runAlgorithm = new QAction(QIcon(":/icons/icon_algo.png"), tr("Run Prim's algorithm"), this);
+    runAlgorithm = new QAction(QIcon(":/icons/icon_algo.png"), tr("Find Hamiltonian cycle"), this);
     runAlgorithm->setShortcut(QKeySequence("Ctrl+R"));
-    runAlgorithm->setStatusTip(tr("Find minimum spanning tree for current graph"));
+    runAlgorithm->setStatusTip(tr("Find Hamiltonian cycle of current graph"));
 
     resetElements = new QAction(QIcon(":/icons/icon_refresh.png"), tr("Reset appearance"), this);
     resetElements->setShortcut(QKeySequence("Ctrl+A"));

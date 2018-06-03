@@ -130,7 +130,12 @@ bool Graph::containsEdge(Node::const_ref firstNode, Node::const_ref secondNode) 
     foreach (Edge* edge, edges)
     {
         if (edge->getIndex() == edgeIndex)
-            return true;
+        {
+            if (edge->isOriented())
+                return edge->getIndex().first == edgeIndex.first;
+            else
+                return true;
+        }
     }
     return NULL;
 }
