@@ -183,6 +183,15 @@ Graph::Type Graph::getType() const
         return Type::Empty;
 }
 
+bool Graph::isWeighted() const
+{
+    foreach (Edge* edge, edges)
+        if (edge->getWeight() != 0)
+            return true;
+
+    return false;
+}
+
 int Graph::countNodes() const
 {
     return nodes.size();

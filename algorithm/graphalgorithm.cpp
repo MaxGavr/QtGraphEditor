@@ -23,8 +23,8 @@ GraphAlgorithm::Result::Result()
 
 GraphAlgorithm::Result::~Result()
 {
-    if (hasGraph)
-        delete graphResult;
+    //if (hasGraph)
+        //delete graphResult;
 }
 
 void GraphAlgorithm::Result::setBool(bool result)
@@ -125,7 +125,6 @@ void GraphAlgorithm::pushEdge(Edge::Index edgeIndex)
 
 PrimAlgorithm::PrimAlgorithm()
 {
-    MST = new Graph();
 }
 
 PrimAlgorithm::~PrimAlgorithm()
@@ -144,6 +143,8 @@ GraphAlgorithm::Result PrimAlgorithm::execute(Arguments args)
     if (graph.isEmpty())
         return result;
 
+    MST = new Graph();
+
     using IPair = std::pair<unsigned int, int>;
     const int INF = std::numeric_limits<int>::max();
 
@@ -154,9 +155,11 @@ GraphAlgorithm::Result PrimAlgorithm::execute(Arguments args)
     std::vector<int> keys(nodesNumber, INF);
     std::vector<int> parent(nodesNumber, -1);
     std::vector<bool> included(nodesNumber, false);
+
+    bool weighted = graph.isWeighted();
     std::vector<int> distance(nodesNumber, 0);
 
-    int startNode = 0;
+    Node::Index startNode = args.startNode;
     queue.push(std::make_pair(0, startNode));
     keys[startNode] = 0;
 
@@ -185,19 +188,19 @@ GraphAlgorithm::Result PrimAlgorithm::execute(Arguments args)
                 keys[v] = weight;
                 queue.push(std::make_pair(keys[v], v));
                 parent[v] = minKeyNode;
-                distance[v] = distance[minKeyNode] + weight;
+
+                if (weighted)
+                    distance[v] = distance[minKeyNode] + weight;
+                else
+                    distance[v] = distance[minKeyNode] + 1;
             }
         }
     }
 
     result.setGraph(MST);
+    result.setInt(*(std::max_element(distance.begin(), distance.end())));
 
     return result;
-}
-
-Graph* PrimAlgorithm::getMST() const
-{
-    return MST;
 }
 
 void PrimAlgorithm::addElementToMST(const Graph& graph, int node, int& lastNode, int parent)
@@ -273,6 +276,8 @@ GraphAlgorithm::Result EulerianGraphAlgorithm::execute(Arguments args)
     PrimAlgorithm prim;
     Arguments primArgs;
     primArgs.graph = &graph;
+    primArgs.startNode = 0;
+
     Result primResult = prim.execute(primArgs);
 
     if (primResult.getGraph()->countNodes() != graph.countNodes())
@@ -360,4 +365,74 @@ bool HamiltonianCycleAlgorithm::findHamiltonianCycle(const Graph& graph, std::ve
     }
 
     return false;
+}
+
+
+GraphRadiusAlgorithm::GraphRadiusAlgorithm()
+{
+}
+
+GraphRadiusAlgorithm::~GraphRadiusAlgorithm()
+{
+}
+
+GraphAlgorithm::Result GraphRadiusAlgorithm::execute(GraphAlgorithm::Arguments args)
+{
+    Result result;
+
+    if (args.graph->isEmpty())
+    {
+        result.setInt(0);
+        return result;
+    }
+
+    int minEccentricity = 1;
+
+    PrimAlgorithm prim;
+    Arguments primArgs;
+    primArgs.graph = args.graph;
+    Result primResult;
+
+    for (Node::Index node = 0; node < args.graph->countNodes(); ++node)
+    {
+        primArgs.startNode = node;
+        primResult = prim.execute(primArgs);
+
+        minEccentricity = std::min(minEccentricity, primResult.getInt());
+    }
+
+    result.setInt(minEccentricity);
+    return result;
+}
+
+
+GraphDiameterAlgorithm::GraphDiameterAlgorithm()
+{
+}
+
+GraphDiameterAlgorithm::~GraphDiameterAlgorithm()
+{
+}
+
+GraphAlgorithm::Result GraphDiameterAlgorithm::execute(GraphAlgorithm::Arguments args)
+{
+    Result result;
+
+    int maxEccentricity = 0;
+
+    PrimAlgorithm prim;
+    Arguments primArgs;
+    primArgs.graph = args.graph;
+    Result primResult;
+
+    for (Node::Index node = 0; node < args.graph->countNodes(); ++node)
+    {
+        primArgs.startNode = node;
+        primResult = prim.execute(primArgs);
+
+        maxEccentricity = std::max(maxEccentricity, primResult.getInt());
+    }
+
+    result.setInt(maxEccentricity);
+    return result;
 }

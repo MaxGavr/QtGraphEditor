@@ -80,8 +80,6 @@ public:
 
     Result execute(Arguments args) override;
 
-    Graph* getMST() const;
-
 private:
     void addElementToMST(const Graph& graph, int node, int &lastNode, int parent = -1);
 
@@ -107,6 +105,24 @@ public:
 
 private:
     bool findHamiltonianCycle(const Graph& graph, std::vector<Node::Index>& cycle);
+};
+
+class GraphRadiusAlgorithm : public GraphAlgorithm
+{
+public:
+    GraphRadiusAlgorithm();
+    ~GraphRadiusAlgorithm();
+
+    Result execute(Arguments args) override;
+};
+
+class GraphDiameterAlgorithm : public GraphAlgorithm
+{
+public:
+    GraphDiameterAlgorithm();
+    ~GraphDiameterAlgorithm();
+
+    Result execute(Arguments args) override;
 };
 
 }

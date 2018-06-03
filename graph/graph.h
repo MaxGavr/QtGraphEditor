@@ -51,6 +51,7 @@ public:
 
     bool isEmpty() const;
     Graph::Type getType() const;
+    bool isWeighted() const;
 
     int countNodes() const;
     int countEdges() const;
