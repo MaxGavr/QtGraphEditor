@@ -60,6 +60,7 @@ private:
     QAction* createArc;
     QAction* deleteElement;
     QAction* runAlgorithm;
+    QAction* findCenter;
     QAction* resetElements;
     QAction* showGraphInfo;
 

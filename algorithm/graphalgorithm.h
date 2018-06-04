@@ -125,4 +125,13 @@ public:
     Result execute(Arguments args) override;
 };
 
+class GraphCenterAlgorithm : public GraphAlgorithm
+{
+public:
+    GraphCenterAlgorithm();
+    ~GraphCenterAlgorithm();
+
+    Result execute(Arguments args) override;
+};
+
 }

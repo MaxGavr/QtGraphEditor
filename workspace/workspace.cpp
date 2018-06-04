@@ -229,13 +229,13 @@ void Workspace::setElementContent(QGraphicsItem* item)
     }
 }
 
-void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* secondNode, int weight)
+void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* secondNode, int weight, bool oriented)
 {
     if (firstNode && secondNode)
     {
         try
         {
-            bool isOriented = (toggledMode == arcCreationMode);
+            bool isOriented = (toggledMode == arcCreationMode) || oriented;
             Edge::const_ref newGraphEdge = graph->addEdge(firstNode->getGraphNode(),
                                                                secondNode->getGraphNode(),
                                                                weight,
@@ -254,7 +254,7 @@ void Workspace::createEdge(GraphicsNodeItem* firstNode, GraphicsNodeItem* second
     }
 }
 
-void Workspace::createEdge(int firstNodeIndex, int secondNodeIndex, int weight)
+void Workspace::createEdge(int firstNodeIndex, int secondNodeIndex, int weight, bool oriented)
 {
     GraphicsNodeItem* firstNode = NULL;
     GraphicsNodeItem* secondNode = NULL;
@@ -265,7 +265,7 @@ void Workspace::createEdge(int firstNodeIndex, int secondNodeIndex, int weight)
         if (node->getGraphNode().getIndex() == secondNodeIndex)
             secondNode = node;
     }
-    createEdge(firstNode, secondNode, weight);
+    createEdge(firstNode, secondNode, weight, oriented);
 }
 
 void Workspace::toggleSelectionMode(bool isToggled)
@@ -313,6 +313,7 @@ bool Workspace::saveGraphToFile(const QString& saveFileName)
         attribs.append("begin", QString::number(edge->getGraphEdge().getIndex().first));
         attribs.append("end", QString::number(edge->getGraphEdge().getIndex().second));
         attribs.append("weight", QString::number(edge->getGraphEdge().getWeight()));
+        attribs.append("oriented", edge->isOriented() ? "yes" : "no");
         stream.writeAttributes(attribs);
         stream.writeEndElement();
     }
@@ -356,8 +357,9 @@ bool Workspace::loadGraphFromFile(const QString& loadFileName)
                 int beginNodeIndex = attribs.value("begin").toInt();
                 int endNodeIndex = attribs.value("end").toInt();
                 int weight = attribs.value("weight").toInt();
+                bool oriented = attribs.value("oriented").toString() == "yes";
 
-                createEdge(beginNodeIndex, endNodeIndex, weight);
+                createEdge(beginNodeIndex, endNodeIndex, weight, oriented);
             }
         }
     }
@@ -401,6 +403,12 @@ void Workspace::toggleDeletionMode(bool isToggled)
 void Workspace::runAlgorithm()
 {
     HamiltonianCycleAlgorithm* algo = new HamiltonianCycleAlgorithm();
+    algoHandler->handleAlgorithm(algo);
+}
+
+void Workspace::findCenter()
+{
+    GraphCenterAlgorithm* algo = new GraphCenterAlgorithm();
     algoHandler->handleAlgorithm(algo);
 }
 

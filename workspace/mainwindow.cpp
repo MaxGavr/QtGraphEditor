@@ -101,6 +101,10 @@ void MainWindow::createEditActions()
     runAlgorithm->setShortcut(QKeySequence("Ctrl+R"));
     runAlgorithm->setStatusTip(tr("Find Hamiltonian cycle of current graph"));
 
+    findCenter = new QAction(QIcon(":/icons/icon_center.png"), tr("Find center of graph"), this);
+    findCenter->setShortcut(QKeySequence("Ctrl+T"));
+    findCenter->setStatusTip(tr("Find central nodes of current graph"));
+
     resetElements = new QAction(QIcon(":/icons/icon_refresh.png"), tr("Reset appearance"), this);
     resetElements->setShortcut(QKeySequence("Ctrl+A"));
     resetElements->setStatusTip(tr("Reset every element appearance"));
@@ -146,6 +150,7 @@ void MainWindow::createToolBars()
     addToolBar(Qt::LeftToolBarArea, editToolBar);
     editToolBar->addActions(editActionGroup->actions());
     editToolBar->addAction(runAlgorithm);
+    editToolBar->addAction(findCenter);
     editToolBar->addAction(resetElements);
     editToolBar->addAction(showGraphInfo);
 }
@@ -233,6 +238,7 @@ void MainWindow::connectToolsToCurrentWidget()
     selectNode->toggle();
 
     connect(runAlgorithm, SIGNAL(triggered(bool)), workspace, SLOT(runAlgorithm()));
+    connect(findCenter, SIGNAL(triggered(bool)), workspace, SLOT(findCenter()));
     connect(resetElements, SIGNAL(triggered(bool)), workspace, SLOT(resetElementsView()));
     connect(showGraphInfo, SIGNAL(triggered(bool)), workspace, SLOT(showGraphInfo()));
 }

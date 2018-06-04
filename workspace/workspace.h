@@ -55,8 +55,8 @@ public:
     void deleteGraph();
 
 private slots:
-    void createEdge(GraphicsNodeItem *firstNode, GraphicsNodeItem *secondNode, int weight = 0);
-    void createEdge(int firstNodeIndex, int secondNodeIndex, int weight = 0);
+    void createEdge(GraphicsNodeItem *firstNode, GraphicsNodeItem *secondNode, int weight = 0, bool oriented = false);
+    void createEdge(int firstNodeIndex, int secondNodeIndex, int weight = 0, bool oriented = false);
 
     void toggleSelectionMode(bool isToggled);
     void toggleNodeCreationMode(bool isToggled);
@@ -65,6 +65,7 @@ private slots:
     void toggleDeletionMode(bool isToggled);
 
     void runAlgorithm();
+    void findCenter();
     void resetElementsView();
     void showGraphInfo();
 

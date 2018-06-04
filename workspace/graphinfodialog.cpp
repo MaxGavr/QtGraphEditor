@@ -14,6 +14,8 @@ using namespace GraphModel;
 GraphInfoDialog::GraphInfoDialog(Graph& graph, QWidget* parent)
     : QDialog(parent), graph(graph)
 {
+    setWindowTitle(tr("Graph properties"));
+
     fillIncidenceMatrixTable();
     manageLayout();
 }

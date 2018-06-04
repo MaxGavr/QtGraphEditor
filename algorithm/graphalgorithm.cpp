@@ -436,3 +436,41 @@ GraphAlgorithm::Result GraphDiameterAlgorithm::execute(GraphAlgorithm::Arguments
     result.setInt(maxEccentricity);
     return result;
 }
+
+
+GraphCenterAlgorithm::GraphCenterAlgorithm()
+{
+}
+
+GraphCenterAlgorithm::~GraphCenterAlgorithm()
+{
+}
+
+GraphAlgorithm::Result GraphCenterAlgorithm::execute(GraphAlgorithm::Arguments args)
+{
+    Result result;
+
+    GraphRadiusAlgorithm radiusAlgo;
+    Arguments radiusArgs;
+    radiusArgs.graph = args.graph;
+    Result radiusResult;
+
+    PrimAlgorithm primAlgo;
+    Arguments primArgs;
+    primArgs.graph = args.graph;
+    Result primResult;
+
+    for (Node::Index node = 0; node < args.graph->countNodes(); ++node)
+    {
+        radiusArgs.startNode = node;
+        radiusResult = radiusAlgo.execute(radiusArgs);
+
+        primArgs.startNode = node;
+        primResult = primAlgo.execute(primArgs);
+
+        if (radiusResult.getInt() == primResult.getInt())
+            pushNode(node);
+    }
+
+    return result;
+}
