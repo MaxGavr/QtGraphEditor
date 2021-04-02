@@ -13,31 +13,10 @@ TEMPLATE = app
 
 CONFIG += c++11
 
-SOURCES += main.cpp\
-    graph/graph.cpp \
-    graph/graphedge.cpp \
-    graph/graphnode.cpp \
-    graph/incidencematrix.cpp \
-    graphics/graphicsedgeitem.cpp \
-    graphics/graphicsnodeitem.cpp \
-    workspace/mainwindow.cpp \
-    workspace/workspace.cpp \
-    algorithm/graphalgorithm.cpp \
-    algorithm/algorithmhandler.cpp \
-    workspace/graphinfodialog.cpp
+INCLUDEPATH += src/
 
-HEADERS  += graph/graph.h \
-    graph/graphedge.h \
-    graph/graphnode.h \
-    graph/incidencematrix.h \
-    graphics/graphicsedgeitem.h \
-    graphics/graphicsnodeitem.h \
-    workspace/mainwindow.h \
-    workspace/workspace.h \
-    graph/exceptions.h \
-    algorithm/graphalgorithm.h \
-    algorithm/algorithmhandler.h \
-    workspace/graphinfodialog.h
+SOURCES += $$files("src/*.cpp", true)
+HEADERS += $$files("src/*.h", true)
 
 RESOURCES += \
     icons.qrc
