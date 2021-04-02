@@ -19,4 +19,4 @@ SOURCES += $$files("src/*.cpp", true)
 HEADERS += $$files("src/*.h", true)
 
 RESOURCES += \
-    icons.qrc
+    resources/icons.qrc
