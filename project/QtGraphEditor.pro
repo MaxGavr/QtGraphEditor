@@ -13,10 +13,12 @@ TEMPLATE = app
 
 CONFIG += c++11
 
-INCLUDEPATH += src/
+PROJECT_ROOT = ../
 
-SOURCES += $$files("src/*.cpp", true)
-HEADERS += $$files("src/*.h", true)
+INCLUDEPATH += $${PROJECT_ROOT}/src/
+
+SOURCES += $$files("$${PROJECT_ROOT}/src/*.cpp", true)
+HEADERS += $$files("$${PROJECT_ROOT}/src/*.h", true)
 
 RESOURCES += \
-    resources/icons.qrc
+    $${PROJECT_ROOT}/resources/icons.qrc
